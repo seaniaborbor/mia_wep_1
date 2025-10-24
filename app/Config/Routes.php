@@ -126,6 +126,10 @@ $routes->get('/dashboard/edit_divorce_cert/(:num)', 'DivorceCertificateControlle
 $routes->post('/dashboard/edit_divorce_cert/(:num)', 'DivorceCertificateController::edit_certificate/$1');
 $routes->get('/dashboard/divorce_cert/allow_edit/(:num)', 'DivorceCertificateController::allow_edit/$1');
 
+// native certificate management routes 
+$routes->get('/dashboard/nativecert', 'NativeDocCertController::index'); ///
+$routes->get('/dashboard/nativecert/create', 'NativeDocCertController::new'); 
+
 
 });
 /*

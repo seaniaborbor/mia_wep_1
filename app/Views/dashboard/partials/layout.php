@@ -102,11 +102,12 @@ $userData = session()->get('userData');
                         <h6 class="collapse-header">Marriage Certificate</h6>
                         <a class="collapse-item" href="/dashboard/wedcert">Marriage Cert. Log</a>
                         <a class="collapse-item" href="/dashboard/wedcert/create">Issue Marriage Cert.  </a>
-                        <?php if($userData['userBreanch'] == 1): ?>
                             <h6 class="collapse-header">Divorce Certificate</h6>
                             <a class="collapse-item" href="/dashboard/divorce_cert">Divorce Cert. Log </a>
                             <a class="collapse-item" href="/dashboard/divorce_cert/create">Issue Divorce Cert.</a>
-                        <?php endif; ?>
+                        <h6 class="collapse-header">Native Doc Certificate</h6>
+                        <a class="collapse-item" href="/dashboard/nativecert">Issue Native Cert </a>
+                        <a class="collapse-item" href="/dashboard/nativecert/create">Native Doc Cert Log</a>
                     </div>
                 </div>
             </li>

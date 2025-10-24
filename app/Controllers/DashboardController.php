@@ -150,6 +150,7 @@ public function general_dashboard()
 
     // Counts for cards
     $data['totalMarriages'] = $this->marriageModel->countAll();
+
     $data['totalUncompletedMarriages'] = $this->marriageModel
                                             ->where('SIGNA', NULL)
                                             ->orWhere('SIGNB', NULL)
@@ -161,7 +162,7 @@ public function general_dashboard()
                                             ->where('divorceSIGN_A', NULL)
                                             ->orWhere('divorceSIGN_B', NULL)
                                             ->orWhere('divorceSIGN_C', NULL)
-                                            ->countAllResults();
+                                           ->countAllResults();
 
     // Branch data with counts for charts
     $data['marriagesPerBranch'] = $this->marriageModel
@@ -180,9 +181,11 @@ public function general_dashboard()
 
     // Get all branches for consistent chart display
     $data['allBranches'] = $this->branchModel
-                            ->select('branchId, branchName')
+                            ->select('branchId, branchName, branchCode')
                             ->orderBy('branchName')
                             ->findAll();
+
+    
 
     // Additional counts
     $data['totalBranches'] = $this->branchModel->countAll();
@@ -190,7 +193,7 @@ public function general_dashboard()
 
     // Prepare data for charts
     $data['chartData'] = [
-        'branchNames' => array_column($data['allBranches'], 'branchName'),
+        'branchCode' => array_column($data['allBranches'], 'branchCode'),
         'marriageCounts' => $this->mapCountsToBranches($data['allBranches'], $data['marriagesPerBranch']),
         'divorceCounts' => $this->mapCountsToBranches($data['allBranches'], $data['divorcesPerBranch']),
         'totalCertificates' => [

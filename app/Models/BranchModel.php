@@ -52,6 +52,7 @@ private $countyCodes = [
     'Sinoe'              => 'LR-SI'
 ];
 
+
    protected function generateBranchCode(array $data)
 {
     $county = $data['data']['branchCounty'] ?? '';

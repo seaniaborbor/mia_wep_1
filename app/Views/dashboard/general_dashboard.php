@@ -460,7 +460,7 @@
             new Chart(barCtx, {
                 type: 'bar',
                 data: {
-                    labels: <?= json_encode($chartData['branchNames']) ?>,
+                    labels: <?= json_encode($chartData['branchCode']) ?>,
                     datasets: [
                         {
                             label: "Marriage Certificates",
