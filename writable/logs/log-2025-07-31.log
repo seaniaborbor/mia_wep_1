@@ -1,0 +1,274 @@
+WARNING - 2025-07-31 23:56:01 --> [DEPRECATED] Creation of dynamic property App\Controllers\AuthController::$userModel is deprecated in APPPATH/Controllers/AuthController.php on line 13.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\AuthController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:56:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:56:24 --> [DEPRECATED] Creation of dynamic property App\Controllers\AuthController::$userModel is deprecated in APPPATH/Controllers/AuthController.php on line 13.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\AuthController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:56:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:56:25 --> [DEPRECATED] Creation of dynamic property App\Controllers\AuthController::$userModel is deprecated in APPPATH/Controllers/AuthController.php on line 13.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\AuthController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:56:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:56:45 --> [DEPRECATED] Creation of dynamic property App\Controllers\AuthController::$userModel is deprecated in APPPATH/Controllers/AuthController.php on line 13.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\AuthController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:56:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:56:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:56:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:56:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:56:57 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:56:57 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:56:57 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:56:57 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:56:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:03 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:08 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:57:12 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 37.
+ 1 APPPATH/Controllers/VerificationController.php(37): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:57:12 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 38.
+ 1 APPPATH/Controllers/VerificationController.php(38): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:57:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:18 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:23 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:57:23 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 37.
+ 1 APPPATH/Controllers/VerificationController.php(37): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:57:23 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 38.
+ 1 APPPATH/Controllers/VerificationController.php(38): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:57:28 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:33 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:57:42 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 37.
+ 1 APPPATH/Controllers/VerificationController.php(37): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:57:42 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 38.
+ 1 APPPATH/Controllers/VerificationController.php(38): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:57:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:53 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:57:58 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:58:00 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 37.
+ 1 APPPATH/Controllers/VerificationController.php(37): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:00 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 38.
+ 1 APPPATH/Controllers/VerificationController.php(38): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:58:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:58:15 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:15 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:15 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:58:16 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:58:21 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:21 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:21 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:58:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:58:24 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:24 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:58:24 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:58:25 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:30 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:35 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:40 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:45 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:50 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:58:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:59:04 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:04 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:04 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:59:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:59:04 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:04 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:04 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:59:05 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:15 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:20 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:59:20 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$branchModel is deprecated in APPPATH/Controllers/UserController.php on line 17.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:20 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$userModel is deprecated in APPPATH/Controllers/UserController.php on line 18.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:20 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$weddingCertModel is deprecated in APPPATH/Controllers/UserController.php on line 19.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:20 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$divorceCertModel is deprecated in APPPATH/Controllers/UserController.php on line 20.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:59:21 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:31 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:36 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:59:39 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$branchModel is deprecated in APPPATH/Controllers/UserController.php on line 17.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:39 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$userModel is deprecated in APPPATH/Controllers/UserController.php on line 18.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:39 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$weddingCertModel is deprecated in APPPATH/Controllers/UserController.php on line 19.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:39 --> [DEPRECATED] Creation of dynamic property App\Controllers\UserController::$divorceCertModel is deprecated in APPPATH/Controllers/UserController.php on line 20.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\UserController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:59:39 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:43 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:49 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:54 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2025-07-31 23:59:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+WARNING - 2025-07-31 23:59:56 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$branchModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 14.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:56 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$userModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 15.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-07-31 23:59:56 --> [DEPRECATED] Creation of dynamic property App\Controllers\WeddingCertController::$weddingCertModel is deprecated in APPPATH/Controllers/WeddingCertController.php on line 16.
+ 1 SYSTEMPATH/CodeIgniter.php(906): App\Controllers\WeddingCertController->__construct()
+ 2 SYSTEMPATH/CodeIgniter.php(490): CodeIgniter\CodeIgniter->createController()
+ 3 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 4 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+INFO - 2025-07-31 23:59:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

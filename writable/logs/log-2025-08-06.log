@@ -1,0 +1,12 @@
+WARNING - 2025-08-06 20:38:54 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 37.
+ 1 APPPATH/Controllers/VerificationController.php(37): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
+WARNING - 2025-08-06 20:38:54 --> [DEPRECATED] strip_tags(): Passing null to parameter #1 ($string) of type string is deprecated in APPPATH/Controllers/VerificationController.php on line 38.
+ 1 APPPATH/Controllers/VerificationController.php(38): strip_tags(null)
+ 2 SYSTEMPATH/CodeIgniter.php(934): App\Controllers\VerificationController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(499): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\VerificationController))
+ 4 SYSTEMPATH/CodeIgniter.php(368): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 FCPATH/index.php(67): CodeIgniter\CodeIgniter->run()
