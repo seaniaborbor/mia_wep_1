@@ -20,6 +20,11 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     
+<!-- Add these scripts to your layout -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <style>
         /* Sticky FAQ Section */
         .faq-sticky {
@@ -1144,6 +1149,482 @@
         }
     }
 
+       /* Contact Chip */
+.contact-chip {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  border: 1px solid rgba(0, 35, 102, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.contact-chip::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at top left, rgba(0, 35, 102, 0.08), transparent 70%);
+  transform: scale(0);
+  transition: all 0.6s ease;
+}
+
+.contact-chip:hover::before {
+  transform: scale(1);
+}
+
+.contact-chip:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 30px rgba(0, 35, 102, 0.2);
+}
+
+.chip-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 10px;
+}
+
+.chip-section h6 {
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.chip-section p, 
+.chip-section li {
+  font-size: 0.95rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.chip-footer .pulse-btn {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 35, 102, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(0, 35, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 35, 102, 0); }
+}
+
+/* Adjust Map to Match Height */
+.map-card {
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  background: var(--liberia-white);
+  border: 1px solid rgba(0, 35, 102, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.map-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0, 35, 102, 0.15);
+}
+
+.map-header {
+  background: linear-gradient(135deg, var(--liberia-blue) 0%, #001a4d 100%);
+  color: white;
+  padding: 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.map-footer {
+  padding: 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  background: rgba(0, 35, 102, 0.02);
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .col-lg-7, .col-lg-5 {
+    width: 100%;
+  }
+  .contact-chip {
+    margin-top: 20px;
+  }
+}
+
+    /* Service Centers Carousel */
+    .service-centers-carousel {
+        /*background: linear-gradient(135deg, rgba(0, 35, 102, 0.03) 0%, rgba(191, 10, 48, 0.03) 100%);*/
+        padding: 60px 0;
+        margin: 40px 0;
+    }
+
+    .carousel-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .carousel-title {
+        color: var(--liberia-blue);
+        font-weight: 700;
+        margin-bottom: 15px;
+        font-family: 'Merriweather', serif;
+        font-size: 2.5rem;
+    }
+
+    .carousel-subtitle {
+        color: #666;
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .service-center-card {
+        background: var(--liberia-white);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 2px solid rgba(0, 35, 102, 0.1);
+        padding: 30px;
+        margin: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-center-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--liberia-blue);
+    }
+
+    .service-center-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+    }
+
+    .county-badge {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+
+    .center-icon {
+        font-size: 2.5rem;
+        color: var(--liberia-blue);
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .center-name {
+        color: var(--liberia-blue);
+        font-weight: 700;
+        margin-bottom: 15px;
+        font-family: 'Merriweather', serif;
+        font-size: 1.3rem;
+        line-height: 1.3;
+        min-height: 60px;
+    }
+
+    .center-location {
+        color: var(--liberia-red);
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .center-location i {
+        font-size: 1.1rem;
+    }
+
+    .center-details {
+        margin-bottom: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    .detail-item i {
+        color: var(--liberia-blue);
+        width: 20px;
+        margin-right: 10px;
+        font-size: 1rem;
+    }
+
+    .center-code {
+        background: rgba(0, 35, 102, 0.1);
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-weight: 600;
+        color: var(--liberia-blue);
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-top: 10px;
+    }
+
+    /* Owl Carousel Custom Navigation */
+    .owl-nav {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .owl-prev, .owl-next {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%) !important;
+        color: white !important;
+        width: 50px;
+        height: 50px;
+        border-radius: 50% !important;
+        margin: 0 10px !important;
+        font-size: 1.5rem !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .owl-prev:hover, .owl-next:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .owl-dots {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .owl-dot span {
+        background: #ddd !important;
+        margin: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .owl-dot.active span {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%) !important;
+        transform: scale(1.2);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .service-centers-carousel {
+            padding: 40px 0;
+        }
+
+        .carousel-title {
+            font-size: 2rem;
+        }
+
+        .carousel-subtitle {
+            font-size: 1.1rem;
+        }
+
+        .service-center-card {
+            padding: 25px 20px;
+            margin: 10px;
+        }
+
+        .center-name {
+            font-size: 1.2rem;
+            min-height: auto;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .carousel-title {
+            font-size: 1.8rem;
+        }
+
+        .service-center-card {
+            padding: 20px 15px;
+        }
+
+        .center-icon {
+            font-size: 2rem;
+        }
+    }
+
+        /* Certificate Carousel Styles */
+    .certificates-slider {
+        margin-top: 30px;
+    }
+    
+    .certificate-card {
+        background: var(--liberia-white);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 2px solid rgba(0, 35, 102, 0.1);
+        padding: 30px;
+        margin: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+    }
+    
+    .certificate-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--liberia-blue);
+    }
+    
+    .certificate-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+    }
+    
+    .certificate-badge {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+    
+    .certificate-icon {
+        font-size: 2.5rem;
+        color: var(--liberia-blue);
+        margin-bottom: 20px;
+        display: block;
+    }
+    
+    .certificate-name {
+        color: var(--liberia-blue);
+        font-weight: 700;
+        margin-bottom: 15px;
+        font-family: 'Merriweather', serif;
+        font-size: 1.3rem;
+        line-height: 1.3;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .certificate-description {
+        margin-bottom: 20px;
+        color: #555;
+        line-height: 1.5;
+        min-height: 70px;
+    }
+    
+    .certificate-details {
+        margin-bottom: 20px;
+    }
+    
+    .certificate-details .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        color: #555;
+        justify-content: flex-start;
+        text-align: left;
+    }
+    
+    .certificate-details .detail-item i {
+        color: var(--liberia-blue);
+        width: 20px;
+        margin-right: 10px;
+        font-size: 1rem;
+    }
+    
+    .certificate-action {
+        margin-top: 15px;
+    }
+    
+    /* Owl Carousel Custom Navigation */
+    .certificates-slider .owl-nav {
+        text-align: center;
+        margin-top: 30px;
+    }
+    
+    .certificates-slider .owl-prev, 
+    .certificates-slider .owl-next {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%) !important;
+        color: white !important;
+        width: 50px;
+        height: 50px;
+        border-radius: 50% !important;
+        margin: 0 10px !important;
+        font-size: 1.5rem !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .certificates-slider .owl-prev:hover, 
+    .certificates-slider .owl-next:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .certificates-slider .owl-dots {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .certificates-slider .owl-dot span {
+        background: #ddd !important;
+        margin: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .certificates-slider .owl-dot.active span {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%) !important;
+        transform: scale(1.2);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .certificate-card {
+            padding: 25px 20px;
+            margin: 10px;
+        }
+        
+        .certificate-name {
+            font-size: 1.2rem;
+            min-height: auto;
+        }
+        
+        .certificate-description {
+            min-height: auto;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .certificate-card {
+            padding: 20px 15px;
+        }
+        
+        .certificate-icon {
+            font-size: 2rem;
+        }
+    }
+
+
        
     </style>
 </head>
@@ -1449,6 +1930,68 @@
                 sendUserMessage();
             });
         });
+
+     
+     $(document).ready(function(){
+        $('.service-centers-slider').owlCarousel({
+            loop: true,
+            margin: 20,
+            nav: true,
+            dots: true,
+            autoplay: true,
+            autoplayTimeout: 4000,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                768: {
+                    items: 2
+                },
+                992: {
+                    items: 3
+                },
+                1200: {
+                    items: 3
+                }
+            },
+            navText: [
+                '<i class="fas fa-chevron-left"></i>',
+                '<i class="fas fa-chevron-right"></i>'
+            ]
+        });
+    });
+
+
+     $(document).ready(function(){
+        $('.certificates-slider').owlCarousel({
+            loop: true,
+            margin: 20,
+            nav: true,
+            dots: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                576: {
+                    items: 2
+                },
+                992: {
+                    items: 3
+                },
+                1200: {
+                    items: 3
+                }
+            },
+            navText: [
+                '<i class="fas fa-chevron-left"></i>',
+                '<i class="fas fa-chevron-right"></i>'
+            ]
+        });
+    });
     </script>
 </body>
 </html>

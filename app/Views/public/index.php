@@ -29,64 +29,201 @@
 
 
 
-    <!-- Certificates Section -->
-    <section id="certificates" class="py-5 bg-light">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-aos="fade-up">Certificate Services</h2>
-                <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Select the certificate type to learn about requirements and procedures</p>
-            </div>
-            
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-                    <div class="cert-card p-4 h-100 text-center">
-                        <div class="cert-icon">
-                            <i class="fas fa-ring"></i>
-                        </div>
-                        <h3 class="cert-title">Marriage Certificate</h3>
-                        <p class="cert-desc">Official documentation of legally recognized marriages in Liberia</p>
-                        <a href="/instrunction/marriage_cert_info" class="btn btn-light btn-lg px-4"><i class="fas fa-paper-plane"></i>Findout More</a>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-                    <div class="cert-card p-4 h-100 text-center">
-                        <div class="cert-icon">
-                            <i class="fas fa-user-times"></i>
-                        </div>
-                        <h3 class="cert-title">Divorce Certificate</h3>
-                        <p class="cert-desc">Legal proof of marriage dissolution under Liberian law</p>
-                        <a href="/instrunction/divorce_cert_info" class="btn btn-light btn-lg px-4"><i class="fas fa-paper-plane"></i> Findout More </a>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
-                    <div class="cert-card p-4 h-100 text-center">
-                        <div class="cert-icon">
-                            <i class="fas fa-male"></i>
-                        </div>
-                        <h3 class="cert-title">Bachelor Certificate</h3>
-                        <p class="cert-desc">Legal declaration of unmarried status for male applicants</p>
-                        <a href="/instrunction/not_available_info" class="btn btn-light btn-lg px-4"><i class="fas fa-paper-plane"></i> Findout More </a>
-                    </div>
-                </div>
-                
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="500">
-                    <div class="cert-card p-4 h-100 text-center">
-                        <div class="cert-icon">
-                            <i class="fas fa-female "></i>
-                        </div>
-                        <h3 class="cert-title">Spinster Certificate</h3>
-                        <p class="cert-desc">Legal declaration of unmarried status for female applicants</p>
-                        <a href="/instrunction/not_available_info" class="btn btn-light btn-lg px-4"> Findout More <i class="fas fa-paper-plane"></i> </a>
-                    </div>
-                </div>
-            </div>
-            
+<!-- Certificates Section -->
+<section id="certificates" class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title" data-aos="fade-up">Certificate Services</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Select the certificate type to learn about requirements and procedures</p>
         </div>
-    </section>
 
-    <!-- Process Section -->
+        <div class="owl-carousel certificates-slider">
+            <!-- Marriage Certificate -->
+            <div class="certificate-card">
+                <span class="certificate-badge">Marriage</span>
+                
+                <i class="fas fa-ring certificate-icon"></i>
+                
+                <h3 class="certificate-name">Marriage Certificate</h3>
+                
+                <div class="certificate-description">
+                    <p>Official documentation of legally recognized marriages in Liberia</p>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Processing: 14 working days</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Fee: $25 USD</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Requires both parties</span>
+                    </div>
+                </div>
+                
+                <div class="certificate-action">
+                    <a href="/instrunction/marriage_cert_info" class="btn btn-primary btn-sm">
+                        <i class="fas fa-paper-plane me-1"></i> Find Out More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Divorce Certificate -->
+            <div class="certificate-card">
+                <span class="certificate-badge">Divorce</span>
+                
+                <i class="fas fa-user-times certificate-icon"></i>
+                
+                <h3 class="certificate-name">Divorce Certificate</h3>
+                
+                <div class="certificate-description">
+                    <p>Legal proof of marriage dissolution under Liberian law</p>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Processing: 21 days after court approval</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Fee: $30 USD</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-gavel"></i>
+                        <span>Court decree required</span>
+                    </div>
+                </div>
+                
+                <div class="certificate-action">
+                    <a href="/instrunction/divorce_cert_info" class="btn btn-primary btn-sm">
+                        <i class="fas fa-paper-plane me-1"></i> Find Out More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Bachelor Certificate -->
+            <div class="certificate-card">
+                <span class="certificate-badge">Bachelor</span>
+                
+                <i class="fas fa-male certificate-icon"></i>
+                
+                <h3 class="certificate-name">Bachelor Certificate</h3>
+                
+                <div class="certificate-description">
+                    <p>Legal declaration of unmarried status for male applicants</p>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Processing: 7 working days</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Fee: $15 USD</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-user-check"></i>
+                        <span>Affidavit required</span>
+                    </div>
+                </div>
+                
+                <div class="certificate-action">
+                    <a href="/instrunction/not_available_info" class="btn btn-primary btn-sm">
+                        <i class="fas fa-paper-plane me-1"></i> Find Out More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Spinster Certificate -->
+            <div class="certificate-card">
+                <span class="certificate-badge">Spinster</span>
+                
+                <i class="fas fa-female certificate-icon"></i>
+                
+                <h3 class="certificate-name">Spinster Certificate</h3>
+                
+                <div class="certificate-description">
+                    <p>Legal declaration of unmarried status for female applicants</p>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Processing: 7 working days</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Fee: $15 USD</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-user-check"></i>
+                        <span>Affidavit required</span>
+                    </div>
+                </div>
+                
+                <div class="certificate-action">
+                    <a href="/instrunction/not_available_info" class="btn btn-primary btn-sm">
+                        <i class="fas fa-paper-plane me-1"></i> Find Out More
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Traditional Healer/Herbalist Certificate -->
+            <div class="certificate-card">
+                <span class="certificate-badge">Traditional</span>
+                
+                <i class="fas fa-leaf certificate-icon"></i>
+                
+                <h3 class="certificate-name">Traditional Healer/Herbalist Certificate</h3>
+                
+                <div class="certificate-description">
+                    <p>Official recognition for traditional medicine practitioners in Liberia</p>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Processing: 30 working days</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Fee: $50 USD</span>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <i class="fas fa-certificate"></i>
+                        <span>Professional assessment required</span>
+                    </div>
+                </div>
+                
+                <div class="certificate-action">
+                    <a href="/instrunction/traditional_cert_info" class="btn btn-primary btn-sm">
+                        <i class="fas fa-paper-plane me-1"></i> Find Out More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- Process Section -->
     <section id="process" class="py-5">
         <div class="container">
             <div class="section-header">
@@ -143,7 +280,7 @@
     </section>
 
     <!-- FAQ Section -->
-    <section id="faq" class="py-5 bg-light">
+    <section id="faq" class="py-5 bg-light shadow-sm">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title" data-aos="fade-up">Frequently Asked Questions</h2>
@@ -217,219 +354,7 @@
     </section>
 
 
-    <!-- Add these CSS styles to your layout -->
-<style>
-    /* Service Centers Carousel */
-    .service-centers-carousel {
-        /*background: linear-gradient(135deg, rgba(0, 35, 102, 0.03) 0%, rgba(191, 10, 48, 0.03) 100%);*/
-        padding: 60px 0;
-        margin: 40px 0;
-    }
 
-    .carousel-header {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .carousel-title {
-        color: var(--liberia-blue);
-        font-weight: 700;
-        margin-bottom: 15px;
-        font-family: 'Merriweather', serif;
-        font-size: 2.5rem;
-    }
-
-    .carousel-subtitle {
-        color: #666;
-        font-size: 1.2rem;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .service-center-card {
-        background: var(--liberia-white);
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        border: 2px solid rgba(0, 35, 102, 0.1);
-        padding: 30px;
-        margin: 15px;
-        transition: all 0.3s ease;
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .service-center-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        border-color: var(--liberia-blue);
-    }
-
-    .service-center-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5px;
-        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
-    }
-
-    .county-badge {
-        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
-        color: white;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        position: absolute;
-        top: 15px;
-        right: 15px;
-    }
-
-    .center-icon {
-        font-size: 2.5rem;
-        color: var(--liberia-blue);
-        margin-bottom: 20px;
-        display: block;
-    }
-
-    .center-name {
-        color: var(--liberia-blue);
-        font-weight: 700;
-        margin-bottom: 15px;
-        font-family: 'Merriweather', serif;
-        font-size: 1.3rem;
-        line-height: 1.3;
-        min-height: 60px;
-    }
-
-    .center-location {
-        color: var(--liberia-red);
-        font-weight: 600;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .center-location i {
-        font-size: 1.1rem;
-    }
-
-    .center-details {
-        margin-bottom: 20px;
-    }
-
-    .detail-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-        color: #555;
-    }
-
-    .detail-item i {
-        color: var(--liberia-blue);
-        width: 20px;
-        margin-right: 10px;
-        font-size: 1rem;
-    }
-
-    .center-code {
-        background: rgba(0, 35, 102, 0.1);
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-family: monospace;
-        font-weight: 600;
-        color: var(--liberia-blue);
-        font-size: 0.9rem;
-        display: inline-block;
-        margin-top: 10px;
-    }
-
-    /* Owl Carousel Custom Navigation */
-    .owl-nav {
-        text-align: center;
-        margin-top: 30px;
-    }
-
-    .owl-prev, .owl-next {
-        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%) !important;
-        color: white !important;
-        width: 50px;
-        height: 50px;
-        border-radius: 50% !important;
-        margin: 0 10px !important;
-        font-size: 1.5rem !important;
-        transition: all 0.3s ease !important;
-    }
-
-    .owl-prev:hover, .owl-next:hover {
-        transform: scale(1.1);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .owl-dots {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .owl-dot span {
-        background: #ddd !important;
-        margin: 5px;
-        transition: all 0.3s ease;
-    }
-
-    .owl-dot.active span {
-        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%) !important;
-        transform: scale(1.2);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .service-centers-carousel {
-            padding: 40px 0;
-        }
-
-        .carousel-title {
-            font-size: 2rem;
-        }
-
-        .carousel-subtitle {
-            font-size: 1.1rem;
-        }
-
-        .service-center-card {
-            padding: 25px 20px;
-            margin: 10px;
-        }
-
-        .center-name {
-            font-size: 1.2rem;
-            min-height: auto;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .carousel-title {
-            font-size: 1.8rem;
-        }
-
-        .service-center-card {
-            padding: 20px 15px;
-        }
-
-        .center-icon {
-            font-size: 2rem;
-        }
-    }
-</style>
-
-<!-- Add these scripts to your layout -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
 
 <!-- Carousel HTML Section -->
 <section class="service-centers-carousel bg-white">
@@ -479,217 +404,543 @@
     </div>
 </section>
 
-<script>
-    $(document).ready(function(){
-        $('.service-centers-slider').owlCarousel({
-            loop: true,
-            margin: 20,
-            nav: true,
-            dots: true,
-            autoplay: true,
-            autoplayTimeout: 4000,
-            autoplayHoverPause: true,
-            responsive: {
-                0: {
-                    items: 1
-                },
-                768: {
-                    items: 2
-                },
-                992: {
-                    items: 3
-                },
-                1200: {
-                    items: 3
-                }
-            },
-            navText: [
-                '<i class="fas fa-chevron-left"></i>',
-                '<i class="fas fa-chevron-right"></i>'
-            ]
-        });
-    });
-</script>
 
 
-<section id="contact" class="py-5">
-  <div class="container">
-    <div class="section-header text-center mb-5">
-      <h2 class="section-title" data-aos="fade-up">Contact Information</h2>
-      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
-        Reach out for official inquiries
-      </p>
-    </div>
 
-    <div class="row align-items-stretch">
-      <!-- Google Maps Column (7 cols) -->
-      <div class="col-lg-7 mb-4 mb-lg-0" data-aos="zoom-in-right">
-        <div class="map-card">
-          <div class="map-header">
-            <i class="fas fa-map-marked-alt me-2"></i>
-            <strong>Head Office Location</strong>
-          </div>
-          <div class="map-container">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.7293072960133!2d-10.798273006837647!3d6.299256962245319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xf09f8011ea16693%3A0x4d13e6d6b6151b3a!2sMinistry%20of%20Internal%20Affairs!5e0!3m2!1sen!2s!4v1760727067864!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          </div>
-          <div class="map-footer">
-            <button class="btn btn-gradient btn-sm" onclick="openGoogleMaps()">
-              <i class="fas fa-directions me-1"></i> Open in Google Maps
-            </button>
-            <button class="btn btn-outline-primary btn-sm" id="locationChatBtn">
-              <i class="fas fa-robot me-1"></i> Ask Assistant
-            </button>
-          </div>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5" style="background: linear-gradient(135deg, rgba(0, 35, 102, 0.03) 0%, rgba(191, 10, 48, 0.03) 100%);">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title" data-aos="fade-up">Contact Information</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+                Reach out for official inquiries and support
+            </p>
         </div>
-      </div>
 
-      <!-- Contact Chip Column (5 cols) -->
-      <div class="col-lg-5" data-aos="zoom-in-left" data-aos-delay="200">
-        <div class="contact-chip shadow-lg">
-          <div class="chip-header mb-3">
-            <i class="fas fa-building me-2 text-primary"></i>
-            <h4 class="m-0 fw-bold">Ministry of Internal Affairs</h4>
-          </div>
+        <div class="row align-items-stretch">
+            <!-- Contact Information Cards (7 cols) -->
+            <div class="col-lg-7 mb-4 mb-lg-0" data-aos="zoom-in-right">
+                <div class="row g-4 h-100">
+                    <!-- Main Office Card -->
+                    <div class="col-md-6">
+                        <div class="contact-info-card h-100">
+                            <div class="contact-card-header">
+                                <i class="fas fa-building me-2"></i>
+                                <h5 class="m-0">Headquarters</h5>
+                            </div>
+                            <div class="contact-card-body">
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <div>
+                                        <strong>Address</strong>
+                                        <p>Capitol Hill, Monrovia, Liberia</p>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone-alt"></i>
+                                    <div>
+                                        <strong>Phone</strong>
+                                        <p>+231 123 456 789</p>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>
+                                        <strong>Email</strong>
+                                        <p>info@mia.gov.lr</p>
+                                    </div>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-globe"></i>
+                                    <div>
+                                        <strong>Website</strong>
+                                        <p>www.mia.gov.lr</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="contact-card-footer">
+                                <button class="btn btn-outline-primary btn-sm w-100" id="headquartersChatBtn">
+                                    <i class="fas fa-robot me-1"></i> Ask About Headquarters
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-          <div class="chip-section mb-3">
-            <h6 class="text-uppercase text-secondary mb-2"><i class="fas fa-map-pin me-2 text-danger"></i> Address</h6>
-            <p class="mb-0">Capitol Hill, Monrovia, Liberia</p>
-          </div>
+                    <!-- Office Hours Card -->
+                    <div class="col-md-6">
+                        <div class="contact-info-card h-100">
+                            <div class="contact-card-header">
+                                <i class="fas fa-clock me-2"></i>
+                                <h5 class="m-0">Office Hours</h5>
+                            </div>
+                            <div class="contact-card-body">
+                                <div class="hours-item">
+                                    <div class="day">Monday - Friday</div>
+                                    <div class="time">8:00 AM – 5:00 PM</div>
+                                </div>
+                                <div class="hours-item">
+                                    <div class="day">Saturday</div>
+                                    <div class="time">9:00 AM – 1:00 PM</div>
+                                </div>
+                                <div class="hours-item closed">
+                                    <div class="day">Sunday & Holidays</div>
+                                    <div class="time">Closed</div>
+                                </div>
+                                <div class="emergency-notice mt-3">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <small>For emergencies, contact our 24/7 support line</small>
+                                </div>
+                            </div>
+                            <div class="contact-card-footer">
+                                <button class="btn btn-outline-primary btn-sm w-100" id="hoursChatBtn">
+                                    <i class="fas fa-robot me-1"></i> Ask About Hours..
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-          <div class="chip-section mb-3">
-            <h6 class="text-uppercase text-secondary mb-2"><i class="fas fa-phone-alt me-2 text-success"></i> Contact</h6>
-            <ul class="list-unstyled mb-0">
-              <li><strong>Phone:</strong> +231 123 456 789</li>
-              <li><strong>Email:</strong> info@mia.gov.lr</li>
-              <li><strong>Website:</strong> www.mia.gov.lr</li>
-            </ul>
-          </div>
+                    <!-- County Offices Card -->
+                    <div class="col-12">
+                        <div class="contact-info-card">
+                            <div class="contact-card-header">
+                                <i class="fas fa-map-marked-alt me-2"></i>
+                                <h5 class="m-0">County Service Centers</h5>
+                            </div>
+                            <div class="contact-card-body">
+                                <div class="county-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-number"><?=count($allBranches)?></div>
+                                        <div class="stat-label">Service Centers</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">15</div>
+                                        <div class="stat-label">Counties</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-number">24/7</div>
+                                        <div class="stat-label">Online Support</div>
+                                    </div>
+                                </div>
+                                <p class="text-center mb-0">Find your nearest Ministry of Internal Affairs service center across Liberia</p>
+                            </div>
+                            <div class="contact-card-footer">
+                                <button class="btn btn-primary btn-sm w-100" onclick="scrollToCarousel()">
+                                    <i class="fas fa-arrow-down me-1"></i> View All Centers
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-          <div class="chip-section mb-3">
-            <h6 class="text-uppercase text-secondary mb-2"><i class="fas fa-clock me-2 text-warning"></i> Office Hours</h6>
-            <ul class="list-unstyled mb-0">
-              <li>Mon - Fri: <strong>8:00 AM – 5:00 PM</strong></li>
-              <li>Saturday: <strong>9:00 AM – 1:00 PM</strong></li>
-              <li>Sunday & Holidays: <span class="text-danger fw-bold">Closed</span></li>
-            </ul>
-          </div>
-
-          <div class="chip-footer text-center mt-4">
-            <button class="btn btn-gradient w-100 pulse-btn" id="contactChatBtn">
-              <i class="fas fa-headset me-2"></i> Contact via Assistant
-            </button>
-          </div>
+            <!-- Google Maps Column (5 cols) -->
+            <div class="col-lg-5" data-aos="zoom-in-left" data-aos-delay="200">
+                <div class="map-card h-100">
+                    <div class="map-header">
+                        <i class="fas fa-map-marked-alt me-2"></i>
+                        <strong>Head Office Location</strong>
+                    </div>
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.7293072960133!2d-10.798273006837647!3d6.299256962245319!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xf09f8011ea16693%3A0x4d13e6d6b6151b3a!2sMinistry%20of%20Internal%20Affairs!5e0!3m2!1sen!2s!4v1760727067864!5m2!1sen!2s" 
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                    <div class="map-footer">
+                        <button class="btn btn-gradient btn-sm" onclick="openGoogleMaps()">
+                            <i class="fas fa-directions me-1"></i> Open in Maps
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" id="locationChatBtn">
+                            <i class="fas fa-robot me-1"></i> Ask Assistant
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <!-- Quick Contact Actions -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="quick-actions-card">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="action-item text-center">
+                                <div class="action-icon">
+                                    <i class="fas fa-phone-volume"></i>
+                                </div>
+                                <h6>Call Us</h6>
+                                <p>+231 123 456 789</p>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-phone me-1"></i> Call Now
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="action-item text-center">
+                                <div class="action-icon">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                                <h6>Email Us</h6>
+                                <p>info@mia.gov.lr</p>
+                                <button class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-envelope me-1"></i> Send Email
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="action-item text-center">
+                                <div class="action-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h6>AI Assistant</h6>
+                                <p>24/7 Support</p>
+                                <button class="btn btn-primary btn-sm pulse-btn" id="contactChatBtn">
+                                    <i class="fas fa-headset me-1"></i> Start Chat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
+
 <style>
-    /* Contact Chip */
-.contact-chip {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  border: 1px solid rgba(0, 35, 102, 0.1);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s ease;
-}
+    /* Contact Section Styles */
+    .contact-info-card {
+        background: var(--liberia-white);
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 35, 102, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
 
-.contact-chip::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at top left, rgba(0, 35, 102, 0.08), transparent 70%);
-  transform: scale(0);
-  transition: all 0.6s ease;
-}
+    .contact-info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        border-color: var(--liberia-blue);
+    }
 
-.contact-chip:hover::before {
-  transform: scale(1);
-}
+    .contact-card-header {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, #001a4d 100%);
+        color: white;
+        padding: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
 
-.contact-chip:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 30px rgba(0, 35, 102, 0.2);
-}
+    .contact-card-header h5 {
+        margin: 0;
+        font-weight: 600;
+    }
 
-.chip-header {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  padding-bottom: 10px;
-}
+    .contact-card-body {
+        padding: 25px;
+        flex-grow: 1;
+    }
 
-.chip-section h6 {
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
-}
+    .contact-card-footer {
+        padding: 20px;
+        background: rgba(0, 35, 102, 0.02);
+        border-top: 1px solid rgba(0, 35, 102, 0.1);
+    }
 
-.chip-section p, 
-.chip-section li {
-  font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 5px;
-}
+    .contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
 
-.chip-footer .pulse-btn {
-  animation: pulse 2s infinite;
-}
+    .contact-item:last-child {
+        margin-bottom: 0;
+    }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0, 35, 102, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(0, 35, 102, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 35, 102, 0); }
-}
+    .contact-item i {
+        color: var(--liberia-blue);
+        font-size: 1.1rem;
+        margin-top: 2px;
+        flex-shrink: 0;
+        width: 20px;
+    }
 
-/* Adjust Map to Match Height */
-.map-card {
-  height: 100%;
-  border-radius: 15px;
-  overflow: hidden;
-  background: var(--liberia-white);
-  border: 1px solid rgba(0, 35, 102, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    .contact-item strong {
+        color: var(--liberia-blue);
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
 
-.map-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 35px rgba(0, 35, 102, 0.15);
-}
+    .contact-item p {
+        margin: 0;
+        color: #333;
+        font-weight: 500;
+    }
 
-.map-header {
-  background: linear-gradient(135deg, var(--liberia-blue) 0%, #001a4d 100%);
-  color: white;
-  padding: 20px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-}
+    .hours-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
 
-.map-footer {
-  padding: 20px;
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  background: rgba(0, 35, 102, 0.02);
-}
+    .hours-item:last-child {
+        border-bottom: none;
+    }
 
-/* Responsive */
-@media (max-width: 991px) {
-  .col-lg-7, .col-lg-5 {
-    width: 100%;
-  }
-  .contact-chip {
-    margin-top: 20px;
-  }
-}
+    .hours-item.closed .day,
+    .hours-item.closed .time {
+        color: #dc3545;
+        font-weight: 600;
+    }
 
+    .day {
+        color: var(--liberia-blue);
+        font-weight: 600;
+    }
+
+    .time {
+        color: #333;
+        font-weight: 500;
+    }
+
+    .emergency-notice {
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.2);
+        border-radius: 8px;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .emergency-notice i {
+        color: #dc3545;
+    }
+
+    .emergency-notice small {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .county-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .stat-item {
+        flex: 1;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--liberia-blue);
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 5px;
+        font-weight: 500;
+    }
+
+    /* Map Card Styles */
+    .map-card {
+        border-radius: 15px;
+        overflow: hidden;
+        background: var(--liberia-white);
+        border: 1px solid rgba(0, 35, 102, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .map-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 35, 102, 0.15);
+    }
+
+    .map-header {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, #001a4d 100%);
+        color: white;
+        padding: 20px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+
+    .map-container {
+        flex-grow: 1;
+        min-height: 300px;
+    }
+
+    .map-footer {
+        padding: 20px;
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        background: rgba(0, 35, 102, 0.02);
+        border-top: 1px solid rgba(0, 35, 102, 0.1);
+    }
+
+    /* Quick Actions */
+    .quick-actions-card {
+        background: var(--liberia-white);
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 35, 102, 0.1);
+    }
+
+    .action-item {
+        padding: 20px;
+        border-radius: 12px;
+        background: rgba(0, 35, 102, 0.03);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .action-item:hover {
+        background: rgba(0, 35, 102, 0.08);
+        transform: translateY(-3px);
+    }
+
+    .action-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .action-item h6 {
+        color: var(--liberia-blue);
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .action-item p {
+        color: #666;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    /* Buttons */
+    .btn-gradient {
+        background: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+        color: white;
+        border: none;
+        font-weight: 600;
+    }
+
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, var(--liberia-red) 0%, var(--liberia-blue) 100%);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-primary {
+        color: var(--liberia-blue);
+        border-color: var(--liberia-blue);
+        font-weight: 600;
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--liberia-blue);
+        border-color: var(--liberia-blue);
+        color: white;
+    }
+
+    .pulse-btn {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(0, 35, 102, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(0, 35, 102, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 35, 102, 0); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 991px) {
+        .col-lg-7, .col-lg-5 {
+            width: 100%;
+        }
+        
+        .map-card {
+            margin-top: 20px;
+        }
+        
+        .county-stats {
+            justify-content: space-between;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .contact-card-body {
+            padding: 20px;
+        }
+        
+        .contact-card-header {
+            padding: 15px 20px;
+        }
+        
+        .quick-actions-card {
+            padding: 20px;
+        }
+        
+        .action-item {
+            margin-bottom: 15px;
+        }
+        
+        .map-footer {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .map-footer button {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .county-stats {
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+        }
+    }
 </style>
 
 <script>
@@ -697,9 +948,31 @@
         window.open('https://www.google.com/maps/place/Monrovia,+Liberia/@6.2905272,-10.8807447,12z/data=!3m1!4b1!4m6!3m5!1s0xf093adcadd88c43:0x5a1e81b7648b43e3!8m2!3d6.2907432!4d-10.7605239!16zL20vMDN0cGc?entry=ttu', '_blank');
     }
 
-    // Chatbot integration
+    function scrollToCarousel() {
+        document.querySelector('.service-centers-carousel').scrollIntoView({ 
+            behavior: 'smooth' 
+        });
+    }
+
+    // Chatbot integration for new buttons
+    document.getElementById('headquartersChatBtn').addEventListener('click', function() {
+        if (typeof chatbotContainer !== 'undefined') {
+            chatbotContainer.classList.add('active');
+            chatbotInput.value = "Tell me about the Ministry headquarters";
+            sendUserMessage();
+        }
+    });
+
+    document.getElementById('hoursChatBtn').addEventListener('click', function() {
+        if (typeof chatbotContainer !== 'undefined') {
+            chatbotContainer.classList.add('active');
+            chatbotInput.value = "What are your office hours?";
+            sendUserMessage();
+        }
+    });
+
+    // Existing chatbot integration
     document.getElementById('locationChatBtn').addEventListener('click', function() {
-        // This should trigger your existing chatbot functionality
         if (typeof chatbotContainer !== 'undefined') {
             chatbotContainer.classList.add('active');
             chatbotInput.value = "Where are your offices located?";
@@ -708,7 +981,6 @@
     });
 
     document.getElementById('contactChatBtn').addEventListener('click', function() {
-        // This should trigger your existing chatbot functionality
         if (typeof chatbotContainer !== 'undefined') {
             chatbotContainer.classList.add('active');
             chatbotInput.value = "How can I contact the ministry directly?";

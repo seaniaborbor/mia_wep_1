@@ -1,82 +1,97 @@
 <?php $this->extend('dashboard/partials/layout')?>
 
 <?=$this->section('main')?>
-
-
 <div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Republic of Liberia: National Branch Certification Statistics</h1>
+
+    <!-- Page Header -->
+    <div class="card mb-4">
+        <div class="card-header bg-white border-bottom-primary py-3">
+            <h1 class="h3 mb-0 text-primary font-weight-bold">
+                <i class="fas fa-globe-americas mr-2"></i>Republic of Liberia: National Branch Certification Statistics
+            </h1>
+        </div>
     </div>
 
     <!-- Summary Cards -->
-    <div class="row">
-        <!-- Marriage Certificates Card -->
+    <div class="row mb-4">
+        <!-- Total Marriage Certificates -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
+            <div class="card border-left-primary shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-primary text-white">
+                                <i class="fas fa-ring"></i>
+                            </div>
+                        </div>
+                        <div>
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Marriage Certificates</div>
+                                Total Marriage Certificates
+                            </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalMarriages ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-ring fa-2x text-primary"></i>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Uncompleted Marriages Card -->
+        <!-- Pending Marriages -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
+            <div class="card border-left-warning shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-warning text-white">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                        </div>
+                        <div>
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Marriages</div>
+                                Pending Marriages
+                            </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalUncompletedMarriages ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-hourglass-half fa-2x text-warning"></i>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Divorce Certificates Card -->
+        <!-- Total Divorce Certificates -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
+            <div class="card border-left-danger shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-danger text-white">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                        </div>
+                        <div>
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Total Divorce Certificates</div>
+                                Total Divorce Certificates
+                            </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalDivorces ?></div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-file-contract fa-2x text-danger"></i>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Uncompleted Divorces Card -->
+        <!-- Pending Divorces -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Divorces</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalUncompletedDivorces ?></div>
+            <div class="card border-left-warning shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-warning text-white">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-hourglass-half fa-2x text-warning"></i>
+                        <div>
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Divorces
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalUncompletedDivorces ?></div>
                         </div>
                     </div>
                 </div>
@@ -84,35 +99,153 @@
         </div>
     </div>
 
-    <!-- Charts Row -->
-    <div class="row">
-        <!-- Certificate Status Chart -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Certificate Status Overview</h6>
+    <!-- Status Overview Cards -->
+    <div class="row mb-4">
+        <!-- Marriage Status Overview -->
+        <div class="col-xl-6 col-md-12 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-ring mr-2"></i>Marriage Certificates Overview
+                    </h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="certificatePieChart"></canvas>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-success shadow-none h-100">
+                                <div class="card-body py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle-sm bg-success text-white">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Completed
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $totalMarriages - $totalUncompletedMarriages ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-warning shadow-none h-100">
+                                <div class="card-body py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle-sm bg-warning text-white">
+                                                <i class="fas fa-hourglass-half"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Pending
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $totalUncompletedMarriages ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Marriages (<?= $totalMarriages ?>)
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-danger"></i> Divorces (<?= $totalDivorces ?>)
-                        </span>
+                    <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: <?= $totalMarriages > 0 ? (($totalMarriages - $totalUncompletedMarriages) / $totalMarriages) * 100 : 0 ?>%" 
+                             aria-valuenow="<?= $totalMarriages - $totalUncompletedMarriages ?>" 
+                             aria-valuemin="0" 
+                             aria-valuemax="<?= $totalMarriages ?>">
+                        </div>
+                    </div>
+                    <div class="small text-muted text-center">
+                        Completion Rate: <?= $totalMarriages > 0 ? round((($totalMarriages - $totalUncompletedMarriages) / $totalMarriages) * 100) : 0 ?>%
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Branch Statistics -->
-        <div class="col-lg-6 mb-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Branch Statistics</h6>
+        <!-- Divorce Status Overview -->
+        <div class="col-xl-6 col-md-12 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-file-contract mr-2"></i>Divorce Certificates Overview
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-success shadow-none h-100">
+                                <div class="card-body py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle-sm bg-success text-white">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Completed
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $totalDivorces - $totalUncompletedDivorces ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-warning shadow-none h-100">
+                                <div class="card-body py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle-sm bg-warning text-white">
+                                                <i class="fas fa-hourglass-half"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Pending
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $totalUncompletedDivorces ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: <?= $totalDivorces > 0 ? (($totalDivorces - $totalUncompletedDivorces) / $totalDivorces) * 100 : 0 ?>%" 
+                             aria-valuenow="<?= $totalDivorces - $totalUncompletedDivorces ?>" 
+                             aria-valuemin="0" 
+                             aria-valuemax="<?= $totalDivorces ?>">
+                        </div>
+                    </div>
+                    <div class="small text-muted text-center">
+                        Completion Rate: <?= $totalDivorces > 0 ? round((($totalDivorces - $totalUncompletedDivorces) / $totalDivorces) * 100) : 0 ?>%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Branch Statistics Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-chart-bar mr-2"></i>Branch Statistics
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-bar">
@@ -123,35 +256,39 @@
         </div>
     </div>
 
-    <!-- Tabs Navigation -->
-    <ul class="nav nav-tabs mb-4" id="certificateTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="marriage-tab" data-toggle="tab" href="#marriage" role="tab" aria-controls="marriage" aria-selected="true">
-                <i class="fas fa-ring mr-2"></i> Marriage Certificates
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="divorce-tab" data-toggle="tab" href="#divorce" role="tab" aria-controls="divorce" aria-selected="false">
-                <i class="fas fa-file-contract mr-2"></i> Divorce Certificates
-            </a>
-        </li>
-    </ul>
+    <!-- Certificate Logs Section -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white border-bottom-primary py-3">
+            <!-- Tabs Navigation -->
+            <ul class="nav nav-pills" id="certificateTabs" role="tablist">
+                <li class="nav-item mr-2">
+                    <a class="nav-link active py-2 px-3" id="marriage-tab" data-toggle="tab" href="#marriage" role="tab" aria-controls="marriage" aria-selected="true">
+                        <i class="fas fa-ring mr-2"></i> Marriage Certificates
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link py-2 px-3" id="divorce-tab" data-toggle="tab" href="#divorce" role="tab" aria-controls="divorce" aria-selected="false">
+                        <i class="fas fa-file-contract mr-2"></i> Divorce Certificates
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="certificateTabsContent">
-        <div class="tab-pane fade show active" id="marriage" role="tabpanel" aria-labelledby="marriage-tab">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Marriage Certificates</h6>
-                    <div>
-                        <span class="badge badge-primary">Total: <?= $totalMarriages ?></span>
-                        <span class="badge badge-warning ml-2">Pending: <?= $totalUncompletedMarriages ?></span>
+        <div class="card-body">
+            <!-- Tab Content -->
+            <div class="tab-content" id="certificateTabsContent">
+                <!-- Marriage Certificates Tab -->
+                <div class="tab-pane fade show active" id="marriage" role="tabpanel" aria-labelledby="marriage-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="font-weight-bold text-primary mb-0">Recent Marriage Certificates</h6>
+                        <div>
+                            <span class="badge badge-primary">Total: <?= $totalMarriages ?></span>
+                            <span class="badge badge-warning ml-2">Pending: <?= $totalUncompletedMarriages ?></span>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm datatable table-striped table-hover" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                            <thead class="bg-light">
                                 <tr>
                                     <th>Groom</th>
                                     <th>Bride</th>
@@ -178,8 +315,11 @@
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="/dashboard/wedcert/view/<?= $marriage['marriage_cert_id'] ?>" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> View
+                                        <a href="/dashboard/wedcert/view/<?= $marriage['marriage_cert_id'] ?>" class="btn btn-info btn-icon-split btn-sm">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-eye"></i>
+                                            </span>
+                                            <span class="text">View</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -188,22 +328,19 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="divorce" role="tabpanel" aria-labelledby="divorce-tab">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Divorce Certificates</h6>
-                    <div>
-                        <span class="badge badge-danger">Total: <?= $totalDivorces ?></span>
-                        <span class="badge badge-warning ml-2">Pending: <?= $totalUncompletedDivorces ?></span>
+                
+                <!-- Divorce Certificates Tab -->
+                <div class="tab-pane fade" id="divorce" role="tabpanel" aria-labelledby="divorce-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="font-weight-bold text-primary mb-0">Recent Divorce Certificates</h6>
+                        <div>
+                            <span class="badge badge-danger">Total: <?= $totalDivorces ?></span>
+                            <span class="badge badge-warning ml-2">Pending: <?= $totalUncompletedDivorces ?></span>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover table-sm table-striped datatable2" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                            <thead class="bg-light">
                                 <tr>
                                     <th>Plaintiff</th>
                                     <th>Defendant</th>
@@ -230,8 +367,11 @@
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="/dashboard/divorce_cert/view/<?= $divorce['divorceCertId'] ?>" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> View
+                                        <a href="/dashboard/divorce_cert/view/<?= $divorce['divorceCertId'] ?>" class="btn btn-info btn-icon-split btn-sm">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-eye"></i>
+                                            </span>
+                                            <span class="text">View</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -245,16 +385,18 @@
     </div>
 
     <!-- Branch Summary Tables -->
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Marriage Certificates by Branch</h6>
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-ring mr-2"></i>Marriage Certificates by Branch
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                        <table class="table table-bordered table-hover table-sm" width="100%" cellspacing="0">
+                            <thead class="bg-light">
                                 <tr>
                                     <th>Branch</th>
                                     <th>Total Certificates</th>
@@ -264,7 +406,7 @@
                                 <?php foreach($marriagesPerBranch as $branch): ?>
                                 <tr>
                                     <td><?= $branch['branchName'] ?></td>
-                                    <td><?= $branch['count'] ?></td>
+                                    <td><span class="badge badge-primary"><?= $branch['count'] ?></span></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -275,14 +417,16 @@
         </div>
 
         <div class="col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Divorce Certificates by Branch</h6>
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-file-contract mr-2"></i>Divorce Certificates by Branch
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                            <thead class="thead-light">
+                        <table class="table table-bordered table-hover table-sm" width="100%" cellspacing="0">
+                            <thead class="bg-light">
                                 <tr>
                                     <th>Branch</th>
                                     <th>Total Certificates</th>
@@ -292,7 +436,7 @@
                                 <?php foreach($divorcesPerBranch as $branch): ?>
                                 <tr>
                                     <td><?= $branch['branchName'] ?></td>
-                                    <td><?= $branch['count'] ?></td>
+                                    <td><span class="badge badge-danger"><?= $branch['count'] ?></span></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -302,6 +446,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Chart.js -->
@@ -309,41 +454,6 @@
 <script>
     // Wait for the DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
-        // Pie Chart - Certificate Status Overview
-        var pieCtx = document.getElementById('certificatePieChart');
-        if (pieCtx) {
-            new Chart(pieCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Marriage Certificates', 'Divorce Certificates'],
-                    datasets: [{
-                        data: [<?= $totalMarriages ?>, <?= $totalDivorces ?>],
-                        backgroundColor: ['#4e73df', '#e74a3b'],
-                        hoverBackgroundColor: ['#2e59d9', '#be2617'],
-                        hoverBorderColor: "rgba(234, 236, 244, 1)",
-                    }],
-                },
-                options: {
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: "rgb(255,255,255)",
-                            bodyColor: "#858796",
-                            borderColor: '#dddfeb',
-                            borderWidth: 1,
-                            padding: 15,
-                            displayColors: false,
-                            caretPadding: 10,
-                        }
-                    },
-                    cutout: '80%',
-                },
-            });
-        }
-
         // Bar Chart - Branch Statistics
         var barCtx = document.getElementById('branchBarChart');
         if (barCtx) {
@@ -401,5 +511,77 @@
         }
     });
 </script>
+
+<style>
+.icon-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.icon-circle-sm {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 0.9rem;
+}
+
+.btn-icon-split .icon {
+    padding: 0.375rem 0.75rem;
+    display: inline-block;
+}
+
+.border-left-primary {
+    border-left: 0.25rem solid #4e73df !important;
+}
+
+.border-left-success {
+    border-left: 0.25rem solid #1cc88a !important;
+}
+
+.border-left-info {
+    border-left: 0.25rem solid #36b9cc !important;
+}
+
+.border-left-warning {
+    border-left: 0.25rem solid #f6c23e !important;
+}
+
+.border-left-danger {
+    border-left: 0.25rem solid #e74a3b !important;
+}
+
+.card {
+    border: 1px solid #e3e6f0;
+    border-radius: 0.35rem;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #4e73df;
+    color: white;
+}
+
+.nav-pills .nav-link {
+    color: #4e73df;
+    border: 1px solid #4e73df;
+}
+
+.chart-bar {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+</style>
 
 <?=$this->endSection()?>
