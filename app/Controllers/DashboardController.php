@@ -25,9 +25,18 @@ class DashboardController extends BaseController
         $this->divorceModel = new DivorceCertificateModel();
         $this->userModel = new UsersModel();
         $this->notificationModel = new NotificationModel();
+
+       
     }
+
 public function index()
 {
+      // check if the user account is allowed to view marriage certificate activities
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
     $data['passLink'] = 'dashboard';
     $branchId = session()->get('userData')['branchId'];
     

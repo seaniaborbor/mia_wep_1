@@ -79,15 +79,22 @@ class AuthController extends BaseController
                    session()->set('isLoggedIn', true);
                     session()->set('userData', $user);
 
-                    return redirect()->to('/dashboard');
+                    // redirect to dashboard if the login user account is ENTRY, SIGNA, SIGNB, SIGNC,
+                    if ($user['userAccountType'] == 'ENTRY' || $user['userAccountType'] == 'SIGNA' || $user['userAccountType'] == 'SIGNB' || $user['userAccountType'] == 'SIGNC' || $user['userAccountType'] == 'ADMIN') {
+                        return redirect()->to('/dashboard');                   
+                    }else{
+                        // rediirect to: /dashboard/nativecert
+                        return redirect()->to('/dashboard/nativecert');
+                    }
+
                 } else {
                     return redirect()->back()
-                        ->with('error', 'Invalid password.')
+                        ->with('error', 'Invalid credentials.')
                         ->withInput();
                 }
             } else {
                 return redirect()->back()
-                    ->with('error', 'User with this email was not found.')
+                    ->with('error', 'Invalid credentials.')
                     ->withInput();
             }
         }

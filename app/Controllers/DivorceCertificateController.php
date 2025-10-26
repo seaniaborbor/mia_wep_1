@@ -21,46 +21,56 @@ class DivorceCertificateController extends BaseController
 
     public function index()
         {
+
+            // check if the user account is allowed to view marriage certificate activities
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
             $data['title'] = 'Users List';
             $data['passLink'] = 'certificates';
 
-            
-        // Fetch completed divorce certificates (all three signatures present)
+            // Fetch completed divorce certificates (all three signatures present)
 
-    // Completed certificates (all signatures must be present)
-$data['branch_complete_certificate'] = $this->divorceCertificateModel
-    ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
-    ->where('divorce_certificates.divorcebreanch_id', session()->get('userData')['userBreanch'])
-    ->where('divorce_certificates.divorceSIGN_A !=', null)
-    ->where('divorce_certificates.divorceSIGN_B !=', null)
-    ->where('divorce_certificates.divorceSIGN_C !=', null)
-    ->orderBy('divorce_certificates.divorceCertId', 'DESC')
-    ->findAll();
+            // Completed certificates (all signatures must be present)
+            $data['branch_complete_certificate'] = $this->divorceCertificateModel
+                ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
+                ->where('divorce_certificates.divorcebreanch_id', session()->get('userData')['userBreanch'])
+                ->where('divorce_certificates.divorceSIGN_A !=', null)
+                ->where('divorce_certificates.divorceSIGN_B !=', null)
+                ->where('divorce_certificates.divorceSIGN_C !=', null)
+                ->orderBy('divorce_certificates.divorceCertId', 'DESC')
+                ->findAll();
 
-// Uncompleted certificates (any one signature missing)
-$data['branch_uncomplete_certificate'] = $this->divorceCertificateModel
-    ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
-    ->where('divorce_certificates.divorcebreanch_id', session()->get('userData')['userBreanch'])
-    ->groupStart()
-        ->where('divorce_certificates.divorceSIGN_A', null)
-        ->orWhere('divorce_certificates.divorceSIGN_B', null)
-        ->orWhere('divorce_certificates.divorceSIGN_C', null)
-    ->groupEnd()
-    ->orderBy('divorce_certificates.divorceCertId', 'DESC')
-    ->findAll();
+            // Uncompleted certificates (any one signature missing)
+            $data['branch_uncomplete_certificate'] = $this->divorceCertificateModel
+                ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
+                ->where('divorce_certificates.divorcebreanch_id', session()->get('userData')['userBreanch'])
+                ->groupStart()
+                    ->where('divorce_certificates.divorceSIGN_A', null)
+                    ->orWhere('divorce_certificates.divorceSIGN_B', null)
+                    ->orWhere('divorce_certificates.divorceSIGN_C', null)
+                ->groupEnd()
+                ->orderBy('divorce_certificates.divorceCertId', 'DESC')
+                ->findAll();
 
-// i want the total of each query above 
-$data['total_complete_certificate'] = count($data['branch_complete_certificate']);
-$data['total_uncomplete_certificate'] = count($data['branch_uncomplete_certificate']);
-                
-        // print_r($data);
-        // exit();
+            // i want the total of each query above 
+            $data['total_complete_certificate'] = count($data['branch_complete_certificate']);
+            $data['total_uncomplete_certificate'] = count($data['branch_uncomplete_certificate']);
+     
 
             return view('dashboard/divorce_certificate_log', $data);
 }
 
 public function create()
 {
+     // check if the user account is allowed to view marriage certificate
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
     $data['title'] = 'Log Divorce Certificate';
     $data['passLink'] = 'certificates';
 
@@ -190,6 +200,12 @@ public function create()
 
 public function view($certificate_id)
         {
+            // check if the user account is allowed to view marriage certificate activities
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
             $data['title'] = 'Users List';
             $data['passLink'] = 'certificates';
 
@@ -223,7 +239,14 @@ public function view($certificate_id)
         }
 
 public function sign($certificate_id)
-{
+    {
+    
+     // check if the user account is allowed to view marriage certificate
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
     $data['title'] = 'Sign Divorce Certificate';
     $data['passLink'] = 'certificates';
 
@@ -293,8 +316,17 @@ public function sign($certificate_id)
 
 public function edit_certificate($certificate_id)
 {
+     // check if the user account is allowed to view marriage certificate
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
+
     $data['title'] = 'Edit Divorce Certificate';
     $data['passLink'] = 'certificates';
+
+    
 
     // Fetch the certificate details
     $data['divorceCert'] = $this->divorceCertificateModel
@@ -304,8 +336,6 @@ public function edit_certificate($certificate_id)
     if (!$data['divorceCert']) {
         return redirect()->back()->with('error', 'Certificate not found');
     }
-
-    
 
     // Handle form submission
     if ($this->request->getMethod() === 'post') {
@@ -406,6 +436,12 @@ public function edit_certificate($certificate_id)
 
 public function generate_certificate($certificate_id)
 {
+     // check if the user account is allowed to view marriage certificate
+        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            exit();
+        }
+
     $data['title'] = 'Generate Divorce Certificate';
     $data['passLink'] = 'certificates';
     // Fetch the certificate details
@@ -434,6 +470,7 @@ public function generate_certificate($certificate_id)
 
 public function allow_edit($certificate_id)
 {
+    
     // Check if the user is authorized to allow edit
     if (session()->get('userData')['userAccountType'] != 'SIGNC') {
         return redirect()->back()->with('error', 'You are not authorized to allow edit for this certificate.');
