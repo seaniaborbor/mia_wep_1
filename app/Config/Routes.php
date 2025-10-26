@@ -129,6 +129,14 @@ $routes->get('/dashboard/divorce_cert/allow_edit/(:num)', 'DivorceCertificateCon
 // native certificate management routes 
 $routes->get('/dashboard/nativecert', 'NativeDocCertController::index'); ///
 $routes->get('/dashboard/nativecert/create', 'NativeDocCertController::new'); 
+$routes->post('/dashboard/nativecert/store', 'NativeDocCertController::create'); 
+$routes->get('/dashboard/nativecert/view/(:any)', 'NativeDocCertController::view/$1'); // 
+$routes->get('/dashboard/nativecert/print/(:any)', 'NativeDocCertController::print/$1');
+$routes->get('/nativecert/add-signatories/(:any)', 'NativeDocCertController::addSignatories/$1');
+$routes->get('/dashboard/nativecert/edit/(:any)', 'NativeDocCertController::edit/$1');
+$routes->post('/dashboard/nativecert/update/(:any)', 'NativeDocCertController::update/$1');
+$routes->get('/dashboard/nativecert/issue-certificate/(:any)', 'NativeDocCertController::issue/$1');
+$routes->get('/dashboard/nativecert/delete/(:any)', 'NativeDocCertController::delete/$1');
 
 
 });

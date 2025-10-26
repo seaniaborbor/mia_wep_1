@@ -404,10 +404,6 @@
     </div>
 </section>
 
-
-
-
-
 <!-- Contact Section -->
 <section id="contact" class="py-5" style="background: linear-gradient(135deg, rgba(0, 35, 102, 0.03) 0%, rgba(191, 10, 48, 0.03) 100%);">
     <div class="container">

@@ -177,7 +177,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(0, 35, 102, 0.85) 0%, rgba(191, 10, 48, 0.8) 100%);
+            background: linear-gradient(135deg, rgba(0, 35, 102, 0.85) 0%, rgba(191, 10, 49, 0.49) 100%);
             z-index: 1;
         }
         

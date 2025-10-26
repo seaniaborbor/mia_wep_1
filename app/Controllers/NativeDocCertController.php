@@ -6,6 +6,12 @@ use App\Models\TraditionalCertificateModel;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
 
+use App\Models\BranchModel;
+use App\Models\UsersModel;
+use App\Models\MarriageCertificateModel;
+use App\Models\DivorceCertificateModel;
+
+
 class NativeDocCertController extends BaseController
 {
     use ResponseTrait;
@@ -14,47 +20,45 @@ class NativeDocCertController extends BaseController
 
     public function __construct()
     {
-        $this->certificateModel = new TraditionalCertificateModel();
         helper(['form', 'url', 'session']);
+        $this->certificateModel = new TraditionalCertificateModel();
+        $this->branchModel = new BranchModel();
+        $this->userModel = new UsersModel();
+        $this->weddingCertModel = new MarriageCertificateModel();
+        $this->divorceCertificateModel = new DivorceCertificateModel();
+
     }
 
-    /**
-     * Dashboard - Display summary and certificate logs
-     */
     public function index(): string
     {
-          
+        // Get current user's branch ID
+        $branchId = session()->get('userData')['branchId'];
 
-        // Get all certificates for the log
+        // Get certificates only for the user's branch
         $certificates = $this->certificateModel
+            ->where('tradCertBranch', $branchId)
             ->orderBy('tradCertCertCreatedAt', 'DESC')
+            ->join('login_users', 'login_users.userId = traditionalcertificates.tradCertInsertedBy')
             ->findAll();
 
         // Calculate dashboard statistics
         $totalCertificates = count($certificates);
         $completedCertificates = 0;
         $pendingCertificates = 0;
-        $onlineApplications = 0;
-        $branchApplications = 0;
 
         // Categorize certificates by county
         $countyStats = [];
-        
+
         foreach ($certificates as $cert) {
             // Check if certificate is completed (all signatories present)
-            if (!empty($cert['tradCertSignatoryA']) && 
-                !empty($cert['tradCertSignatoryB']) && 
-                !empty($cert['tradCertSignatoryC'])) {
+            if (
+                !empty($cert['tradCertSignatoryA']) &&
+                !empty($cert['tradCertSignatoryB']) &&
+                !empty($cert['tradCertSignatoryC'])
+            ) {
                 $completedCertificates++;
             } else {
                 $pendingCertificates++;
-            }
-
-            // Count application types
-            if ($cert['tradCertAppliedType'] === 'online') {
-                $onlineApplications++;
-            } else {
-                $branchApplications++;
             }
 
             // Count by county
@@ -69,14 +73,14 @@ class NativeDocCertController extends BaseController
         $recentCertificates = array_slice($certificates, 0, 10);
 
         // Certificates needing attention (missing signatories)
-        $incompleteCertificates = array_filter($certificates, function($cert) {
-            return empty($cert['tradCertSignatoryA']) || 
-                   empty($cert['tradCertSignatoryB']) || 
-                   empty($cert['tradCertSignatoryC']);
+        $incompleteCertificates = array_filter($certificates, function ($cert) {
+            return empty($cert['tradCertSignatoryA']) ||
+                empty($cert['tradCertSignatoryB']) ||
+                empty($cert['tradCertSignatoryC']);
         });
 
         $data = [
-            'title' => 'Certificates Dashboard',
+            'title' => 'Traditional Certificates Dashboard',
             'certificates' => $certificates,
             'recentCertificates' => $recentCertificates,
             'incompleteCertificates' => $incompleteCertificates,
@@ -84,28 +88,35 @@ class NativeDocCertController extends BaseController
                 'total' => $totalCertificates,
                 'completed' => $completedCertificates,
                 'pending' => $pendingCertificates,
-                'online' => $onlineApplications,
-                'branch' => $branchApplications,
-                'completionRate' => $totalCertificates > 0 ? round(($completedCertificates / $totalCertificates) * 100, 2) : 0
+                'completionRate' => $totalCertificates > 0
+                    ? round(($completedCertificates / $totalCertificates) * 100, 2)
+                    : 0
             ],
-            'countyStats' => $countyStats
+            'countyStats' => $countyStats,
+            'passLink' => 'nativecert'
         ];
 
-        $data['title'] = 'Log Divorce Certificate';
-        $data['passLink'] = 'certificates';
-
-    return view('dashboard/herbal_certificate_dashboard', $data);
-
+        return view('dashboard/herbal_certificate_dashboard', $data);
     }
 
     /**
      * Show form for creating new certificate
      */
-    public function new(): string
+    public function new()
     {
+        // validate that only data entry clerk can create a certificate
+        if(session()->get('userData')['userAccountType'] !== 'tradCertEntryClerk')
+        {
+            return redirect()->back()->with("error", "Sorry. Access to create a traditional certificate is not allowed for this account");
+            exit();
+        }
 
-         $data['title'] = 'Log Divorce Certificate';
-        $data['passLink'] = 'certificates';
+
+        $data = [
+            'title' => 'Create Traditional Certificate',
+            'passLink' => 'nativecert',
+            'validation' => \Config\Services::validation()
+        ];
 
         return view('dashboard/create_herbal_certificate', $data);
     }
@@ -115,7 +126,233 @@ class NativeDocCertController extends BaseController
      */
     public function create()
     {
-        // Validation rules with custom error messages
+        // validate that only data entry clerk can create a certificate
+        if(session()->get('userData')['userAccountType'] !== 'tradCertEntryClerk')
+        {
+            return redirect()->back()->with("error", "Sorry. Access to create a traditional certificate is not allowed for this account");
+            exit();
+        }
+
+        // Validation rules with custom error messages including picture upload
+        $validationRules = [
+            'tradCertHolderName' => [
+                'rules' => 'required|min_length[2]|max_length[255]',
+                'label' => 'Certificate Bearer Name',
+                'errors' => [
+                    'required' => 'Certificate holder name is required',
+                    'min_length' => 'Holder name must be at least 2 characters long',
+                    'max_length' => 'Holder name cannot exceed 255 characters'
+                ]
+            ],
+            'tradCertHolderPic' => [
+                'rules' => 'uploaded[tradCertHolderPic]|max_size[tradCertHolderPic,2048]|is_image[tradCertHolderPic]|mime_in[tradCertHolderPic,image/jpg,image/jpeg,image/png,image/gif]',
+                'label' => 'Holder Picture',
+                'errors' => [
+                    'uploaded' => 'Please select a picture file',
+                    'max_size' => 'Picture file size must be less than 2MB',
+                    'is_image' => 'Please upload a valid image file',
+                    'mime_in' => 'Please upload a valid image (JPG, JPEG, PNG, GIF)'
+                ]
+            ],
+            'tradCertHolderTownorCity' => [
+                'rules' => 'required|min_length[2]|max_length[100]',
+                'label' => 'City or Town',
+                'errors' => [
+                    'required' => 'Town or city is required',
+                    'min_length' => 'Town or city must be at least 2 characters long',
+                    'max_length' => 'Town or city cannot exceed 100 characters'
+                ]
+            ],
+            'tradCertHolderDistrict' => [
+                'rules' => 'permit_empty|min_length[2]|max_length[100]',
+                'label' => 'District',
+                'errors' => [
+                    'min_length' => 'District must be at least 2 characters long',
+                    'max_length' => 'District cannot exceed 100 characters'
+                ]
+            ],
+            'tradCertHoldercounty' => [
+                'rules' => 'required|min_length[2]|max_length[100]',
+                'label' => 'County of operation',
+                'errors' => [
+                    'required' => 'County is required',
+                    'min_length' => 'County must be at least 2 characters long',
+                    'max_length' => 'County cannot exceed 100 characters'
+                ]
+            ],
+            'tradCertHolderOperationType' => [
+                'rules' => 'required|min_length[2]|max_length[200]',
+                'label' => 'Certificate Type',
+                'errors' => [
+                    'required' => 'Traditional position is required',
+                    'min_length' => 'Traditional position must be at least 2 characters long',
+                    'max_length' => 'Traditional position cannot exceed 200 characters'
+                ]
+            ],
+           
+            'tradCertDuration' => [
+                'rules' => 'required|integer|greater_than[0]',
+                'label' => 'Certificate Duration',
+                'errors' => [
+                    'required' => 'Certificate duration is required',
+                    'integer' => 'Duration must be a number',
+                    'greater_than' => 'Duration must be greater than 0'
+                ]
+            ],
+            'tradRevenueNo' => [
+                'rules' => 'min_length[2]|max_length[100]|integer|is_unique[traditionalcertificates.tradRevenueNo]',
+                'label' => 'Revenue Number',
+                'errors' => [
+                    'min_length' => 'Revenue number must be at least 2 characters long',
+                    'max_length' => 'Revenue number cannot exceed 100 characters',
+                    'integer' => 'Only an integer is allowed to as an revenue number',
+                    'max_length' => 'Revenue number is already used',
+                ]
+            ]
+        ];
+
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        // Get validated data
+        $data = $this->request->getPost();
+
+        // check if the revenue number is used wedding certificate table
+        $revenueNoInWedCert  = $this->weddingCertModel->where('revenue_no', $data['tradRevenueNo'])->first();
+        if(!empty($revenueNoInWedCert)){
+            return redirect()->redirect()->back()->back('error', 'Revenue Number has already been used in marriage certificate issuance');
+            exit();
+        }
+
+        // check if the revenue number is used divorce certificate table
+        $revenueNoInDivCert  = $this->divorceCertificateModel->where('divorceRevNo', $data['tradRevenueNo'])->first();
+        if(!empty($revenueNoInDivCert)){
+            return redirect()->redirect()->back()->back('error', 'Revenue Number has already been used in for divorce certificate issuance');
+            exit();
+        }
+
+
+        // Handle file upload
+        $pictureFile = $this->request->getFile('tradCertHolderPic');
+        if ($pictureFile->isValid() && !$pictureFile->hasMoved()) {
+            $newFileName = $pictureFile->getRandomName();
+            $pictureFile->move('uploads/certificate_holders', $newFileName);
+            $data['tradCertHolderPic'] = $newFileName;
+        }
+
+        // Set inserted by user (from session) and also track the branch
+        $data['tradCertInsertedBy'] = session()->get('userData')['userId'];
+        $data['tradCertLastUpdatedBy'] = session()->get('userData')['userId'];
+        $data['tradCertBranch'] = session()->get('userData')['branchId'];
+
+        try {
+            if ($this->certificateModel->save($data)) {
+                $certificateId = $this->certificateModel->getInsertID();
+                $certificate = $this->certificateModel->find($certificateId);
+                
+                session()->setFlashdata('success', 
+                    "Certificate created successfully! Serial Number: {$certificate['tradCertSn']}");
+                
+                return redirect()->to('/dashboard/nativecert');
+            } else {
+                throw new \Exception('Failed to save certificate');
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Certificate creation failed: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to create certificate. Please try again.');
+        }
+
+
+    }
+
+    /**
+     * View a single certificate
+     */
+   public function view($id)
+    {
+        $certificate = $this->certificateModel
+            ->select('traditionalcertificates.*, 
+                    creator.userFullName AS createdByName, 
+                    creator.userId AS createdById,
+                    updater.userFullName AS updatedByName, 
+                    updater.userId AS updatedById')
+            ->join('login_users AS creator', 'creator.userId = traditionalcertificates.tradCertInsertedBy', 'left')
+            ->join('login_users AS updater', 'updater.userId = traditionalcertificates.tradCertLastUpdatedBy', 'left')
+            ->where('tradCertId', $id)
+            ->first();
+
+        if (!$certificate) {
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+        }
+
+        $data = [
+            'title' => 'View Certificate - ' . $certificate['tradCertSn'],
+            'certificate' => $certificate,
+            'isCompleted' => $this->isCertificateCompleted($certificate),
+            'isIssued' => $this->isIssued($certificate),
+            'passLink' => 'nativecert'
+        ];
+
+        return view('dashboard/view_herbal_cert', $data);
+    }
+
+
+    /**
+     * Edit certificate form
+     */
+    public function edit($id)
+    {
+        $certificate = $this->certificateModel->find($id);
+
+        
+        
+        if (!$certificate) {
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+        }
+
+        // check if the user is from this branch
+        $branchId = session()->get('userData')['branchId'];
+        if($branchId != $certificate['tradCertBranch'] || $branchId != 1){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to edit this certificate');
+            exit();
+        }
+
+        // check if the certificate is already issued - then disallow edit
+        if($this->isIssued($certificate)){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Issued certificates cannot be edited');
+            exit();
+        }
+
+        // check if the editor is data entry clerk
+        if(session()->get('userData')['userAccountType'] !== 'tradCertEntryClerk')
+        {
+            return redirect()->back()->with("error", "Sorry. Access to edit a traditional certificate is not allowed for this account");
+            exit();
+        }
+
+        $data = [
+            'title' => 'Edit Certificate - ' . $certificate['tradCertSn'],
+            'certificate' => $certificate,
+            'validation' => \Config\Services::validation(),
+            'passLink' => 'nativecert'
+        ];
+
+        return view('dashboard/edit_herbal_certificate', $data);
+    }
+
+    /**
+     * Update certificate
+     */
+    public function update($id)
+    {
+        $certificate = $this->certificateModel->find($id);
+        
+        if (!$certificate) {
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+        }
+
+        // Validation rules (including optional picture update)
         $validationRules = [
             'tradCertHolderName' => [
                 'rules' => 'required|min_length[2]|max_length[255]',
@@ -125,19 +362,20 @@ class NativeDocCertController extends BaseController
                     'max_length' => 'Holder name cannot exceed 255 characters'
                 ]
             ],
+            'tradCertHolderPic' => [
+                'rules' => 'if_exist|max_size[tradCertHolderPic,2048]|is_image[tradCertHolderPic]|mime_in[tradCertHolderPic,image/jpg,image/jpeg,image/png,image/gif]',
+                'errors' => [
+                    'max_size' => 'Picture file size must be less than 2MB',
+                    'is_image' => 'Please upload a valid image file',
+                    'mime_in' => 'Please upload a valid image (JPG, JPEG, PNG, GIF)'
+                ]
+            ],
             'tradCertHolderTownorCity' => [
                 'rules' => 'required|min_length[2]|max_length[100]',
                 'errors' => [
                     'required' => 'Town or city is required',
                     'min_length' => 'Town or city must be at least 2 characters long',
                     'max_length' => 'Town or city cannot exceed 100 characters'
-                ]
-            ],
-            'tradCertHolderDistrict' => [
-                'rules' => 'permit_empty|min_length[2]|max_length[100]',
-                'errors' => [
-                    'min_length' => 'District must be at least 2 characters long',
-                    'max_length' => 'District cannot exceed 100 characters'
                 ]
             ],
             'tradCertHoldercounty' => [
@@ -151,18 +389,12 @@ class NativeDocCertController extends BaseController
             'tradCertHolderOperationType' => [
                 'rules' => 'required|min_length[2]|max_length[200]',
                 'errors' => [
-                    'required' => 'Operation type is required',
-                    'min_length' => 'Operation type must be at least 2 characters long',
-                    'max_length' => 'Operation type cannot exceed 200 characters'
+                    'required' => 'Traditional position is required',
+                    'min_length' => 'Traditional position must be at least 2 characters long',
+                    'max_length' => 'Traditional position cannot exceed 200 characters'
                 ]
             ],
-            'tradCertDateIssued' => [
-                'rules' => 'required|valid_date',
-                'errors' => [
-                    'required' => 'Issue date is required',
-                    'valid_date' => 'Please enter a valid date'
-                ]
-            ],
+           
             'tradCertDuration' => [
                 'rules' => 'required|integer|greater_than[0]',
                 'errors' => [
@@ -170,141 +402,7 @@ class NativeDocCertController extends BaseController
                     'integer' => 'Duration must be a number',
                     'greater_than' => 'Duration must be greater than 0'
                 ]
-            ],
-            'tradCertSignatoryA' => [
-                'rules' => 'permit_empty|min_length[2]|max_length[255]',
-                'errors' => [
-                    'min_length' => 'Signatory A name must be at least 2 characters long',
-                    'max_length' => 'Signatory A name cannot exceed 255 characters'
-                ]
-            ],
-            'tradCertSignatoryB' => [
-                'rules' => 'permit_empty|min_length[2]|max_length[255]',
-                'errors' => [
-                    'min_length' => 'Signatory B name must be at least 2 characters long',
-                    'max_length' => 'Signatory B name cannot exceed 255 characters'
-                ]
-            ],
-            'tradCertSignatoryC' => [
-                'rules' => 'permit_empty|min_length[2]|max_length[255]',
-                'errors' => [
-                    'min_length' => 'Signatory C name must be at least 2 characters long',
-                    'max_length' => 'Signatory C name cannot exceed 255 characters'
-                ]
-            ],
-            'tradCertAppliedType' => [
-                'rules' => 'required|in_list[online,branch]',
-                'errors' => [
-                    'required' => 'Application type is required',
-                    'in_list' => 'Please select either online or branch application'
-                ]
-            ],
-            'tradCertBranch' => [
-                'rules' => 'permit_empty|min_length[2]|max_length[150]',
-                'errors' => [
-                    'min_length' => 'Branch name must be at least 2 characters long',
-                    'max_length' => 'Branch name cannot exceed 150 characters'
-                ]
-            ],
-            'tradRevenueNo' => [
-                'rules' => 'permit_empty|min_length[2]|max_length[100]',
-                'errors' => [
-                    'min_length' => 'Revenue number must be at least 2 characters long',
-                    'max_length' => 'Revenue number cannot exceed 100 characters'
-                ]
             ]
-        ];
-
-        if (!$this->validate($validationRules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-        }
-
-        // Get validated data
-        $data = $this->request->getPost();
-
-        // Set inserted by user (from session)
-        $data['tradCertInsertedBy'] = session()->get('user_id') ?? 'system';
-
-        try {
-            if ($this->certificateModel->save($data)) {
-                $certificateId = $this->certificateModel->getInsertID();
-                $certificate = $this->certificateModel->find($certificateId);
-                
-                session()->setFlashdata('success', 
-                    "Certificate created successfully! Serial Number: {$certificate['tradCertSn']}");
-                
-                return redirect()->to('/certificates');
-            } else {
-                throw new \Exception('Failed to save certificate');
-            }
-        } catch (\Exception $e) {
-            log_message('error', 'Certificate creation failed: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Failed to create certificate. Please try again.');
-        }
-    }
-
-    /**
-     * View a single certificate
-     */
-    public function view($id)
-    {
-        $certificate = $this->certificateModel->find($id);
-        
-        if (!$certificate) {
-            return redirect()->to('/certificates')->with('error', 'Certificate not found.');
-        }
-
-        $data = [
-            'title' => 'View Certificate - ' . $certificate['tradCertSn'],
-            'certificate' => $certificate,
-            'isCompleted' => $this->isCertificateCompleted($certificate)
-        ];
-
-        return view('certificates/view', $data);
-    }
-
-    /**
-     * Edit certificate form
-     */
-    public function edit($id)
-    {
-        $certificate = $this->certificateModel->find($id);
-        
-        if (!$certificate) {
-            return redirect()->to('/certificates')->with('error', 'Certificate not found.');
-        }
-
-        $data = [
-            'title' => 'Edit Certificate - ' . $certificate['tradCertSn'],
-            'certificate' => $certificate,
-            'validation' => \Config\Services::validation()
-        ];
-
-        return view('certificates/edit', $data);
-    }
-
-    /**
-     * Update certificate
-     */
-    public function update($id)
-    {
-        $certificate = $this->certificateModel->find($id);
-        
-        if (!$certificate) {
-            return redirect()->to('/certificates')->with('error', 'Certificate not found.');
-        }
-
-        // Validation rules (same as create)
-        $validationRules = [
-            'tradCertHolderName' => [
-                'rules' => 'required|min_length[2]|max_length[255]',
-                'errors' => [
-                    'required' => 'Certificate holder name is required',
-                    'min_length' => 'Holder name must be at least 2 characters long',
-                    'max_length' => 'Holder name cannot exceed 255 characters'
-                ]
-            ],
-            // Include other validation rules from create method...
         ];
 
         if (!$this->validate($validationRules)) {
@@ -314,10 +412,26 @@ class NativeDocCertController extends BaseController
         $data = $this->request->getPost();
         $data['tradCertLastUpdatedBy'] = session()->get('user_id') ?? 'system';
 
+        // Handle file upload if new picture is provided
+        $pictureFile = $this->request->getFile('tradCertHolderPic');
+        if ($pictureFile && $pictureFile->isValid() && !$pictureFile->hasMoved()) {
+            // Delete old picture if exists and not default
+            if (!empty($certificate['tradCertHolderPic']) && $certificate['tradCertHolderPic'] !== 'default-avatar.jpg') {
+                $oldFilePath = WRITEPATH . 'uploads/certificate_holders/' . $certificate['tradCertHolderPic'];
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+            
+            $newFileName = $pictureFile->getRandomName();
+            $pictureFile->move(WRITEPATH . 'uploads/certificate_holders', $newFileName);
+            $data['tradCertHolderPic'] = $newFileName;
+        }
+
         try {
             if ($this->certificateModel->update($id, $data)) {
                 session()->setFlashdata('success', 'Certificate updated successfully!');
-                return redirect()->to('/certificates/view/' . $id);
+                return redirect()->to('/dashboard/nativecert/view/' . $id);
             } else {
                 throw new \Exception('Failed to update certificate');
             }
@@ -332,58 +446,65 @@ class NativeDocCertController extends BaseController
      */
     public function addSignatories($id)
     {
+
         $certificate = $this->certificateModel->find($id);
+        $branchId = session()->get('userData')['branchId'];
+        $userId = session()->get('userData')['userId'];
+        $signature = ""; // we will use this to store the signatory actual signature
+
         
-        if (!$certificate) {
-            return redirect()->to('/certificates')->with('error', 'Certificate not found.');
+
+        if (empty($certificate)) {
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
         }
 
-        $validationRules = [
-            'tradCertSignatoryA' => [
-                'rules' => 'required|min_length[2]|max_length[255]',
-                'errors' => [
-                    'required' => 'Signatory A is required to complete certificate',
-                    'min_length' => 'Signatory A name must be at least 2 characters long'
-                ]
-            ],
-            'tradCertSignatoryB' => [
-                'rules' => 'required|min_length[2]|max_length[255]',
-                'errors' => [
-                    'required' => 'Signatory B is required to complete certificate',
-                    'min_length' => 'Signatory B name must be at least 2 characters long'
-                ]
-            ],
-            'tradCertSignatoryC' => [
-                'rules' => 'required|min_length[2]|max_length[255]',
-                'errors' => [
-                    'required' => 'Signatory C is required to complete certificate',
-                    'min_length' => 'Signatory C name must be at least 2 characters long'
-                ]
-            ]
-        ];
-
-        if (!$this->validate($validationRules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        // check if the user is from this branch 
+        if($branchId != $certificate['tradCertBranch'] || $branchId != 1){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to affix signature to this doc');
+            exit();
         }
 
-        $data = [
-            'tradCertSignatoryA' => $this->request->getPost('tradCertSignatoryA'),
-            'tradCertSignatoryB' => $this->request->getPost('tradCertSignatoryB'),
-            'tradCertSignatoryC' => $this->request->getPost('tradCertSignatoryC'),
-            'tradCertLastUpdatedBy' => session()->get('user_id') ?? 'system'
-        ];
-
-        try {
-            if ($this->certificateModel->update($id, $data)) {
-                session()->setFlashdata('success', 'Certificate completed with all signatories!');
-                return redirect()->to('/certificates/view/' . $id);
-            } else {
-                throw new \Exception('Failed to add signatories');
-            }
-        } catch (\Exception $e) {
-            log_message('error', 'Adding signatories failed: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Failed to add signatories. Please try again.');
+        // check who wants to sign
+        if(!(session()->get('userData')['userAccountType'] == "tradCertSignatoryA" || session()->get('userData')['userAccountType'] == "tradCertSignatoryB" || session()->get('userData')['userAccountType'] == "tradCertSignatoryC"))
+        {
+            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to sign a traditional certificate');
+            exit();
         }
+
+        //  check if the certificate is signed - and if not set the signatory signature stored in the session (SIGNATORY A)
+        if(session()->get('userData')['userAccountType'] == 'tradCertSignatoryA' && $certificate['tradCertSignatoryA'] == ''){
+            $signature = session()->get('userData')['userSignature'];
+        }
+
+         //  check if the certificate is signed - and if not set the signatory signature stored in the session (SIGNATORY B)
+        if(session()->get('userData')['userAccountType'] == 'tradCertSignatoryB' && $certificate['tradCertSignatoryB'] == ''){
+            $signature = session()->get('userData')['userSignature'];
+        }
+
+          //  check if the certificate is signed - and if not set the signatory signature stored in the session (SIGNATORY C)
+        if(session()->get('userData')['userAccountType'] == 'tradCertSignatoryC' && $certificate['tradCertSignatoryC'] == ''){
+            $signature = session()->get('userData')['userSignature'];
+        }
+
+        // check if a signature is set 
+        if(empty($signature)){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'You must have signed this certificate or it was signed by the previous occupant of your position');
+            exit();
+        }
+
+        $data[session()->get('userData')['userAccountType']] = $signature;
+        $data['tradCertLastUpdatedBy'] = session()->get('userData')['userId'];
+
+
+         if ($this->certificateModel->update($id, $data)){
+            return redirect()->to('/dashboard/nativecert')->with('success', 'You finally affixed your signature on a traditional certificate');
+            exit();
+         }else{
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Unknow error occured while affixing your signature');
+            exit();
+         }
+
+
     }
 
     /**
@@ -409,6 +530,7 @@ class NativeDocCertController extends BaseController
         return $this->respond($incomplete);
     }
 
+
     /**
      * Get dashboard stats (API endpoint)
      */
@@ -423,5 +545,123 @@ class NativeDocCertController extends BaseController
         ];
 
         return $this->respond($stats);
+    }
+
+
+    /**
+     * Get issued certificates (API endpoint)
+     */
+     private function isIssued($certificate): bool
+    {
+        return !empty($certificate['tradCertDateIssued']);
+    }
+
+    /**
+     * Generate the certificate on a canvas
+     */
+    public function print($id)
+    {
+        $certificate = $this->certificateModel->find($id);
+        if (!$certificate) {
+            return redirect()->back()->with("error", "Certificate not found");
+        }
+
+        $data = [
+            'certificate' => $certificate,
+            'title' => 'Print Certificate - ' . $certificate['tradCertSn'],
+            'passLink' => 'nativecert'
+        ];
+
+        //  print_r($data);
+        // exit();
+
+        return view('dashboard/generate_trad_certificate', $data);
+    }
+
+
+    /**
+     * mark certificate as siiued
+     */
+    public function issue($id)
+    {
+        $data = $this->certificateModel->find($id);
+         $branchId = session()->get('userData')['branchId'];
+        $userId = session()->get('userData')['userId'];
+
+        if (!$data) {
+            return redirect()->back()->with("error", "Certificate not found");
+        }
+
+         // check if the user is from this branch 
+        if($branchId != $data['tradCertBranch'] || $branchId != 1){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Your breanch is not allow to mark this certificate as issued');
+            exit();
+        }
+
+        // check if the the certificate is completed
+        if(!$this->isCertificateCompleted($data)){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Only completed certificates can be marked as issued');
+            exit();
+        }
+
+        $data['tradCertDateIssued'] = date('Y-m-d H:i:s');
+        $data['tradCertLastUpdatedBy'] = $userId;
+
+        if ($this->certificateModel->update($id, $data)){
+            return redirect()->to('/dashboard/nativecert')->with('success', 'Certificate marked as issued successfully');
+            exit();
+         }else{
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Unknow error occured while marking certificate as issued');
+            exit();
+         }
+
+        
+    }
+    
+
+    /**
+     * Delete certificate
+     */
+    public function delete($id)
+    {
+        $certificate = $this->certificateModel->find($id);
+        
+        if (!$certificate) {
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+        }
+
+            // check if the user is from this branch
+        $branchId = session()->get('userData')['branchId'];
+        if($branchId != $certificate['tradCertBranch'] || $branchId != 1){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to delete this certificate');
+            exit();
+        }
+
+         // check if the certificate is already issued - then disallow delete
+        if($this->isIssued($certificate)){
+            return redirect()->to('/dashboard/nativecert')->with('error', 'Issued certificates cannot be deleted');
+            exit();
+        }
+        
+        try {
+            // Delete associated picture file if exists
+            if (!empty($certificate['tradCertHolderPic']) && $certificate['tradCertHolderPic'] !== 'default-avatar.jpg') {
+                $filePath = WRITEPATH . 'uploads/certificate_holders/' . $certificate['tradCertHolderPic'];
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+
+            if ($this->certificateModel->delete($id)) {
+                session()->setFlashdata('success', 'Certificate deleted successfully!');
+            } else {
+                throw new \Exception('Failed to delete certificate');
+            }
+        } catch (\Exception $e) {
+            log_message('error', 'Certificate deletion failed: ' . $e->getMessage());
+            session()->setFlashdata('error', 'Failed to delete certificate. Please try again.');
+        }
+
+        return redirect()->to('/dashboard/nativecert');
     }
 }

@@ -20,6 +20,7 @@ class TraditionalCertificateModel extends Model
         'tradCertCevNo',
         'tradRevenueNo',
         'tradCertHolderName',
+        'tradCertHolderPic',
         'tradCertHolderTownorCity',
         'tradCertHolderDistrict',
         'tradCertHoldercounty',
@@ -57,23 +58,82 @@ class TraditionalCertificateModel extends Model
     ];
 
     /**
-     * Operation type codes for certificate number
+     * Traditional Liberian practitioner types and their codes
      */
     private $operationTypeCodes = [
-        'manufacturing'      => 'MFG',
-        'retail'             => 'RET',
-        'wholesale'          => 'WHO',
-        'service'            => 'SRV',
-        'agriculture'        => 'AGR',
-        'mining'             => 'MIN',
-        'construction'       => 'CON',
-        'transportation'     => 'TRN',
-        'hospitality'        => 'HOS'
-        // Add more operation types as needed
+        'ratualist'          => 'RAT',    // Traditional spiritual healer
+        'herbalist'          => 'HER',    // Traditional medicine practitioner
+        'native_doctor'      => 'NDC',    // Traditional doctor
+        'zoe'                => 'ZOE',    // Sande society leader
+        'bodio'              => 'BOD',    // Traditional priest/diviner
+        'sowei'              => 'SOW',    // Sande society instructor
+        'zoebah'             => 'ZOB',    // Poro society leader
+        'country_doctor'     => 'CDR',    // Rural traditional healer
+        'medicine_man'       => 'MED',    // Traditional medicine specialist
+        'medicine_woman'     => 'MEW',    // Traditional medicine specialist
+        'spiritual_healer'   => 'SPH',    // Spiritual healing practitioner
+        'diviner'            => 'DIV',    // Fortune teller/divination specialist
+        'traditional_midwife' => 'MID',   // Traditional birth attendant
+        'bone_setter'        => 'BON',    // Traditional fracture specialist
+        'circumciser'        => 'CIR',    // Traditional circumcision specialist
+        'rain_maker'         => 'RAN',    // Traditional weather influencer
+        'juju_man'           => 'JUJ',    // Traditional charm maker
+        'juju_woman'         => 'JUW',    // Traditional charm maker
+        'poro_elder'         => 'POR',    // Poro society elder
+        'sande_elder'        => 'SAN',    // Sande society elder
+        'tribal_chief'       => 'CHF',    // Traditional community leader
+        'town_crier'         => 'CRI',    // Community announcer
+        'cultural_elder'     => 'CEL',    // Keeper of traditions
+        'dance_master'       => 'DAN',    // Traditional dance instructor
+        'drum_master'        => 'DRU',    // Traditional drumming specialist
+        'story_teller'       => 'STO',    // Oral history keeper
+        'blacksmith'         => 'BLS',    // Traditional metal worker
+        'potter'             => 'POT',    // Traditional clay worker
+        'weaver'             => 'WEA',    // Traditional cloth weaver
+        'fisherman'          => 'FIS',    // Traditional fishing specialist
+        'hunter'             => 'HUN',    // Traditional hunting specialist
+        'farmer'             => 'FAR'     // Traditional farming specialist
     ];
 
-    protected $beforeInsert = ['generateCertificateNumbers', 'setInsertedBy'];
-    protected $beforeUpdate = ['setUpdatedBy'];
+    /**
+     * Display names for traditional positions
+     */
+    private $operationTypeDisplayNames = [
+        'ratualist'          => 'Ratualist (Traditional Spiritual Healer)',
+        'herbalist'          => 'Herbalist (Traditional Medicine Practitioner)',
+        'native_doctor'      => 'Native Doctor (Traditional Doctor)',
+        'zoe'                => 'Zoe (Sande Society Leader)',
+        'bodio'              => 'Bodio (Traditional Priest/Diviner)',
+        'sowei'              => 'Sowei (Sande Society Instructor)',
+        'zoebah'             => 'Zoebah (Poro Society Leader)',
+        'country_doctor'     => 'Country Doctor (Rural Traditional Healer)',
+        'medicine_man'       => 'Medicine Man',
+        'medicine_woman'     => 'Medicine Woman',
+        'spiritual_healer'   => 'Spiritual Healer',
+        'diviner'            => 'Diviner (Fortune Teller)',
+        'traditional_midwife' => 'Traditional Midwife',
+        'bone_setter'        => 'Bone Setter (Fracture Specialist)',
+        'circumciser'        => 'Traditional Circumciser',
+        'rain_maker'         => 'Rain Maker',
+        'juju_man'           => 'Juju Man (Charm Maker)',
+        'juju_woman'         => 'Juju Woman (Charm Maker)',
+        'poro_elder'         => 'Poro Society Elder',
+        'sande_elder'        => 'Sande Society Elder',
+        'tribal_chief'       => 'Tribal Chief',
+        'town_crier'         => 'Town Crier',
+        'cultural_elder'     => 'Cultural Elder',
+        'dance_master'       => 'Dance Master',
+        'drum_master'        => 'Drum Master',
+        'story_teller'       => 'Story Teller',
+        'blacksmith'         => 'Blacksmith',
+        'potter'             => 'Potter',
+        'weaver'             => 'Weaver',
+        'fisherman'          => 'Traditional Fisherman',
+        'hunter'             => 'Traditional Hunter',
+        'farmer'             => 'Traditional Farmer'
+    ];
+
+    protected $beforeInsert = ['generateCertificateNumbers'];
 
     /**
      * Generates unique certificate serial number and CEV number
@@ -103,6 +163,20 @@ class TraditionalCertificateModel extends Model
         return $data;
     }
 
+    
+   
+
+    /**
+     * Sanitize file name
+     */
+    private function sanitizeFileName($fileName)
+    {
+        $fileName = basename($fileName);
+        $fileName = str_replace(' ', '_', $fileName);
+        $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '', $fileName);
+        return $fileName;
+    }
+
     /**
      * Ensures the serial number is unique
      */
@@ -114,9 +188,7 @@ class TraditionalCertificateModel extends Model
             return $serialNumber;
         }
         
-        // If exists, generate new one with suffix
         if ($attempt > 5) {
-            // After 5 attempts, use timestamp for uniqueness
             $timestamp = time();
             return $serialNumber . '-' . substr($timestamp, -4);
         }
@@ -136,9 +208,7 @@ class TraditionalCertificateModel extends Model
             return $cevNumber;
         }
         
-        // If exists, generate new one with suffix
         if ($attempt > 5) {
-            // After 5 attempts, use timestamp for uniqueness
             $timestamp = time();
             return $cevNumber . '-' . substr($timestamp, -3);
         }
@@ -147,59 +217,4 @@ class TraditionalCertificateModel extends Model
         return $this->ensureUniqueCevNumber($newCev, $attempt + 1);
     }
 
-    /**
-     * Sets the inserted by user
-     */
-    protected function setInsertedBy(array $data)
-    {
-        // You can set this from session or authentication
-        if (!isset($data['data']['tradCertInsertedBy'])) {
-            $data['data']['tradCertInsertedBy'] = session()->get('user_id') ?? 0;
-        }
-        return $data;
-    }
-
-    /**
-     * Sets the updated by user
-     */
-    protected function setUpdatedBy(array $data)
-    {
-        // You can set this from session or authentication
-        if (!isset($data['data']['tradCertLastUpdatedBy'])) {
-            $data['data']['tradCertLastUpdatedBy'] = session()->get('user_id');
-        }
-        return $data;
-    }
-
-    /**
-     * Get certificate by serial number
-     */
-    public function getBySerialNumber($serialNumber)
-    {
-        return $this->where('tradCertSn', $serialNumber)->first();
-    }
-
-    /**
-     * Get certificates by county
-     */
-    public function getByCounty($county)
-    {
-        return $this->where('tradCertHoldercounty', $county)->findAll();
-    }
-
-    /**
-     * Get certificates by application type
-     */
-    public function getByApplicationType($appType)
-    {
-        return $this->where('tradCertAppliedType', $appType)->findAll();
-    }
-
-    /**
-     * Search certificates by holder name
-     */
-    public function searchByHolderName($name)
-    {
-        return $this->like('tradCertHolderName', $name)->findAll();
-    }
 }

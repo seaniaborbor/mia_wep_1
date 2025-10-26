@@ -99,14 +99,28 @@
             <div class="input-group-prepend">
                 <label class="input-group-text" for="userAccountType"><i class="fas fa-user-tag"></i></label>
             </div>
-            <select name="userAccountType" id="userAccountType"
+
+                <select name="userAccountType" id="userAccountType"
                     class="form-control <?= validation_show_error('userAccountType') ? 'is-invalid' : '' ?>">
-                <option value="">-- Select Type --</option>
-                        <option value="SIGNA">Signatory A </option>
+                    <option value="">-- Select Type --</option>
+
+                    <!-- Marriage & Divorce Certificate Signatories -->
+                    <optgroup label="Marriage & Divorce Certificate Signatories">
+                        <option value="SIGNA">Signatory A</option>
                         <option value="SIGNB">Signatory B</option>
                         <option value="SIGNC">Signatory C</option>
-                        <option value="ENTRY">None</option>
-                        </select>
+                        <option value="ENTRY">Wed & Divorce Entry Clerk</option>
+                    </optgroup>
+
+                    <!-- Tradition Certificate Signatories -->
+                    <optgroup label="Traditional Certificate Signatories">
+                        <option value="tradCertSignatoryA">Signatory A</option>
+                        <option value="tradCertSignatoryB">Signatory B</option>
+                        <option value="tradCertSignatoryC">Signatory C</option>
+                        <option value="tradCertEntryClerk">Traditional Cert Entry Clerk</option>
+                    </optgroup>
+                </select>
+
             <div class="invalid-feedback"><?= validation_show_error('userAccountType') ?></div>
         </div>
     </div>

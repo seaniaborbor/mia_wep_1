@@ -30,7 +30,7 @@ $accountTypeLabels = [
 
                 <div class="row justify-content-center w-100 mt-3">
                     <div class="col-12 text-left">
-                        <p><i class="fas fa-user-shield text-primary"></i> <strong>POS:</strong> <?=$user['userAccountType']?></p>
+                        <p><i class="fas fa-user-shield text-primary"></i> <strong>POS:</strong> <?=$user['userPosition']?></p>
                         <p><i class="fas fa-code-branch text-success"></i> <strong>Branch:</strong> <?= isset($branchName) ? esc($branchName) : esc($user['branchName']) ?></p>
                         <p><i class="fas fa-toggle-<?= $user['userAccountActiveStatus'] ? 'on' : 'off' ?> text-<?= $user['userAccountActiveStatus'] ? 'success' : 'danger' ?>"></i>
                             <strong>Status:</strong> <?= $user['userAccountActiveStatus'] ? 'Active' : 'Inactive' ?></p>

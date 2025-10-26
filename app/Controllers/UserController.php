@@ -210,7 +210,7 @@ class UserController extends BaseController
             ],
             'userAccountType' => [
                 'label' => 'Account Type',
-                'rules' => 'required|in_list[SIGNA,SIGNB,SIGNC,ENTRY]',
+                'rules' => 'required|in_list[SIGNA,SIGNB,SIGNC,ENTRY,tradCertSignatoryA,tradCertSignatoryB,tradCertSignatoryC,tradCertEntryClerk]',
                 'errors' => [
                     'required' => 'Account type is required.',
                     'in_list' => 'Choose a valid account type.'
