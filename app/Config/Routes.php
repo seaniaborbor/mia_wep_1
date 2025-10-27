@@ -137,6 +137,7 @@ $routes->get('/dashboard/nativecert/edit/(:any)', 'NativeDocCertController::edit
 $routes->post('/dashboard/nativecert/update/(:any)', 'NativeDocCertController::update/$1');
 $routes->get('/dashboard/nativecert/issue-certificate/(:any)', 'NativeDocCertController::issue/$1');
 $routes->get('/dashboard/nativecert/delete/(:any)', 'NativeDocCertController::delete/$1');
+$routes->get('dashboard/nativecert/general', 'NativeDocCertController::generalDashboard');
 
 
 });

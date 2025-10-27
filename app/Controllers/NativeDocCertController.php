@@ -671,4 +671,166 @@ class NativeDocCertController extends BaseController
 
         return redirect()->to('/dashboard/nativecert');
     }
+
+
+
+    /**
+ * General dashboard - shows overall statistics across all branches
+ */
+public function generalDashboard()
+{
+    // Check if user has permission to view general dashboard
+    // Only allow specific admin roles or higher-level users
+    // $allowedRoles = ['super_admin', 'admin', 'SIGNC']; // Add appropriate roles
+    // if (!in_array(session()->get('userData')['userAccountType'], $allowedRoles)) {
+    //     return redirect()->to('/dashboard/nativecert')->with('error', 'Access denied to general dashboard');
+    // }
+
+    // Get certificates from ALL branches
+    $certificates = $this->certificateModel
+        ->orderBy('tradCertCertCreatedAt', 'DESC')
+        ->join('login_users', 'login_users.userId = traditionalcertificates.tradCertInsertedBy')
+        ->join('branchs_table', 'branchs_table.branchId = traditionalcertificates.tradCertBranch') // Corrected table name
+        ->findAll();
+
+    // Get branch statistics
+    $branchStats = [];
+    $allBranches = $this->branchModel->findAll();
+    
+    foreach ($allBranches as $branch) {
+        $branchCertificates = $this->certificateModel
+            ->where('tradCertBranch', $branch['branchId']) // Corrected column name
+            ->findAll();
+        
+        $total = count($branchCertificates);
+        $completed = 0;
+        $pending = 0;
+        
+        foreach ($branchCertificates as $cert) {
+            if (!empty($cert['tradCertSignatoryA']) && 
+                !empty($cert['tradCertSignatoryB']) && 
+                !empty($cert['tradCertSignatoryC'])) {
+                $completed++;
+            } else {
+                $pending++;
+            }
+        }
+        
+        $branchStats[$branch['branchName']] = [ // Corrected column name
+            'total' => $total,
+            'completed' => $completed,
+            'pending' => $pending,
+            'completionRate' => $total > 0 ? round(($completed / $total) * 100, 2) : 0,
+            'branch_id' => $branch['branchId'] // Corrected column name
+        ];
+    }
+
+    // Calculate overall dashboard statistics
+    $totalCertificates = count($certificates);
+    $completedCertificates = 0;
+    $pendingCertificates = 0;
+
+    // Categorize certificates by county (across all branches)
+    $countyStats = [];
+    $branchWiseStats = [];
+
+    foreach ($certificates as $cert) {
+        // Check if certificate is completed
+        if (!empty($cert['tradCertSignatoryA']) &&
+            !empty($cert['tradCertSignatoryB']) &&
+            !empty($cert['tradCertSignatoryC'])) {
+            $completedCertificates++;
+        } else {
+            $pendingCertificates++;
+        }
+
+        // Count by county
+        $county = $cert['tradCertHoldercounty'] ?? 'Unknown';
+        if (!isset($countyStats[$county])) {
+            $countyStats[$county] = 0;
+        }
+        $countyStats[$county]++;
+
+        // Count by branch - use the correct column name from branchs_table
+        $branchName = $cert['branchName'] ?? 'Unknown Branch'; // Corrected column name
+        if (!isset($branchWiseStats[$branchName])) {
+            $branchWiseStats[$branchName] = 0;
+        }
+        $branchWiseStats[$branchName]++;
+    }
+
+    // Recent activity (last 15 certificates across all branches)
+    $recentCertificates = array_slice($certificates, 0, 15);
+
+    // Certificates needing attention (missing signatories) across all branches
+    $incompleteCertificates = array_filter($certificates, function ($cert) {
+        return empty($cert['tradCertSignatoryA']) ||
+            empty($cert['tradCertSignatoryB']) ||
+            empty($cert['tradCertSignatoryC']);
+    });
+
+    // Monthly statistics for charts
+    $monthlyStats = $this->getMonthlyStatistics();
+
+    $data = [
+        'title' => 'General Traditional Certificates Dashboard - All Branches',
+        'certificates' => $certificates,
+        'recentCertificates' => $recentCertificates,
+        'incompleteCertificates' => $incompleteCertificates,
+        'dashboardStats' => [
+            'total' => $totalCertificates,
+            'completed' => $completedCertificates,
+            'pending' => $pendingCertificates,
+            'completionRate' => $totalCertificates > 0
+                ? round(($completedCertificates / $totalCertificates) * 100, 2)
+                : 0,
+            'totalBranches' => count($allBranches)
+        ],
+        'countyStats' => $countyStats,
+        'branchStats' => $branchStats,
+        'branchWiseStats' => $branchWiseStats,
+        'monthlyStats' => $monthlyStats,
+        'passLink' => 'nativecert_general'
+    ];
+
+    return view('dashboard/general_herbal_dashboard', $data);
+}
+
+
+/**
+ * Get monthly statistics for charts
+ */
+private function getMonthlyStatistics()
+{
+    $currentYear = date('Y');
+    $monthlyData = [];
+    
+    for ($month = 1; $month <= 12; $month++) {
+        $startDate = date("{$currentYear}-{$month}-01");
+        $endDate = date("{$currentYear}-{$month}-t", strtotime($startDate));
+        
+        $monthCertificates = $this->certificateModel
+            ->where('tradCertCertCreatedAt >=', $startDate)
+            ->where('tradCertCertCreatedAt <=', $endDate)
+            ->findAll();
+        
+        $completed = 0;
+        foreach ($monthCertificates as $cert) {
+            if (!empty($cert['tradCertSignatoryA']) && 
+                !empty($cert['tradCertSignatoryB']) && 
+                !empty($cert['tradCertSignatoryC'])) {
+                $completed++;
+            }
+        }
+        
+        $monthlyData[] = [
+            'month' => date('M', strtotime($startDate)),
+            'total' => count($monthCertificates),
+            'completed' => $completed,
+            'pending' => count($monthCertificates) - $completed
+        ];
+    }
+    
+    return $monthlyData;
+}
 }
