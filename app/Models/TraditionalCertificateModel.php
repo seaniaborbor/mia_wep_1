@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class TraditionalCertificateModel extends Model
 {
-    protected $table            = 'TraditionalCertificates';
+    protected $table            = 'traditionalCertificates';
     protected $primaryKey       = 'tradCertId';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';

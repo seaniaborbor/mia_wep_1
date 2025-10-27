@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 24, 2025 at 03:20 AM
+-- Generation Time: Oct 27, 2025 at 08:03 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.1.25
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -201,7 +201,7 @@ CREATE TABLE `login_users` (
   `userPassword` varchar(255) NOT NULL,
   `userPicture` varchar(255) DEFAULT NULL,
   `userBreanch` int(6) DEFAULT NULL,
-  `userAccountType` enum('SIGNA','SIGNB','SIGNC','ENTRY') DEFAULT 'ENTRY',
+  `userAccountType` enum('SIGNA','SIGNB','SIGNC','ENTRY','tradCertSignatoryA','tradCertSignatoryB','tradCertSignatoryC','tradCertEntryClerk','UNDEFINED') NOT NULL DEFAULT 'UNDEFINED',
   `userSignature` varchar(225) NOT NULL,
   `userApplicationFile` varchar(225) NOT NULL,
   `userAccountActiveStatus` tinyint(1) DEFAULT 1,
@@ -224,7 +224,11 @@ INSERT INTO `login_users` (`userId`, `userFullName`, `userEmail`, `userPhone`, `
 (12, 'Kolubah Zazay', 'lofasuperientendent@gmail.com', '0775577744', 'Superientendent', '$2y$10$hitA2zIWjZR9vuJ4coYFfef7CR0vkkyZzClkmMxH8LHDcBXG.93tC', '1752361527_9bb891f94e61e89bc4f1.jpg', 2, 'SIGNA', '1752361527_ccd6a73ec812788721b4.png', '1752361527_b94f1caf741801d04d61.pdf', 1, '3', '2025-07-12 23:05:27', '2025-07-12 23:05:27', NULL),
 (13, 'Sekou Jallah', 'lofacitymajor@gmail.com', '0775577744', 'City Mayor', '$2y$10$oKfxS1GBmuvmXGL3q9ZtjuodBvqRRh/qH0iRwFBHWPxy554BeseO.', '1752361744_f2a5d2f2c189ef5b562e.jpg', 2, 'SIGNB', '1752361744_a9a51089aa04b66b9fd9.png', '1752361744_200639092fc8823ffe16.pdf', 1, '3', '2025-07-12 23:09:04', '2025-07-12 23:09:04', NULL),
 (14, 'Mawolo Kollie', 'lofaentryclerk@gmail.com', '0770423352', 'Data Entry Clerk', '$2y$10$CZIeqfIjFzWJAM2HiwU7leDTPXDlNSPdA7hjrdc11WCrfyqgWIb7a', '1752361940_87a871dd327b4ffe31df.jpg', 2, 'ENTRY', '1752361940_a82dcd8863cc76a4227b.png', '1752361940_cef356aceb33e8006e4c.pdf', 1, '3', '2025-07-12 23:12:20', '2025-07-12 23:12:20', NULL),
-(15, 'Festus Kamara', 'festuskamara13@gmail.com', '0777077575', 'Clerk', '$2y$10$G4Yhho.4.D.iTZWMWcP7O.4dYGw9io0PEEdAfPUPVA77IaXas4uGC', '1760647202_4ed9f651f93011f6c996.jpg', 3, 'ENTRY', '1760647202_ac8ca00887ae4d5d33fb.png', '1760647202_06a7fd2ad1baf352a117.pdf', 1, '3', '2025-10-16 20:40:02', '2025-10-16 13:40:02', NULL);
+(15, 'Festus Kamara', 'festuskamara13@gmail.com', '0777077575', 'Clerk', '$2y$10$G4Yhho.4.D.iTZWMWcP7O.4dYGw9io0PEEdAfPUPVA77IaXas4uGC', '1760647202_4ed9f651f93011f6c996.jpg', 3, 'ENTRY', '1760647202_ac8ca00887ae4d5d33fb.png', '1760647202_06a7fd2ad1baf352a117.pdf', 1, '3', '2025-10-16 20:40:02', '2025-10-16 13:40:02', NULL),
+(16, 'Test Zoe Signatory', 'zoe1@gmail.com', '0775577736', 'Director Custom Affair', '$2y$10$DAFz.4fCImG9ybKGx6hQcOsAcXECzWFEVcmWZDrU.SO5egBfDvJAC', '1761408956_1906639ee264f9ff4074.jpg', 1, 'tradCertSignatoryA', '1761408956_08f0c76f3d76acba15bf.png', '1761408956_860863cf24044a5b7bc2.pdf', 1, '3', '2025-10-25 16:15:56', '2025-10-25 18:00:38', '3'),
+(17, 'Test Zoe Signatory II', 'zoe2@gmail.com', '0775577735', 'Assistant Minister, Culture Affairs', '$2y$10$hyS/IoCd2DxuWk2m16IKO.x8Rn9E66v7D40zLegXZDFW3HrCiGRZ2', '1761424021_109deef0e53a63659bfd.jpg', 1, 'tradCertSignatoryB', '1761424021_c59b11dbd63a3e518eff.png', '1761424021_fef8e8d6461574925ac2.pdf', 1, '3', '2025-10-25 20:27:01', '2025-10-25 20:29:52', '3'),
+(18, 'Test Zoe Signatory III', 'zoe3@gmail.com', '0775577736', 'Test Zoe', '$2y$10$fDPQ/VayFVJ1Q2t/AtyaterCQeGff8hN.4TaA3ZAeJIIhBvHPdYJu', '1761427488_55a3effeb9ccbfae5f00.jpg', 1, 'tradCertSignatoryC', '1761427488_0ca3cdc211cec87cdb92.png', '1761427488_c9970dd2e6ec554fd429.pdf', 1, '3', '2025-10-25 21:24:48', '2025-10-25 21:24:48', NULL),
+(19, 'Test Zoe Clerk', 'zoe4@gmail.com', '0775577736', 'Data Entry Clerk', '$2y$10$1oZV6GBEZHpYoP25mp4NC.OmutVYyVhHykMIqkC7NW3fJc8vsJBK.', '1761430187_ef381aae3969781de329.jpg', 1, 'tradCertEntryClerk', '1761430187_bb1485b9bfa700fcc492.png', '1761430187_e0c8ca5d172bfaf7201d.pdf', 1, '3', '2025-10-25 22:09:47', '2025-10-25 22:09:47', NULL);
 
 -- --------------------------------------------------------
 
@@ -308,7 +312,8 @@ INSERT INTO `marriage_certificates` (`marriage_cert_id`, `groom_name`, `groom_ce
 (7, 'Tarnue P Borbor', '0775577736', 'Lofa', 'Liberian', '1994-10-05', 'Monrovia', 'Lofa', 25, 'New Georgia', 0, '0000-00-00', '', 'Test Father Name', 'Test Mother Name', 'Mary Tarnue ', '0775577736', 'Grand Bassa', 'Liberian', '1994-02-03', 'test birth city', 'Margibi', 23, 'test address', 0, '0000-00-00', '', 'no', 'no', '1760354388_fc09ce40388eae2fdc9a.png', '1760354388_51912f5809449a7da912.jpg', 'New georgia gulf', '2025-10-07', 'lay try', 'test try ', '0775577736', 'test try 2', '0775577736', 30.00, 'thirty dollars', 'jennie', '2025-10-07', '08-25KXG3', 'LF-08-25KXG3', '345', NULL, NULL, NULL, '1751038816_563548c0d2293b4fc4bb.png', NULL, NULL, 4, 1, NULL, '2025-10-15 00:08:38', '2025-10-13 18:19:48', 1, '2025-10-14', NULL, NULL, NULL, NULL),
 (8, 'Mark James', '0776077575', 'Gbarpolu', 'Liberian', '2025-10-07', 'Voinjama', 'Lofa', 23, 'New Georgia Gulf ', 1, '2025-10-02', 'Mary ', 'Kammah A. Duwana, Sr', 'Fatumata S.K. Kamara ', 'Princess Kollie', '0776224226', 'River Cess', 'Liberian', '2025-10-31', 'Voinjama', 'Montserrado', 34, 'Newport Street', 0, '0000-00-00', '', 'Dominic Kromah', 'Mariama Konneh', '1760457474_8ad2cb7edfded83697cb.jpg', '1760457474_ed803491deff03e6b1e2.jpg', 'New Georgia Estate', '2025-10-10', 'Princess Abu', 'Moiseleke Duwana', '0886381508', 'Imam Moniru Nyei', '0886886773', 100.00, 'One Hundred Ten United States Dollars', 'Losene F. Bility', '2025-10-15', '08-25VIHM', 'LF-08-25VIHM', '7309556', NULL, NULL, NULL, NULL, NULL, NULL, 4, 1, NULL, '2025-10-14 22:57:54', '2025-10-14 22:57:54', NULL, NULL, NULL, NULL, NULL, NULL),
 (9, 'Mark James', '0776077577', 'Bomi', 'Liberian', '1999-03-07', 'Tubmanburg', 'Montserrado', 26, 'New Georgia Estate, Montserrado County', 0, '0000-00-00', '', 'Momolu James ', 'Korpo James ', 'Princess Kanneh', '0776224222', 'Lofa', 'Liberian', '2000-10-01', 'Voinjama', 'Lofa', 25, 'Red Light, Paynesville', 0, '0000-00-00', '', 'Dominic Kanneh', 'Mariama Kanneh', '1760648242_8ecf6426e5e1433f9534.png', '1760648242_2e278f438ebf3f48fe33.jpg', 'Tubmanburg ', '2025-10-11', 'Princess K. James', 'Moiseleke Kanneh', '0886381500', 'Imam Moniru Nyei', '0886886773', 50.00, 'Fifty United States Dollars', 'Festus Kamara ', '2025-10-11', '11-25VVX4', 'MT-11-25VVX4', '7309559', NULL, NULL, NULL, NULL, NULL, NULL, 15, 3, NULL, '2025-10-17 03:57:22', '2025-10-17 03:57:22', NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 'Tarnue P Borbor', '0775577736', 'Maryland', 'Liberian', '2025-10-16', 'New Georgia Township', 'Montserrado', 68, 'New Georgia Gulf', 1, '2025-10-22', '76', 'Test Father Name', 'Test Mother Name', 'Mary Tarnue ', '0775577736', 'Maryland', 'Liberian', '2025-10-15', 'New Georgia Township', 'River Gee', 56, 'New Georgia Gulf', 0, '0000-00-00', '', 'no', 'no', '1760739490_a23c3552745d651f2d3f.jpg', '1760739490_e971b0317d9b3b23887d.jpg', 'New georgia gulf', '2025-10-28', 'lay try', 'test try ', '0775577736', 'test try 2', '0775577736', 609.00, 'thirty dollars', 'jennie', '2025-10-24', '11-2520K7', 'MT-11-2520K7', '345', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, NULL, '2025-10-17 22:18:10', '2025-10-17 22:18:10', NULL, NULL, NULL, NULL, NULL, NULL);
+(10, 'Tarnue P Borbor', '0775577736', 'Maryland', 'Liberian', '2025-10-16', 'New Georgia Township', 'Montserrado', 68, 'New Georgia Gulf', 1, '2025-10-22', '76', 'Test Father Name', 'Test Mother Name', 'Mary Tarnue ', '0775577736', 'Maryland', 'Liberian', '2025-10-15', 'New Georgia Township', 'River Gee', 56, 'New Georgia Gulf', 0, '0000-00-00', '', 'no', 'no', '1760739490_a23c3552745d651f2d3f.jpg', '1760739490_e971b0317d9b3b23887d.jpg', 'New georgia gulf', '2025-10-28', 'lay try', 'test try ', '0775577736', 'test try 2', '0775577736', 609.00, 'thirty dollars', 'jennie', '2025-10-24', '11-2520K7', 'MT-11-2520K7', '345', NULL, NULL, NULL, NULL, NULL, NULL, 0, 1, NULL, '2025-10-17 22:18:10', '2025-10-17 22:18:10', NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 'Private man', '0775577736', 'Bomi', 'Liberian', '2025-10-18', 'New Georgia Township', 'Bomi', 34, 'New Georgia Gulf', 1, '2025-10-18', '76', 'Test Father Name', 'Test Mother Name', 'Mary Tarnue ', '0775577736', 'Gbarpolu', 'Liberian', '2025-10-11', 'New Georgia Township', 'Nimba', 89, 'New Georgia Gulf', 1, '2025-10-04', 'Test spouse name', 'test spouse name', 'test mother name', '1761489390_2a3dd17ec156397af854.jpg', '1761489390_3d24e85a388c8068722d.jpg', 'New georgia gulf', '2025-10-04', 'lay try', 'test try ', '0775577736', 'test try 2', '0775577736', 56.00, 'thirty dollars', 'jennie', '2025-10-11', '01-25XYAJ', 'BM-01-25XYAJ', '345', NULL, NULL, NULL, NULL, NULL, NULL, 4, 1, NULL, '2025-10-26 14:36:30', '2025-10-26 14:36:30', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -335,6 +340,44 @@ CREATE TABLE `notification_table` (
 INSERT INTO `notification_table` (`notificationId`, `commentId`, `notification_userId`, `ENTRY_VIEW`, `SIGNA_VIEW`, `SIGNB_VIEW`, `SIGNC_VIEW`, `notification_branch_id`, `date_notified`) VALUES
 (1, 23, 4, 1, 1, 0, 1, 1, '2025-10-15 13:37:39'),
 (2, 24, 1, 0, 1, 0, 0, 1, '2025-10-17 21:04:11');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `traditionalcertificates`
+--
+
+CREATE TABLE `traditionalcertificates` (
+  `tradCertId` int(11) NOT NULL,
+  `tradCertSn` varchar(50) NOT NULL,
+  `tradCertCevNo` varchar(100) DEFAULT NULL,
+  `tradRevenueNo` varchar(100) DEFAULT NULL,
+  `tradCertHolderPic` varchar(225) NOT NULL,
+  `tradCertHolderName` varchar(255) NOT NULL,
+  `tradCertHolderTownorCity` varchar(100) DEFAULT NULL,
+  `tradCertHolderDistrict` varchar(100) DEFAULT NULL,
+  `tradCertHoldercounty` varchar(100) DEFAULT NULL,
+  `tradCertHolderOperationType` varchar(200) DEFAULT NULL,
+  `tradCertDateIssued` date DEFAULT NULL,
+  `tradCertDuration` int(11) DEFAULT NULL,
+  `tradCertSignatoryA` varchar(255) DEFAULT NULL,
+  `tradCertSignatoryB` varchar(255) DEFAULT NULL,
+  `tradCertSignatoryC` varchar(255) DEFAULT NULL,
+  `tradCertInsertedBy` varchar(100) NOT NULL,
+  `tradCertAppliedType` enum('online','branch') NOT NULL,
+  `tradCertBranch` varchar(150) DEFAULT NULL,
+  `tradCertCertCreatedAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `tradCertLastUpdatedBy` varchar(100) DEFAULT NULL,
+  `tradCertLastUpdatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `traditionalcertificates`
+--
+
+INSERT INTO `traditionalcertificates` (`tradCertId`, `tradCertSn`, `tradCertCevNo`, `tradRevenueNo`, `tradCertHolderPic`, `tradCertHolderName`, `tradCertHolderTownorCity`, `tradCertHolderDistrict`, `tradCertHoldercounty`, `tradCertHolderOperationType`, `tradCertDateIssued`, `tradCertDuration`, `tradCertSignatoryA`, `tradCertSignatoryB`, `tradCertSignatoryC`, `tradCertInsertedBy`, `tradCertAppliedType`, `tradCertBranch`, `tradCertCertCreatedAt`, `tradCertLastUpdatedBy`, `tradCertLastUpdatedAt`) VALUES
+(8, 'LR-MY-2025-5D4F7', 'CEV-RAT-2025-4F70', '45563', '1761395339_eff9908ace1b48a3ec52.jpg', 'Massa Zoiboi', 'Harper', 'Kolocon ', 'Maryland', 'ratualist', NULL, 365, NULL, '1761424021_c59b11dbd63a3e518eff.png', '1761427488_0ca3cdc211cec87cdb92.png', '19', 'online', '1', '2025-10-25 12:28:59', '18', '2025-10-26 13:58:31'),
+(9, 'LR-LO-2025-BD787', 'CEV-CDR-2025-787D', '45563', '1761395339_eff9908ace1b48a3ec52.jpg', 'Tarnue P Borbor', 'New Georgia Township', 'Voinjama', 'Lofa', 'country_doctor', '2025-10-26', 365, '1761408956_08f0c76f3d76acba15bf.png', '1761424021_c59b11dbd63a3e518eff.png', '1761427488_0ca3cdc211cec87cdb92.png', '19', 'online', '1', '2025-10-25 12:31:57', '18', '2025-10-26 14:24:11');
 
 --
 -- Indexes for dumped tables
@@ -384,6 +427,13 @@ ALTER TABLE `notification_table`
   ADD PRIMARY KEY (`notificationId`);
 
 --
+-- Indexes for table `traditionalcertificates`
+--
+ALTER TABLE `traditionalcertificates`
+  ADD PRIMARY KEY (`tradCertId`),
+  ADD UNIQUE KEY `tradCertSn` (`tradCertSn`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -415,19 +465,25 @@ ALTER TABLE `divorce_certificates`
 -- AUTO_INCREMENT for table `login_users`
 --
 ALTER TABLE `login_users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `marriage_certificates`
 --
 ALTER TABLE `marriage_certificates`
-  MODIFY `marriage_cert_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `marriage_cert_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `notification_table`
 --
 ALTER TABLE `notification_table`
   MODIFY `notificationId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `traditionalcertificates`
+--
+ALTER TABLE `traditionalcertificates`
+  MODIFY `tradCertId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
