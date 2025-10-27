@@ -31,6 +31,13 @@ class NativeDocCertController extends BaseController
 
     public function index(): string
     {
+
+              // check if the user account is allowed to view native doctor activities
+        if(!in_array(session()->get('userData')['userAccountType'], ['tradCertSignatoryA','tradCertSignatoryB','tradCertSignatoryC','tradCertEntryClerk', 'SIGNC'])){
+            // redirect to /dashboard/nativecert
+            return redirect()->to('/dashboard/nativecert');
+            exit();
+        }
         // Get current user's branch ID
         $branchId = session()->get('userData')['branchId'];
 

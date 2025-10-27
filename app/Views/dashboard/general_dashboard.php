@@ -97,12 +97,54 @@
                 </div>
             </div>
         </div>
+
+        <!-- Total Traditional Certificates -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-info text-white">
+                                <i class="fas fa-feather"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total Traditional Certificates
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalTraditionalCerts ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Traditional Certificates -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="mr-3">
+                            <div class="icon-circle bg-warning text-white">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Pending Traditional
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $totalUncompletedTraditionalCerts ?></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Status Overview Cards -->
     <div class="row mb-4">
         <!-- Marriage Status Overview -->
-        <div class="col-xl-6 col-md-12 mb-4">
+        <div class="col-xl-4 col-md-12 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom-primary py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
@@ -170,7 +212,7 @@
         </div>
 
         <!-- Divorce Status Overview -->
-        <div class="col-xl-6 col-md-12 mb-4">
+        <div class="col-xl-4 col-md-12 mb-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white border-bottom-primary py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
@@ -236,6 +278,74 @@
                 </div>
             </div>
         </div>
+
+        <!-- Traditional Certificate Status Overview -->
+        <div class="col-xl-4 col-md-12 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-feather mr-2"></i>Traditional Certificates Overview
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-success shadow-none h-100">
+                                <div class="card-body py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle-sm bg-success text-white">
+                                                <i class="fas fa-check"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Completed
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $totalTraditionalCerts - $totalUncompletedTraditionalCerts ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-left-warning shadow-none h-100">
+                                <div class="card-body py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-3">
+                                            <div class="icon-circle-sm bg-warning text-white">
+                                                <i class="fas fa-hourglass-half"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                Pending
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= $totalUncompletedTraditionalCerts ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress mb-2" style="height: 8px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: <?= $totalTraditionalCerts > 0 ? (($totalTraditionalCerts - $totalUncompletedTraditionalCerts) / $totalTraditionalCerts) * 100 : 0 ?>%" 
+                             aria-valuenow="<?= $totalTraditionalCerts - $totalUncompletedTraditionalCerts ?>" 
+                             aria-valuemin="0" 
+                             aria-valuemax="<?= $totalTraditionalCerts ?>">
+                        </div>
+                    </div>
+                    <div class="small text-muted text-center">
+                        Completion Rate: <?= $totalTraditionalCerts > 0 ? round((($totalTraditionalCerts - $totalUncompletedTraditionalCerts) / $totalTraditionalCerts) * 100) : 0 ?>%
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Branch Statistics Chart -->
@@ -266,9 +376,15 @@
                         <i class="fas fa-ring mr-2"></i> Marriage Certificates
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item mr-2">
                     <a class="nav-link py-2 px-3" id="divorce-tab" data-toggle="tab" href="#divorce" role="tab" aria-controls="divorce" aria-selected="false">
                         <i class="fas fa-file-contract mr-2"></i> Divorce Certificates
+                    </a>
+                </li>
+                <!-- Traditional Certificates Tab -->
+                <li class="nav-item">
+                    <a class="nav-link py-2 px-3" id="traditional-tab" data-toggle="tab" href="#traditional" role="tab" aria-controls="traditional" aria-selected="false">
+                        <i class="fas fa-feather mr-2"></i> Traditional Certificates
                     </a>
                 </li>
             </ul>
@@ -380,13 +496,67 @@
                         </table>
                     </div>
                 </div>
+                
+                <!-- Traditional Certificates Tab -->
+                <div class="tab-pane fade" id="traditional" role="tabpanel" aria-labelledby="traditional-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="font-weight-bold text-primary mb-0">Recent Traditional Certificates</h6>
+                        <div>
+                            <span class="badge badge-info">Total: <?= $totalTraditionalCerts ?></span>
+                            <span class="badge badge-warning ml-2">Pending: <?= $totalUncompletedTraditionalCerts ?></span>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm table-striped datatable3" width="100%" cellspacing="0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Holder Name</th>
+                                    <th>Operation Type</th>
+                                    <th>Serial No</th>
+                                    <th>CEV No</th>
+                                    <th>Branch</th>
+                                    <th>Date Issued</th>
+                                    <th>Status</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($allTraditionalCerts as $traditional): ?>
+                                <tr>
+                                    <td><?= $traditional['tradCertHolderName'] ?></td>
+                                    <td><?= $traditional['tradCertHolderOperationType'] ?></td>
+                                    <td><?= $traditional['tradCertSn'] ?></td>
+                                    <td><?= $traditional['tradCertCevNo'] ?></td>
+                                    <td><?= $traditional['branchName'] ?></td>
+                                    <td><?= date('M d, Y', strtotime($traditional['tradCertDateIssued'])) ?></td>
+                                    <td>
+                                        <?php if(empty($traditional['tradCertSignatoryA']) || empty($traditional['tradCertSignatoryB']) || empty($traditional['tradCertSignatoryC'])): ?>
+                                            <span class="badge badge-warning">Pending</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-success">Completed</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/dashboard/traditional_cert/view/<?= $traditional['tradCertId'] ?>" class="btn btn-info btn-icon-split btn-sm">
+                                            <span class="icon text-white-50">
+                                                <i class="fas fa-eye"></i>
+                                            </span>
+                                            <span class="text">View</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Branch Summary Tables -->
     <div class="row mt-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-bottom-primary py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
@@ -416,7 +586,7 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-white border-bottom-primary py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
@@ -437,6 +607,37 @@
                                 <tr>
                                     <td><?= $branch['branchName'] ?></td>
                                     <td><span class="badge badge-danger"><?= $branch['count'] ?></span></td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Traditional Certificates by Branch -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white border-bottom-primary py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-feather mr-2"></i>Traditional Certificates by Branch
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm" width="100%" cellspacing="0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Branch</th>
+                                    <th>Total Certificates</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($traditionalCertsPerBranch as $branch): ?>
+                                <tr>
+                                    <td><?= $branch['branchName'] ?></td>
+                                    <td><span class="badge badge-info"><?= $branch['count'] ?></span></td>
                                 </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -475,6 +676,13 @@
                             hoverBackgroundColor: "#be2617",
                             borderColor: "#e74a3b",
                             data: <?= json_encode($chartData['divorceCounts']) ?>,
+                        },
+                        {
+                            label: "Traditional Certificates",
+                            backgroundColor: "#36b9cc",
+                            hoverBackgroundColor: "#2c9faf",
+                            borderColor: "#36b9cc",
+                            data: <?= json_encode($chartData['traditionalCounts']) ?>,
                         }
                     ],
                 },

@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\BranchModel;
 use App\Models\MarriageCertificateModel;
 use App\Models\DivorceCertificateModel;
+use App\Models\TraditionalCertificateModel;
 use App\Models\UsersModel;
 use App\Models\NotificationModel;
 
@@ -14,6 +15,7 @@ class DashboardController extends BaseController
     protected $branchModel;
     protected $marriageModel;
     protected $divorceModel;
+    protected $traditionalModel;
     protected $userModel;
     protected $notificationModel;
 
@@ -23,6 +25,7 @@ class DashboardController extends BaseController
         $this->branchModel = new BranchModel();
         $this->marriageModel = new MarriageCertificateModel();
         $this->divorceModel = new DivorceCertificateModel();
+        $this->traditionalModel = new TraditionalCertificateModel();
         $this->userModel = new UsersModel();
         $this->notificationModel = new NotificationModel();
 
@@ -33,7 +36,8 @@ public function index()
 {
       // check if the user account is allowed to view marriage certificate activities
         if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+            // redirect to /dashboard/nativecert
+            return redirect()->to('/dashboard/nativecert');
             exit();
         }
 
@@ -157,9 +161,15 @@ public function general_dashboard()
                             ->orderBy('divorcecreated_at', 'DESC')
                             ->findAll();
 
+    // Traditional certificates data
+    $data['allTraditionalCerts'] = $this->traditionalModel
+                                  ->select('TraditionalCertificates.*, branchs_table.branchName')
+                                  ->join('branchs_table', 'TraditionalCertificates.tradCertBranch = branchs_table.branchId')
+                                  ->orderBy('tradCertCertCreatedAt', 'DESC')
+                                  ->findAll();
+
     // Counts for cards
     $data['totalMarriages'] = $this->marriageModel->countAll();
-
     $data['totalUncompletedMarriages'] = $this->marriageModel
                                             ->where('SIGNA', NULL)
                                             ->orWhere('SIGNB', NULL)
@@ -172,6 +182,14 @@ public function general_dashboard()
                                             ->orWhere('divorceSIGN_B', NULL)
                                             ->orWhere('divorceSIGN_C', NULL)
                                            ->countAllResults();
+
+    // Traditional certificates counts
+    $data['totalTraditionalCerts'] = $this->traditionalModel->countAll();
+    $data['totalUncompletedTraditionalCerts'] = $this->traditionalModel
+                                                   ->where('tradCertSignatoryA', NULL)
+                                                   ->orWhere('tradCertSignatoryB', NULL)
+                                                   ->orWhere('tradCertSignatoryC', NULL)
+                                                   ->countAllResults();
 
     // Branch data with counts for charts
     $data['marriagesPerBranch'] = $this->marriageModel
@@ -188,13 +206,19 @@ public function general_dashboard()
                                 ->orderBy('branchs_table.branchName')
                                 ->findAll();
 
+    // Traditional certificates per branch
+    $data['traditionalCertsPerBranch'] = $this->traditionalModel
+                                        ->select('branchs_table.branchId, branchs_table.branchName, COUNT(TraditionalCertificates.tradCertId) as count')
+                                        ->join('branchs_table', 'TraditionalCertificates.tradCertBranch = branchs_table.branchId')
+                                        ->groupBy('branchs_table.branchId, branchs_table.branchName')
+                                        ->orderBy('branchs_table.branchName')
+                                        ->findAll();
+
     // Get all branches for consistent chart display
     $data['allBranches'] = $this->branchModel
                             ->select('branchId, branchName, branchCode')
                             ->orderBy('branchName')
                             ->findAll();
-
-    
 
     // Additional counts
     $data['totalBranches'] = $this->branchModel->countAll();
@@ -205,18 +229,19 @@ public function general_dashboard()
         'branchCode' => array_column($data['allBranches'], 'branchCode'),
         'marriageCounts' => $this->mapCountsToBranches($data['allBranches'], $data['marriagesPerBranch']),
         'divorceCounts' => $this->mapCountsToBranches($data['allBranches'], $data['divorcesPerBranch']),
+        'traditionalCounts' => $this->mapCountsToBranches($data['allBranches'], $data['traditionalCertsPerBranch']),
         'totalCertificates' => [
             'marriages' => $data['totalMarriages'],
             'divorces' => $data['totalDivorces'],
+            'traditional' => $data['totalTraditionalCerts'],
             'completedMarriages' => $data['totalMarriages'] - $data['totalUncompletedMarriages'],
             'pendingMarriages' => $data['totalUncompletedMarriages'],
             'completedDivorces' => $data['totalDivorces'] - $data['totalUncompletedDivorces'],
-            'pendingDivorces' => $data['totalUncompletedDivorces']
+            'pendingDivorces' => $data['totalUncompletedDivorces'],
+            'completedTraditional' => $data['totalTraditionalCerts'] - $data['totalUncompletedTraditionalCerts'],
+            'pendingTraditional' => $data['totalUncompletedTraditionalCerts']
         ]
     ];
-
-    // print_r($data);
-    // exit();
 
     return view('dashboard/general_dashboard', $data);
 }

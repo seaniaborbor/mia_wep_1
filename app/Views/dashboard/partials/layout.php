@@ -99,15 +99,31 @@ $userData = session()->get('userData');
                 </a>
                 <div id="collapseTwo" class="collapse <?= mark_active('certificates', $passLink) ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Marriage Certificate</h6>
-                        <a class="collapse-item" href="/dashboard/wedcert">Marriage Cert. Log</a>
-                        <a class="collapse-item" href="/dashboard/wedcert/create">Issue Marriage Cert.  </a>
+                         
+                      <?php
+                        // show marriage and divorce cert links only to allowed user accounts
+                        if(in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])):
+                        ?>
+                            <h6 class="collapse-header">Marriage Certificate</h6>
+                            <a class="collapse-item" href="/dashboard/wedcert">Marriage Cert. Log</a>
+                            <a class="collapse-item" href="/dashboard/wedcert/create">Issue Marriage Cert.</a>
                             <h6 class="collapse-header">Divorce Certificate</h6>
-                            <a class="collapse-item" href="/dashboard/divorce_cert">Divorce Cert. Log </a>
+                            <a class="collapse-item" href="/dashboard/divorce_cert">Divorce Cert. Log</a>
                             <a class="collapse-item" href="/dashboard/divorce_cert/create">Issue Divorce Cert.</a>
-                        <h6 class="collapse-header">Native Doc Certificate</h6>
-                        <a class="collapse-item" href="/dashboard/nativecert">Issue Native Cert </a>
-                        <a class="collapse-item" href="/dashboard/nativecert/create">Native Doc Cert Log</a>
+                        <?php
+                        endif;
+                        ?>
+                        <?php 
+                            // check if the user account is allowed to view native doctor activities
+                            if(in_array(session()->get('userData')['userAccountType'], ['tradCertSignatoryA','tradCertSignatoryB','tradCertSignatoryC','tradCertEntryClerk', 'SIGNC'])){
+                                // redirect to /dashboard/nativecert
+                                ?>
+                                    <h6 class="collapse-header">Native Doc Certificate</h6>
+                                    <a class="collapse-item" href="/dashboard/nativecert"> Culture Cert Log</a>
+                                    <a class="collapse-item" href="/dashboard/nativecert/create">Issue Cuture Cert</a>
+                                <?php 
+                            }
+                        ?>
                     </div>
                 </div>
             </li>
