@@ -121,7 +121,7 @@
                                             : 'N/A'; ?>
 
                                         </p>
-                                    </div>LTW1
+                                    </div>
                                     <div class="col-sm-6">
                                         <small class="text-muted">Expires</small>
                                         <p class="mb-1 font-weight-bold liberia-red">
@@ -143,6 +143,62 @@
                                         </p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Attached Files Section -->
+                        <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
+                            <div class="card-header bg-white py-2 border-bottom d-flex justify-content-between align-items-center">
+                                <h6 class="m-0 liberia-blue">
+                                    <i class="fas fa-paperclip liberia-red mr-2"></i>Attached Files
+                                </h6>
+                                <button type="button" class="btn btn-sm liberia-btn-blue" data-toggle="modal" data-target="#uploadFileModal">
+                                    <i class="fas fa-upload mr-1"></i> Upload File
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <?php if (!empty($attachedFiles)): ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-hover">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th>File Title</th>
+                                                    <th>Upload Date</th>
+                                                    <th>Uploaded By</th>
+                                                    <th width="80">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($attachedFiles as $file): ?>
+                                                    <tr>
+                                                        <td>
+                                                            <i class="fas fa-file <?= $file['file_type'] == 'pdf' ? 'text-danger' : 'text-primary' ?> mr-2"></i>
+                                                            <a href="<?= base_url('uploads/herbal_cert_docs/' . $file['file_name']) ?>" target="_blank" class="text-decoration-none">
+                                                                <?= esc($file['file_title']) ?>
+                                                            </a>
+                                                        </td>
+                                                        <td><?= date('M j, Y', strtotime($file['upload_date'])) ?></td>
+                                                        <td><?= esc($file['uploaded_by_name']) ?></td>
+                                                        <td>
+                                                            <a href="/dashboard/nativecert/delete_file/<?= $file['id'] ?>/<?= $certificate['tradCertId'] ?>" 
+                                                               class="btn btn-sm btn-outline-danger" 
+                                                               onclick="return confirm('Are you sure you want to delete this file? This action cannot be undone.');"
+                                                               title="Delete File">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted mb-0">No files attached to this certificate yet.</p>
+                                        <small class="text-muted">Click the upload button to add files.</small>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -239,7 +295,7 @@
                                     Please review all information carefully before saving changes to a certificate record.
                                 </p>
                                 <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>Ensure the holder’s name is correct.</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>Ensure the holder's name is correct.</li>
                                     <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>Verify town, district, and county accuracy.</li>
                                     <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>Replace photo only if outdated.</li>
                                     <li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>Check operation type and revenue number.</li>
@@ -261,5 +317,51 @@
     </div>
 </div>
 
+<!-- Upload File Modal -->
+<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog" aria-labelledby="uploadFileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header liberia-card-blue">
+                <h5 class="modal-title liberia-blue" id="uploadFileModalLabel">
+                    <i class="fas fa-upload mr-2"></i>Upload File
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/dashboard/nativecert/upload_file/<?= $certificate['tradCertId'] ?>" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="fileTitle" class="font-weight-bold">File Title</label>
+                        <input type="text" class="form-control" id="fileTitle" name="file_title" required placeholder="Enter a descriptive title for this file">
+                    </div>
+                    <div class="form-group">
+                        <label for="fileUpload" class="font-weight-bold">Select File</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="fileUpload" name="file_upload" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <label class="custom-file-label" for="fileUpload">Choose file (PDF, Word, Images)</label>
+                        </div>
+                        <small class="form-text text-muted">Maximum file size: 5MB. Supported formats: PDF, DOC, DOCX, JPG, PNG</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn liberia-btn-blue">
+                        <i class="fas fa-upload mr-1"></i> Upload File
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Update custom file input label with selected file name
+document.getElementById('fileUpload').addEventListener('change', function(e) {
+    var fileName = e.target.files[0].name;
+    var nextSibling = e.target.nextElementSibling;
+    nextSibling.innerText = fileName;
+});
+</script>
 
 <?= $this->endSection() ?>
