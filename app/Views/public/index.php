@@ -68,7 +68,7 @@
                 </div>
                 
                 <div class="certificate-action">
-                    <a href="/instrunction/marriage_cert_info" class="btn btn-primary btn-sm">
+                    <a href="/instrunction/not_available_info" class="btn btn-primary btn-sm">
                         <i class="fas fa-paper-plane me-1"></i> Find Out More
                     </a>
                 </div>
@@ -104,7 +104,7 @@
                 </div>
                 
                 <div class="certificate-action">
-                    <a href="/instrunction/divorce_cert_info" class="btn btn-primary btn-sm">
+                    <a href="/instrunction/not_available_info" class="btn btn-primary btn-sm">
                         <i class="fas fa-paper-plane me-1"></i> Find Out More
                     </a>
                 </div>

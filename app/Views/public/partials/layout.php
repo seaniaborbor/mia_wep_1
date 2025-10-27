@@ -483,7 +483,7 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             display: none;
-            z-index: 1000;
+            z-index: 2000;
             transform-origin: bottom right;
             opacity: 0;
             transform: scale(0.8);
