@@ -19,6 +19,9 @@
                         <button id="downloadBtn" class="btn btn-success">
                             Download Certificate (PNG)
                         </button>
+                        <button id="printBtn" class="btn btn-primary">
+                            Print Certificate
+                        </button>
                         <button id="resetZoomBtn" class="btn btn-outline-secondary">
                             Reset Zoom
                         </button>
@@ -66,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.drawImage(bgImg, 0, 0, CERT_WIDTH, CERT_HEIGHT);
 
         const data = <?= json_encode($certificate) ?>;
+        console.log('Certificate Data:', data);
 
         const sn = data.tradCertSn || '';
         const revenueNo = data.tradRevenueNo || '';
@@ -76,9 +80,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const operation = data.tradCertHolderOperationType || '';
         const issued = data.tradCertDateIssued || '';
         const duration = parseInt(data.tradCertDuration || 0);
-        const expires = new Date(issued);
-        expires.setDate(expires.getDate() + duration);
-        const expiryDate = expires.toISOString().split('T')[0];
+        
+        // Fixed date handling
+        let expiryDate = '';
+        if (issued) {
+            const expires = new Date(issued);
+            if (!isNaN(expires.getTime())) {
+                expires.setDate(expires.getDate() + duration);
+                expiryDate = expires.toISOString().split('T')[0];
+            }
+        }
 
         // === Text Fields ===
         drawText(sn, 1799, 530, 28, 'bold');
@@ -94,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // === Holder's Photo ===
         const holderImage = new Image();
         holderImage.crossOrigin = "Anonymous";
-        const imagePath = '<?= base_url('/uploads/certificate_holders/') ?>' + data.tradCertHolderPic;
+        const imagePath = '<?= base_url('/uploads/certificate_holders/') ?>' + (data.tradCertHolderPic || '');
         holderImage.src = imagePath;
 
         holderImage.onload = function () {
@@ -112,6 +123,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         holderImage.onerror = function () {
             console.error('Failed to load holder image:', imagePath);
+            // Draw placeholder or continue without image
+            const imgX = 300, imgY = 440, imgWidth = 275, imgHeight = 275;
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(imgX - 5, imgY - 5, imgWidth + 10, imgHeight + 10);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(imgX - 5, imgY - 5, imgWidth + 10, imgHeight + 10);
+            
             drawSignatures();
         };
 
@@ -129,6 +148,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let loaded = 0;
             const total = sigKeys.length;
+
+            // If no signatures at all, go straight to QR
+            if (total === 0) {
+                drawQRCode();
+                return;
+            }
 
             sigKeys.forEach((key, idx) => {
                 const file = data[key] || '';
@@ -152,9 +177,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (++loaded === total) drawQRCode();
                 };
             });
-
-            // If no signatures at all, go straight to QR
-            if (total === 0) drawQRCode();
         }
 
         // === QR CODE ===
@@ -170,6 +192,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 const qrY = CERT_HEIGHT - 449;
                 ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
             };
+
+            qrImg.onerror = function () {
+                console.warn('QR code failed to load');
+            };
         }
     }
 
@@ -183,7 +209,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function formatDate(dateStr) {
+        if (!dateStr) return '';
+        
         const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '';
+        
         return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
@@ -195,7 +225,50 @@ document.addEventListener('DOMContentLoaded', function () {
         link.click();
     });
 
-    // Reset zoom (optional)
+    // Print functionality
+    document.getElementById('printBtn').addEventListener('click', function () {
+        const dataUrl = canvas.toDataURL('image/png');
+        const printWindow = window.open('', '_blank');
+        
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Print Certificate</title>
+                <style>
+                    body { 
+                        margin: 0; 
+                        padding: 20px; 
+                        text-align: center; 
+                        background: white;
+                    }
+                    img { 
+                        max-width: 100%; 
+                        height: auto; 
+                    }
+                    @media print {
+                        body { padding: 0; }
+                        img { width: 100%; }
+                    }
+                </style>
+            </head>
+            <body>
+                <img src="${dataUrl}" alt="Certificate" />
+                <script>
+                    window.onload = function() {
+                        window.print();
+                        setTimeout(function() {
+                            window.close();
+                        }, 500);
+                    }
+                <\/script>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+    });
+
+    // Reset zoom
     document.getElementById('resetZoomBtn').addEventListener('click', resizeCanvas);
 });
 </script>
