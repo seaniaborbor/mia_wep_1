@@ -329,28 +329,39 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="/dashboard/nativecert/upload_file/<?= $certificate['tradCertId'] ?>" method="post" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="fileTitle" class="font-weight-bold">File Title</label>
-                        <input type="text" class="form-control" id="fileTitle" name="file_title" required placeholder="Enter a descriptive title for this file">
-                    </div>
-                    <div class="form-group">
-                        <label for="fileUpload" class="font-weight-bold">Select File</label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="fileUpload" name="file_upload" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            <label class="custom-file-label" for="fileUpload">Choose file (PDF, Word, Images)</label>
-                        </div>
-                        <small class="form-text text-muted">Maximum file size: 5MB. Supported formats: PDF, DOC, DOCX, JPG, PNG</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn liberia-btn-blue">
-                        <i class="fas fa-upload mr-1"></i> Upload File
-                    </button>
-                </div>
-            </form>
+           <form action="/dashboard/certificate_files/upload_file/<?= $certificate['tradCertId'] ?>" 
+      method="post" enctype="multipart/form-data">
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="fileTitle" class="font-weight-bold">File Title</label>
+            <input type="text" class="form-control" id="fileTitle" name="fileTitle" 
+                   required placeholder="Enter a descriptive title for this file">
+        </div>
+
+        <div class="form-group">
+            <label for="fileUpload" class="font-weight-bold">Select File</label>
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile"
+                       required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.txt">
+                <label class="custom-file-label" for="fileUpload">Choose file (PDF, Word, Images)</label>
+            </div>
+            <small class="form-text text-muted">
+                Maximum file size: 2MB. Supported formats: PDF, DOC, DOCX, JPG, PNG, XLS, TXT
+            </small>
+        </div>
+
+        <!-- Hidden field for certificate category -->
+        <input type="hidden" name="certificateFile_category" value="traditional">
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn liberia-btn-blue">
+            <i class="fas fa-upload mr-1"></i> Upload File
+        </button>
+    </div>
+</form>
+
         </div>
     </div>
 </div>

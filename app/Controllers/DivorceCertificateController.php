@@ -6,7 +6,7 @@ use App\Models\BranchModel;
 use App\Models\UsersModel;
 use App\Models\MarriageCertificateModel;
 use App\Models\DivorceCertificateModel;
-
+use App\Models\FileModel;
 
 class DivorceCertificateController extends BaseController
 {
@@ -17,6 +17,7 @@ class DivorceCertificateController extends BaseController
         $this->userModel = new UsersModel();
         $this->weddingCertModel = new MarriageCertificateModel();
         $this->divorceCertificateModel = new DivorceCertificateModel();
+        $this->fileModel = new FileModel();
     }
 
     public function index()
@@ -217,8 +218,11 @@ public function view($certificate_id)
             ->orderBy('divorce_certificates.divorceCertId', 'DESC')
             ->findAll();
 
-            // print_r($data['branch_complete_certificate']);
-            // exit();
+           $data['attachedFiles'] = $this->fileModel->select('login_users.userFullName, login_users.userId, attached_file_table.*')
+                                    ->join('login_users', 'login_users.userId = attached_file_table.fileCreatedBy')
+                                    ->where('fileCertificateId', $certificate_id)
+                                    ->where('certificateFile_category', 'divorce')->findAll();
+
 
             if (empty($data['certificate'])) {
                 return redirect()->back()->with('error', 'Certificate not found');
@@ -229,14 +233,15 @@ public function view($certificate_id)
         }
         
 
-     public function edite()
+
+public function edite()
         {
             $data['title'] = 'Users List';
             $data['passLink'] = 'certificates';
             
 
             return view('dashboard/divorce_certificate_log', $data);
-        }
+}
 
 public function sign($certificate_id)
     {
@@ -487,10 +492,22 @@ public function allow_edit($certificate_id)
         return redirect()->back()->with('error', 'You are not authorized to allow edit for this certificate. It is not at your branch.');
     }
 
-    // Allow edit by updating the status or a specific field
-    $certificate['divorceSIGN_C'] = null; // Assuming you have a field to indicate edit permission
-    $certificate['divorceSIGN_C_ID'] = null; // Assuming you have a field to indicate edit permission
-    $certificate['divorceSIGN_C_DATE_SIGNED'] = null; // Assuming you have a field to indicate edit permission
+    // Allow edit by updating the status of signator C
+    $certificate['divorceSIGN_C'] = null; 
+    $certificate['divorceSIGN_C_ID'] = null; 
+    $certificate['divorceSIGN_C_DATE_SIGNED'] = null; 
+
+    // Allow edit by updating the status of signator A 
+    $certificate['divorceSIGN_A'] = null; 
+    $certificate['divorceSIGN_A_ID'] = null; 
+    $certificate['divorceSIGN_A_DATE_SIGNED'] = null; 
+
+    // Allow edit by the clearing the status signatory B 
+    $certificate['divorceSIGN_B'] = null; 
+    $certificate['divorceSIGN_B_ID'] = null; 
+    $certificate['divorceSIGN_B_DATE_SIGNED'] = null; 
+
+
     if($this->divorceCertificateModel->update($certificate_id, $certificate)){
         return redirect()->back()->with('success', 'Edit permission granted for the certificate.');
     } else {
@@ -498,5 +515,7 @@ public function allow_edit($certificate_id)
     };
 
 }
+
+
     
 }

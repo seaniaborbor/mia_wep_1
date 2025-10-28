@@ -103,7 +103,9 @@ $routes->get('/dashboard/wedcert/allow_edit/(:num)', 'WeddingCertController::all
 
 
 
-$routes->get('/dashboard/certificate_files/upload_file/(:num)', 'FileUploadController::user_profile/$1');
+$routes->post('/dashboard/certificate_files/upload_file/(:num)', 'FileUploadController::upload_certificate_file/$1');
+$routes->get('/dashboard/certificate_files/delete/(:num)/(:num)', 'FileUploadController::delete/$1/$2');
+
 
 // divorce certificate routes 
 

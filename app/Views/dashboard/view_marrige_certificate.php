@@ -359,17 +359,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="fileTitle" class="font-weight-bold">File Title</label>
-                        <input type="text" class="form-control" id="fileTitle" name="file_title" required placeholder="Enter a descriptive title for this file">
+                        <input type="text" class="form-control" id="fileTitle" name="fileTitle" required placeholder="Enter a descriptive title for this file">
                     </div>
                     <div class="form-group">
                         <label for="fileUpload" class="font-weight-bold">Select File</label>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="fileUpload" name="file_upload" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                             <label class="custom-file-label" for="fileUpload">Choose file (PDF, Word, Images)</label>
                         </div>
                         <small class="form-text text-muted">Maximum file size: 5MB. Supported formats: PDF, DOC, DOCX, JPG, PNG</small>
                     </div>
-                    <input type="hidden" value="marriage_certificate" name="certificate_type">
+                    <input type="hidden" value="marriage" name="certificateFile_category">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
