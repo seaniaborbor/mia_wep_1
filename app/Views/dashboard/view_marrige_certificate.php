@@ -355,7 +355,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="/dashboard/wedcert/upload_file/<?= $certificate['marriage_cert_id'] ?>" method="post" enctype="multipart/form-data">
+            <form action="/dashboard/certificate_files/upload_file/<?= $certificate['marriage_cert_id'] ?>" method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="fileTitle" class="font-weight-bold">File Title</label>
@@ -369,6 +369,7 @@
                         </div>
                         <small class="form-text text-muted">Maximum file size: 5MB. Supported formats: PDF, DOC, DOCX, JPG, PNG</small>
                     </div>
+                    <input type="hidden" value="marriage_certificate" name="certificate_type">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>

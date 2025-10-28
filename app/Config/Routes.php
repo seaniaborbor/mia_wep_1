@@ -102,17 +102,8 @@ $routes->post('/dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->get('/dashboard/wedcert/allow_edit/(:num)', 'WeddingCertController::allow_edit/$1'); // allow edit for the certificate
 
 
-// ajax routes 
 
-$routes->get('/dashboard/ajax/user_profile/(:num)', 'AjaxRequestsController::user_profile/$1');
-$routes->post('/dashboard/ajax/save_comment', 'AjaxRequestsController::comment_on_certificate');
-$routes->get('/dashboard/ajax/delete_comments/(:num)', 'AjaxRequestsController::delete/$1');
-$routes->get('/dashboard/ajax/get_comments/(:any)/(:num)', 'AjaxRequestsController::get_comments/$1/$2');// this will load comments 
-$routes->get('/dashboard/ajax/show_notification', 'AjaxRequestsController::show_notification');
-$routes->get('/dashboard/ajax/mark_notification_as_view/(:num)', 'AjaxRequestsController::mark_notification_as_view/$1');
-$routes->post('/dashboard/upload/wedcert_file', 'MarriageCertificateFileController::upload');
-$routes->get('/dashboard/get_file/wedcert_file/(:any)/(:num)', 'MarriageCertificateFileController::wedcert_file_get/$1/$2'); // this will get all the files for a marriage certificate
-$routes->post('/dashboard/ajax/delete_file/(:num)', 'MarriageCertificateFileController::delete_file/$1');
+$routes->get('/dashboard/certificate_files/upload_file/(:num)', 'FileUploadController::user_profile/$1');
 
 // divorce certificate routes 
 
