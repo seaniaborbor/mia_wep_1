@@ -90,16 +90,16 @@ public function view($cert_id)
     // Fetch signer profiles (A, B, C)
     $signerProfiles = [];
 
-    $signerProfiles['SIGNA_profile'] = !empty($certificate['SIGNA']) 
-        ? $this->_getSignerDetail($certificate['SIGNA']) 
+    $signerProfiles['SIGNA_profile'] = !empty($certificate['SIGNA_id']) 
+        ? $this->_getSignerDetail($certificate['SIGNA_id']) 
         : null;
 
-    $signerProfiles['SIGNB_profile'] = !empty($certificate['SIGNB']) 
-        ? $this->_getSignerDetail($certificate['SIGNB']) 
+    $signerProfiles['SIGNB_profile'] = !empty($certificate['SIGNB_id']) 
+        ? $this->_getSignerDetail($certificate['SIGNB_id']) 
         : null;
 
-    $signerProfiles['SIGNC_profile'] = !empty($certificate['SIGNC']) 
-        ? $this->_getSignerDetail($certificate['SIGNC']) 
+    $signerProfiles['SIGNC_profile'] = !empty($certificate['SIGNC_id']) 
+        ? $this->_getSignerDetail($certificate['SIGNC_id']) 
         : null;
 
     // Merge signer profiles into $data
