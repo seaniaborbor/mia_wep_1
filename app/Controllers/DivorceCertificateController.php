@@ -196,9 +196,6 @@ public function create()
 }
 
 
-
-
-
 public function view($certificate_id)
         {
             // check if the user account is allowed to view marriage certificate activities
@@ -226,8 +223,28 @@ public function view($certificate_id)
 
             if (empty($data['certificate'])) {
                 return redirect()->back()->with('error', 'Certificate not found');
-            }            
+            }
+
+
+            // Fetch signer profiles (A, B, and C)
+            $signerProfiles = [];
+
+            $signerProfiles['SIGNA_profile'] = isset($data['certificate'][0]['divorceSIGN_A_ID'])
+                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_A_ID'])
+                : null;
+
+            $signerProfiles['SIGNB_profile'] = isset($data['certificate'][0]['divorceSIGN_B_ID'])
+                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_B_ID'])
+                : null;
+
+            $signerProfiles['SIGNC_profile'] = isset($data['certificate'][0]['divorceSIGN_C_ID'])
+                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_C_ID'])
+                : null;
+
+            $data['signerProfiles'] = $signerProfiles;
             
+
+
 
             return view('dashboard/view_a_divorce_cert', $data);
         }

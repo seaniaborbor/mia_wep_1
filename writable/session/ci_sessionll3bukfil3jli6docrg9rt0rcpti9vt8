@@ -1,0 +1,1 @@
+__ci_last_regenerate|i:1761681361;_ci_previous_url|s:26:"http://localhost:8080/auth";error|s:20:"Invalid credentials.";__ci_vars|a:2:{s:5:"error";s:3:"old";s:13:"_ci_old_input";s:3:"old";}_ci_old_input|a:2:{s:3:"get";a:0:{}s:4:"post";a:3:{s:14:"csrf_test_name";s:32:"facf988742a5ce8f82ada64caa1228a1";s:9:"userEmail";s:16:"admin2@gmail.com";s:12:"userPassword";s:8:"password";}}
