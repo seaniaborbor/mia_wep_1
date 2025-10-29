@@ -5,6 +5,7 @@ use App\Controllers\BaseController;
 use App\Models\BranchModel;
 use App\Models\UsersModel;
 use App\Models\MarriageCertificateModel;
+use App\Models\FileModel;
 
 class WeddingCertController extends BaseController
 
@@ -16,6 +17,8 @@ public function __construct()
         $this->branchModel = new BranchModel();
         $this->userModel = new UsersModel();
         $this->weddingCertModel = new MarriageCertificateModel();
+        $this->fileModel = new FileModel();
+
        
     }
 
@@ -55,40 +58,64 @@ public function index()
         return view('dashboard/marriage_certificate_list', $data);
 }
 
-    /*
-    * METHOD TO VIEW WEDDING CERTIFICATE DETAILS
-    */
-public function view($cert_id){
+/*
+ * METHOD TO VIEW WEDDING CERTIFICATE DETAILS
+ */
+public function view($cert_id)
+{
+    // Check user permission
+    if (!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])) {
+        return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+    }
 
-     // check if the user account is allowed to view marriage certificate
-        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-            exit();
-        }
+    // Fetch certificate details
+    $data['passLink'] = 'certificates';
+    $data['certificate'] = $this->weddingCertModel
+        ->join('branchs_table', 'branchs_table.branchId = marriage_certificates.cert_branch')
+        ->join('login_users', 'login_users.userId = marriage_certificates.ENTRY')
+        ->where('marriage_certificates.marriage_cert_id', $cert_id)
+        ->first();
+
+    if (empty($data['certificate'])) {
+        return redirect()->back()->with('error', 'Certificate not found');
+    }
+
+    $certificate = $data['certificate'];
+
+    // Ensure user belongs to the same branch or is a super admin
+    if (!(session()->get('userData')['userBreanch'] == $certificate['cert_branch'] || session()->get('userData')['userBreanch'] == 1)) {
+        return redirect()->back()->with('error', 'Your access to this document is not permissible.');
+    }
+
+    // Fetch signer profiles (A, B, C)
+    $signerProfiles = [];
+
+    $signerProfiles['SIGNA_profile'] = !empty($certificate['SIGNA']) 
+        ? $this->_getSignerDetail($certificate['SIGNA']) 
+        : null;
+
+    $signerProfiles['SIGNB_profile'] = !empty($certificate['SIGNB']) 
+        ? $this->_getSignerDetail($certificate['SIGNB']) 
+        : null;
+
+    $signerProfiles['SIGNC_profile'] = !empty($certificate['SIGNC']) 
+        ? $this->_getSignerDetail($certificate['SIGNC']) 
+        : null;
+
+    // Merge signer profiles into $data
+    $data['signerProfiles'] = $signerProfiles;
 
 
-        $data['passLink'] = 'certificates';
-        $data['certificate'] = $this->weddingCertModel
-                                ->join('branchs_table', 'branchs_table.branchId = marriage_certificates.cert_branch')
-                                ->join('login_users', 'login_users.userId = marriage_certificates.ENTRY')
-                                ->where('marriage_certificates.marriage_cert_id', $cert_id)
-                                ->first();
-        if(empty($data['certificate'])){
-            return redirect()->back()->with('error', 'certificate not found');
-            exit();
-        }
+     $data['attachedFiles'] = $this->fileModel->select('login_users.userFullName, login_users.userId, attached_file_table.*')
+                                    ->join('login_users', 'login_users.userId = attached_file_table.fileCreatedBy')
+                                    ->where('fileCertificateId', $cert_id)
+                                    ->where('certificateFile_category', 'marriage')->findAll();
 
-        $certificate = $data['certificate'];
-        if(!(session()->get('userData')['userBreanch'] == $certificate['cert_branch'] || session()->get('userData')['userBreanch'] == 1)){
-            return redirect()->back()->with('error', 'Your access to this document is not permissable.');
-        }
-         // check if the user account is allowed to view marriage certificate
-        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-            exit();
-        }
-        return view('dashboard/view_marrige_certificate', $data);
+
+    // Render the certificate view
+    return view('dashboard/view_marrige_certificate', $data);
 }
+
 
     /*
     * METHOD TO HANDLE SIGNING OF WEDDING CERTIFICATE
@@ -963,6 +990,18 @@ public function getSignerDetails()
         ]);
     }
 }
+
+/*
+* METHOD TO  GET THE SIGNER PROFILE IN ANOTHER METHOD
+*/
+
+public function _getSignerDetail($user_id)
+{
+    return $this->userModel->find($user_id) ?? null;
+}
+
+
+
 
 /*
 * METHOD TO ALLOW EDIT ON A CERTIFICATE
