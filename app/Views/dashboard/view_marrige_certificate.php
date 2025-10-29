@@ -223,7 +223,7 @@
                                             <tbody>
                                                 <?php foreach ($attachedFiles as $file): ?>
                                                     <?php
-                                                        $filePath = 'uploads/marriage_docs/' . $file['certificateFile'];
+                                                        $filePath = 'uploads/certificates/' . $file['certificateFile'];
                                                         $fileUrl  = base_url($filePath);
                                                         $fileExt  = strtolower(pathinfo($file['certificateFile'], PATHINFO_EXTENSION));
                                                     ?>

@@ -301,6 +301,24 @@ class NativeDocCertController extends BaseController
             'passLink' => 'nativecert'
         ];
 
+        // Fetch signer profiles (A, B, and C)
+        $signerProfiles = [];
+
+        $signerProfiles['SIGNA_profile'] = isset($data['certificate'][0]['divorceSIGN_A_ID'])
+                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_A_ID'])
+                : null;
+
+        $signerProfiles['SIGNB_profile'] = isset($data['certificate'][0]['divorceSIGN_B_ID'])
+                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_B_ID'])
+                : null;
+
+        $signerProfiles['SIGNC_profile'] = isset($data['certificate'][0]['divorceSIGN_C_ID'])
+                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_C_ID'])
+                : null;
+
+        $data['signerProfiles'] = $signerProfiles;
+        
+
         return view('dashboard/view_herbal_cert', $data);
     }
 
