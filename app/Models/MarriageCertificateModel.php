@@ -57,7 +57,7 @@ class MarriageCertificateModel extends Model
 
 
         // Official Use
-        'SIGNA', 'SIGNB', 'SIGNC', 'ENTRY', 'last_edited_by'
+        'SIGNA', 'SIGNB', 'SIGNC', 'ENTRY', 'last_edited_by', 'isWedCertIssued'
     ];
 
     protected $beforeInsert = ['generateMarriageIdentifiers'];

@@ -112,6 +112,14 @@ public function view($cert_id)
                                     ->where('certificateFile_category', 'marriage')->findAll();
 
 
+    // view who last edited the the certificate
+    $data['lastEditedByProfile'] = $this->userModel->find($certificate['last_edited_by']);
+    $data['createdBy'] = $this->userModel->find($certificate['ENTRY']);
+    $data['last_edited_at'] = $certificate['last_edited_at'];
+
+    // print_r($data);
+    // exit();
+
     // Render the certificate view
     return view('dashboard/view_marrige_certificate', $data);
 }
@@ -1012,6 +1020,12 @@ public function allow_edit($cert_id)
         return redirect()->back()->with('error', 'Certificate not found.');
     }
 
+     // check if this certificate was already marked
+     if(!empty($certificate['isWedCertIssued'])){
+        return redirect()->back()->with('error', 'This certificate was already marked as issued. You cannot alter it any more ');
+        exit();
+    }
+
     $data['certificate'] = $certificate;
     // check if the user is at the same branch as the certificate
     if (session()->get('userData')['userBreanch'] != $certificate['cert_branch']) {
@@ -1021,6 +1035,7 @@ public function allow_edit($cert_id)
     if (session()->get('userData')['userAccountType'] != "SIGNC") {
         return redirect()->back()->with('error', 'Only authorized users can allow edit on this certificate.');
     }
+
 
     if($certificate["SIGNC"] != null){
 
@@ -1049,6 +1064,60 @@ public function allow_edit($cert_id)
         return redirect()->back()->with('error', 'Certificate is already allowed for edit.');
     }
 
+}
+
+
+public function mark_as_issued($cert_id){
+
+
+    // find certificate 
+    $certificate = $this->weddingCertModel->find($cert_id);
+
+    if(!$certificate){
+        return redirect()->back()->with('error', 'The certificate you requested to mark as issue isn not found in the database');
+        exit();
+    }
+
+   // check if the user is at the same branch as the certificate
+    if (session()->get('userData')['userBreanch'] != $certificate['cert_branch']) {
+        return redirect()->back()->with('error', 'Access deniled, please visit the branch where this certificate was issued.');
+    }
+
+    // only allow edit if the user account type is ENTRY CLEARK 
+    if (session()->get('userData')['userAccountType'] != "ENTRY") {
+        return redirect()->back()->with('error', 'Only entry clerk can mark this as issued');
+    }
+
+
+    // check if this certificate was already marked
+     if(!empty($certificate['isWedCertIssued'])){
+        return redirect()->back()->with('error', 'This certificate was already marked as issued');
+        exit();
+    }
+
+    //make sure the certificate is fully signed
+     if(
+        empty($certificate['SIGNA_id']) ||
+        empty($certificate['SIGNB_id']) ||
+        empty($certificate['SIGNC_id'])
+    ){
+        return redirect()->back()->with('error', 'There should be a all three signatures before signing this certificate');
+        exit();
+    } 
+
+    // if certificate is available set the issued column to 1 (True), and the edit metadata 
+    $certificate['isWedCertIssued'] = 1;
+    $certificate['last_edited_by'] = session()->get('userData')['userId']; // get the id of who's doing this
+    $certificate['last_edited_at'] =  date('Y-m-d H:i:s'); // get when are they doing it
+
+    // try updating and return success if it fails not
+    if($this->weddingCertModel->update($cert_id, $certificate)){
+         return redirect()->back()->with('success', 'The Certificate is nown marked as issued');
+         exit();
+    }else{
+       return redirect()->back()->with('error', 'An error occured while marking this certificate as issued');
+    }
+           
 }
 
 

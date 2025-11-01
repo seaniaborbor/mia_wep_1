@@ -24,6 +24,11 @@
                             : 'bg-warning text-dark animate__animated animate__pulse animate__infinite' ?>">
                         <?= $isCompleted ? 'Completed' : 'Pending' ?>
                     </span>
+                    <?php if($certificate['isWedCertIssued'] == 1): ?>
+                        <span class="btn btn-sm btn-success rounded-circle">
+                            <i class="fa fa-check-circle"></i>
+                        </span>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -115,7 +120,7 @@
                                             <i class="fas fa-female liberia-red mr-2"></i>Bride's Particulars
                                         </h6>
                                     </div>
-                                    <div class="card-body">
+                                    <div the card-body">
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <p><span class="govt-label">Full Name:</span><br><?= esc($certificate['bride_name']) ?></p>
@@ -306,17 +311,17 @@
                                 </div>
                             </div>
                         </div>
-                         <?php if(isset($isCompleted)) : ?>
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <p>The certificate is completed, please click <a href="#">here </a> to mark it as Issued. </p>
-                                            </div>
+                        <?php if($isCompleted && $certificate['isWedCertIssued'] == 0) : ?>
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p>The certificate is completed, please click <a href="/dashboard/wedcert/issue/<?= $certificate['marriage_cert_id'] ?>">here </a> to mark it as Issued. </p>
                                         </div>
                                     </div>
                                 </div>
-                            <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- ==================== SIDEBAR ==================== -->
@@ -468,111 +473,146 @@
                             </div>
                         </div>
                         <?php endif; ?>
+
+                        <!-- Certificate Metadata -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-2 border-bottom">
+                                <h6 class="m-0 liberia-blue">Certificate Metadata</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="rounded row align-items-center rounded m-2 shadow-sm">
+                                    <div class="col-md-3 text-center">
+                                        <?php
+                                            $photoPath = FCPATH . 'uploads/users/pictures/' . ($createdBy['userPicture'] ?? '');
+                                            $photoUrl = base_url('uploads/users/pictures/' . ($createdBy['userPicture'] ?? ''));
+                                            $hasPhoto = !empty($createdBy['userPicture']) && file_exists($photoPath);
+                                        ?>
+                                        <?php if ($hasPhoto): ?>
+                                            <img src="<?= $photoUrl ?>" alt="<?= esc($createdBy['userFullName']) ?>"
+                                                 class="rounded-circle shadow-sm img-thumbnail"
+                                                 style="width:100px;height:100px;object-fit:cover;">
+                                        <?php else: ?>
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center shadow-sm img-thumbnail"
+                                                 style="width:100px;height:100px;">
+                                                <i class="fas fa-user text-muted fa-2x"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <p class="mb-0"><strong>Uploaded by:</strong> <?= esc($createdBy['userFullName']) ?></p>
+                                        <small class="mb-0"><strong>Position:</strong> <?= esc($createdBy['userPosition']) ?></small><br>
+                                        <small class="mb-0"><strong>Email:</strong> <?= esc($createdBy['userEmail']) ?></small><br>
+                                        <small class="mb-0"><strong>Created on:</strong> <?= date('M j, Y, g:i A', strtotime($certificate['created_at'])) ?></small><br>
+                                        <small class="mb-0"><strong>Last Edited:</strong> <?= date('M j, Y, g:i A', strtotime($last_edited_at)) ?></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </重点
 
-<!-- ==================== FILE PREVIEW MODAL ==================== -->
-<div class="modal fade" id="filePreviewModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filePreviewTitle">File Preview</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-            </div>
-            <div class="modal-body p-0">
-                <div id="filePreviewContainer" style="height:70vh;"></div>
-            </div>
-            <div class="modal-footer">
-                <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>Download</a>
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ==================== UPLOAD FILE MODAL ==================== -->
-<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header liberia-card-blue">
-                <h5 class="modal-title liberia-blue">Upload File</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-            </div>
-            <form action="/dashboard/certificate_files/upload_file/<?= $certificate['marriage_cert_id'] ?>"
-                  method="post" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="fileTitle" class="font-weight-bold">File Title</label>
-                        <input type="text" class="form-control" id="fileTitle" name="fileTitle" required
-                               placeholder="Enter a descriptive title">
-                    </div>
-                    <div class="form-group">
-                        <label for="fileUpload" class="font-weight-bold">Select File</label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile"
-                                   required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            <label class="custom-file-label" for="fileUpload">Choose file...</label>
-                        </div>
-                        <small class="form-text text-muted">Max 5 MB. Supported: PDF, DOC, JPG, PNG</small>
-                    </div>
-                    <input type="hidden" name="certificateFile_category" value="marriage">
+    <!-- ==================== FILE PREVIEW MODAL ==================== -->
+    <div class="modal fade" id="filePreviewModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filePreviewTitle">File Preview</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div id="filePreviewContainer" style="height:70vh;"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn liberia-btn-blue">Upload File</button>
+                    <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>Download</a>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Animate.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <!-- ==================== UPLOAD FILE MODAL ==================== -->
+    <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header liberia-card-blue">
+                    <h5 class="modal-title liberia-blue">Upload File</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                </div>
+                <form action="/dashboard/certificate_files/upload_file/<?= $certificate['marriage_cert_id'] ?>"
+                      method="post" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="fileTitle" class="font-weight-bold">File Title</label>
+                            <input type="text" class="form-control" id="fileTitle" name="fileTitle" required
+                                   placeholder="Enter a descriptive title">
+                        </div>
+                        <div class="form-group">
+                            <label for="fileUpload" class="font-weight-bold">Select File</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile"
+                                       required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                <label class="custom-file-label" for="fileUpload">Choose file...</label>
+                            </div>
+                            <small class="form-text text-muted">Max 5 MB. Supported: PDF, DOC, JPG, PNG</small>
+                        </div>
+                        <input type="hidden" name="certificateFile_category" value="marriage">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn liberia-btn-blue">Upload File</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-<style>
-    .signer-card { transition: background .2s; }
-    .signer-card:hover { background: #f8f9fa; }
-    .liberia-status-badge { font-size: .9rem; font-weight: 600; }
-    .animate__pulse { animation-duration: 2s; }
-</style>
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-<script>
-    // File upload label
-    document.getElementById('fileUpload')?.addEventListener('change', function (e) {
-        const label = e.target.nextElementSibling;
-        label.innerText = e.target.files[0]?.name || 'Choose file...';
-    });
+    <style>
+        .signer-card { transition: background .2s; }
+        .signer-card:hover { background: #f8f9fa; }
+        .liberia-status-badge { font-size: .9rem; font-weight: 600; }
+        .animate__pulse { animation-duration: 2s; }
+    </style>
 
-    // File preview modal
-    document.querySelectorAll('.file-preview-link').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const title = this.dataset.title;
-            const url   = this.dataset.url;
-            const type  = this.dataset.type;
-            document.getElementById('filePreviewTitle').textContent = title;
-            document.getElementById('fileDownloadLink').href = url;
-            const container = document.getElementById('filePreviewContainer');
-            container.innerHTML = '';
-            if (type === 'pdf') {
-                container.innerHTML = `<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`;
-            } else if (['jpg','jpeg','png','gif'].includes(type)) {
-                container.innerHTML = `<img src="${url}" class="img-fluid h-100 w-100" style="object-fit:contain;">`;
-            } else {
-                container.innerHTML = `
-                    <div class="p-5 text-center text-muted">
-                        <i class="fas fa-file-alt fa-3x mb-3"></i>
-                        <p>Preview not available for .${type} files</p>
-                        <a href="${url}" class="btn btn-primary btn-sm" download>Download to View</a>
-                    </div>`;
-            }
-            $('#filePreviewModal').modal('show');
+    <script>
+        // File upload label
+        document.getElementById('fileUpload')?.addEventListener('change', function (e) {
+            const label = e.target.nextElementSibling;
+            label.innerText = e.target.files[0]?.name || 'Choose file...';
         });
-    });
-</script>
+
+        // File preview modal
+        document.querySelectorAll('.file-preview-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const title = this.dataset.title;
+                const url   = this.dataset.url;
+                const type  = this.dataset.type;
+                document.getElementById('filePreviewTitle').textContent = title;
+                document.getElementById('fileDownloadLink').href = url;
+                const container = document.getElementById('filePreviewContainer');
+                container.innerHTML = '';
+                if (type === 'pdf') {
+                    container.innerHTML = `<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`;
+                } else if (['jpg','jpeg','png','gif'].includes(type)) {
+                    container.innerHTML = `<img src="${url}" class="img-fluid h-100 w-100" style="object-fit:contain;">`;
+                } else {
+                    container.innerHTML = `
+                        <div class="p-5 text-center text-muted">
+                            <i class="fas fa-file-alt fa-3x mb-3"></i>
+                            <p>Preview not available for .${type} files</p>
+                            <a href="${url}" class="btn btn-primary btn-sm" download>Download to View</a>
+                        </div>`;
+                }
+                $('#filePreviewModal').modal('show');
+            });
+        });
+    </script>
 
 <?= $this->endSection() ?>

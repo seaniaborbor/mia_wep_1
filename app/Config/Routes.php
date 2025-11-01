@@ -100,6 +100,7 @@ $routes->get('/dashboard/wedcert/sign/(:num)', 'WeddingCertController::sign/$1')
 $routes->get('/dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->post('/dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->get('/dashboard/wedcert/allow_edit/(:num)', 'WeddingCertController::allow_edit/$1'); // allow edit for the certificate
+$routes->get('/dashboard/wedcert/issue/(:num)', 'WeddingCertController::mark_as_issued/$1'); // mark as issued 
 
 
 
