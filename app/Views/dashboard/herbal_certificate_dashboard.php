@@ -5,10 +5,16 @@
 <div class="row mt-3">
     <div class="col-12">
         <div class="card shadow-sm">
-            <div class="card-header bg-white border-bottom-success py-3">
+            <div class="card-header d-flex justify-content-between bg-white border-bottom-success py-3">
                 <h4 class="text-success mb-0 font-weight-bold">
-                    <i class="fas fa-leaf text-success mr-2"></i>Herbal Certificate Dashboard
+                    <i class="fas fa-leaf text-success mr-2"></i><?= $branchName ? $branchName : "Missing breanch name "; ?>
                 </h4>
+                    <a href="/dashboard/nativecert/general" class="btn btn-primary btn-icon-split btn-sm">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-globe"></i>
+                        </span>
+                        <span class="text">Nation's Dashboard</span>
+                    </a>
             </div>
 
             <div class="card-body p-4">

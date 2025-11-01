@@ -33,7 +33,15 @@ class TraditionalCertificateModel extends Model
         'tradCertInsertedBy',
         'tradCertAppliedType',
         'tradCertBranch',
-        'tradCertLastUpdatedBy'
+        'tradCertLastUpdatedBy',
+        // Newly added missing columns
+        'tradCertSignatoryAID',
+        'tradCertSignatoryADate',
+        'tradCertSignatoryBID',
+        'tradCertSignatoryBDate',
+        'tradCertSignatoryCID',
+        'tradCertSignatoryCDate',
+        'tradCertAmtPaid'
     ];
 
     /**
@@ -61,38 +69,38 @@ class TraditionalCertificateModel extends Model
      * Traditional Liberian practitioner types and their codes
      */
     private $operationTypeCodes = [
-        'ratualist'          => 'RAT',    // Traditional spiritual healer
-        'herbalist'          => 'HER',    // Traditional medicine practitioner
-        'native_doctor'      => 'NDC',    // Traditional doctor
-        'zoe'                => 'ZOE',    // Sande society leader
-        'bodio'              => 'BOD',    // Traditional priest/diviner
-        'sowei'              => 'SOW',    // Sande society instructor
-        'zoebah'             => 'ZOB',    // Poro society leader
-        'country_doctor'     => 'CDR',    // Rural traditional healer
-        'medicine_man'       => 'MED',    // Traditional medicine specialist
-        'medicine_woman'     => 'MEW',    // Traditional medicine specialist
-        'spiritual_healer'   => 'SPH',    // Spiritual healing practitioner
-        'diviner'            => 'DIV',    // Fortune teller/divination specialist
-        'traditional_midwife' => 'MID',   // Traditional birth attendant
-        'bone_setter'        => 'BON',    // Traditional fracture specialist
-        'circumciser'        => 'CIR',    // Traditional circumcision specialist
-        'rain_maker'         => 'RAN',    // Traditional weather influencer
-        'juju_man'           => 'JUJ',    // Traditional charm maker
-        'juju_woman'         => 'JUW',    // Traditional charm maker
-        'poro_elder'         => 'POR',    // Poro society elder
-        'sande_elder'        => 'SAN',    // Sande society elder
-        'tribal_chief'       => 'CHF',    // Traditional community leader
-        'town_crier'         => 'CRI',    // Community announcer
-        'cultural_elder'     => 'CEL',    // Keeper of traditions
-        'dance_master'       => 'DAN',    // Traditional dance instructor
-        'drum_master'        => 'DRU',    // Traditional drumming specialist
-        'story_teller'       => 'STO',    // Oral history keeper
-        'blacksmith'         => 'BLS',    // Traditional metal worker
-        'potter'             => 'POT',    // Traditional clay worker
-        'weaver'             => 'WEA',    // Traditional cloth weaver
-        'fisherman'          => 'FIS',    // Traditional fishing specialist
-        'hunter'             => 'HUN',    // Traditional hunting specialist
-        'farmer'             => 'FAR'     // Traditional farming specialist
+        'ratualist'          => 'RAT',
+        'herbalist'          => 'HER',
+        'native_doctor'      => 'NDC',
+        'zoe'                => 'ZOE',
+        'bodio'              => 'BOD',
+        'sowei'              => 'SOW',
+        'zoebah'             => 'ZOB',
+        'country_doctor'     => 'CDR',
+        'medicine_man'       => 'MED',
+        'medicine_woman'     => 'MEW',
+        'spiritual_healer'   => 'SPH',
+        'diviner'            => 'DIV',
+        'traditional_midwife' => 'MID',
+        'bone_setter'        => 'BON',
+        'circumciser'        => 'CIR',
+        'rain_maker'         => 'RAN',
+        'juju_man'           => 'JUJ',
+        'juju_woman'         => 'JUW',
+        'poro_elder'         => 'POR',
+        'sande_elder'        => 'SAN',
+        'tribal_chief'       => 'CHF',
+        'town_crier'         => 'CRI',
+        'cultural_elder'     => 'CEL',
+        'dance_master'       => 'DAN',
+        'drum_master'        => 'DRU',
+        'story_teller'       => 'STO',
+        'blacksmith'         => 'BLS',
+        'potter'             => 'POT',
+        'weaver'             => 'WEA',
+        'fisherman'          => 'FIS',
+        'hunter'             => 'HUN',
+        'farmer'             => 'FAR'
     ];
 
     /**
@@ -163,20 +171,6 @@ class TraditionalCertificateModel extends Model
         return $data;
     }
 
-    
-   
-
-    /**
-     * Sanitize file name
-     */
-    private function sanitizeFileName($fileName)
-    {
-        $fileName = basename($fileName);
-        $fileName = str_replace(' ', '_', $fileName);
-        $fileName = preg_replace('/[^a-zA-Z0-9._-]/', '', $fileName);
-        return $fileName;
-    }
-
     /**
      * Ensures the serial number is unique
      */
@@ -216,5 +210,4 @@ class TraditionalCertificateModel extends Model
         $newCev = $cevNumber . '-' . strtoupper(bin2hex(random_bytes(1)));
         return $this->ensureUniqueCevNumber($newCev, $attempt + 1);
     }
-
 }

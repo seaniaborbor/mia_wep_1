@@ -91,7 +91,6 @@ public function create()
             'divorceRevNo' => 'permit_empty|max_length[20]',
             'divorcemarriageDate' => 'required|valid_date',
             'divorcedateOfDivorce' => 'required|valid_date',
-            'divorceissuanceDate' => 'required|valid_date'
         ];
         
         // Custom error messages
@@ -127,10 +126,7 @@ public function create()
                 'required' => 'Divorce date is required',
                 'valid_date' => 'Please enter a valid divorce date'
             ],
-            'divorceissuanceDate' => [
-                'required' => 'Issuance date is required',
-                'valid_date' => 'Please enter a valid issuance date'
-            ]
+           
         ];
         
         // Validate the input
@@ -227,26 +223,23 @@ public function view($certificate_id)
                 return redirect()->back()->with('error', 'Certificate not found');
             }
 
-
             // Fetch signer profiles (A, B, and C)
             $signerProfiles = [];
-
             $signerProfiles['SIGNA_profile'] = isset($data['certificate'][0]['divorceSIGN_A_ID'])
                 ? $this->userModel->find($data['certificate'][0]['divorceSIGN_A_ID'])
                 : null;
-
             $signerProfiles['SIGNB_profile'] = isset($data['certificate'][0]['divorceSIGN_B_ID'])
                 ? $this->userModel->find($data['certificate'][0]['divorceSIGN_B_ID'])
                 : null;
-
             $signerProfiles['SIGNC_profile'] = isset($data['certificate'][0]['divorceSIGN_C_ID'])
                 ? $this->userModel->find($data['certificate'][0]['divorceSIGN_C_ID'])
                 : null;
-
             $data['signerProfiles'] = $signerProfiles;
+            $data['isIssued'] = $this->isIssued($data['certificate']);
+
+            print_r($this->isIssued($data['certificate']));
+            exit();
             
-
-
 
             return view('dashboard/view_a_divorce_cert', $data);
         }
@@ -260,7 +253,8 @@ public function edite()
             
 
             return view('dashboard/divorce_certificate_log', $data);
-}
+        }
+        
 
 public function sign($certificate_id)
     {
@@ -534,6 +528,15 @@ public function allow_edit($certificate_id)
     };
 
 }
+
+
+ /**
+     * Get issued certificates (API endpoint)
+     */
+private function isIssued($certificate): bool
+    {
+        return !empty($certificate['divorceissuanceDate']);
+    }
 
 
     

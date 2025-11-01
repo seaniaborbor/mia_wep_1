@@ -302,8 +302,6 @@ public function edit($cert_id){
                 'declaration_date' => 'required|valid_date',
 
                 // Certification
-                'reference_no' => 'required|max_length[50]',
-                'marriage_code' => 'required|max_length[50]',
                 'revenue_no' => 'permit_empty|max_length[50]',
                 'certification_day' => 'required|valid_date',
 
@@ -320,8 +318,8 @@ public function edit($cert_id){
             }
 
             if (!$this->validate($rules)) {
-                $data['errors'] = $this->validator;
-                return view('dashboard/edit_marriage_certificate', $data);
+                print_r($this->validator->listErrors());
+                exit();
             }
             // Handle file uploads (optional)
 
@@ -376,8 +374,6 @@ public function edit($cert_id){
                 'declaration_date' => $this->request->getPost('declaration_date'),
 
                 // Certification
-                'reference_no' => $this->request->getPost('reference_no'),
-                'marriage_code' => $this->request->getPost('marriage_code'),
                 'revenue_no' => $this->request->getPost('revenue_no'),
                 'certification_date' => $this->request->getPost('certification_day'),
 
@@ -403,7 +399,7 @@ public function edit($cert_id){
 
             // Update the certificate
             if ($this->weddingCertModel->update($cert_id, $updateData)) {
-                return redirect()->to('/weddingcert')->with('success', 'Marriage certificate updated successfully!');
+                return redirect()->back()->with('success', 'Marriage certificate updated successfully!');
             } else {
                 return redirect()->back()->with('error', 'There was an error updating the certificate. Please try again.');
             }

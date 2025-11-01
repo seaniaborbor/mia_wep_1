@@ -209,6 +209,17 @@
                             <?php endif; ?>
                         </div>
 
+                        <div class="col-md-6 mb-3">
+                            <label for="tradCertAmtPaid" class="form-label font-weight-bold">Amount Paid</label>
+                            <input type="number" class="form-control <?= session('errors.tradCertAmtPaid') ? 'is-invalid' : '' ?>" 
+                                id="tradCertAmtPaid" name="tradCertAmtPaid" 
+                                value="<?= old('tradCertAmtPaid') ?>" 
+                                placeholder="Enter district">
+                            <?php if (session('errors.tradCertAmtPaid')): ?>
+                                <div class="invalid-feedback"><?= session('errors.tradCertAmtPaid') ?></div>
+                            <?php endif; ?>
+                        </div>
+
                     </div>
 
                     <!-- Form Actions -->

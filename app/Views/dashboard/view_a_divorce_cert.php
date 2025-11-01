@@ -134,13 +134,13 @@
                                     <div class="col-sm-6">
                                         <small class="text-muted">Date of Divorce</small>
                                         <p class="mb-1 font-weight-bold liberia-blue">
-                                            <?= esc($certificate[0]['divorceDate'] ?? 'N/A') ?>
+                                            <?= esc($certificate[0]['divorcedateOfDivorce'] ?? 'N/A') ?>
                                         </p>
                                     </div>
                                     <div class="col-sm-6">
-                                        <small class="text-muted">Place of Divorce</small>
+                                        <small class="text-muted">Issuance Date</small>
                                         <p class="mb-1 font-weight-bold liberia-red">
-                                            <?= esc($certificate[0]['divorcePlace'] ?? 'N/A') ?>
+                                            <?= esc($certificate[0]['divorceissuanceDate'] ?? 'N/A') ?>
                                         </p>
                                     </div>
                                 </div>
@@ -248,6 +248,12 @@
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
+                                </div>
+                                <div class="row">
+                                    <?php if($isCompleted && !$isIssued): ?>
+                                        <p>The certificate is completed but has not been marked as issued. Please 
+                                            mark it as issued by clicking <a href="#">here</a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

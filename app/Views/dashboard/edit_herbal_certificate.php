@@ -50,6 +50,7 @@
 
                     <!-- Certificate Holder Information -->
                     <div class="row mb-4">
+
                         <div class="col-12">
                             <h5 class="text-primary mb-3 border-bottom pb-2">
                                 <i class="fas fa-user-circle mr-2"></i>Holder Information
@@ -97,24 +98,16 @@
                                 <option value="">Select Traditional Position</option>
                                 <?php 
                                     $positions = [
-                                        'ratualist'=>'Ratualist (Traditional Spiritual Healer)',
                                         'herbalist'=>'Herbalist (Traditional Medicine Practitioner)',
-                                        'native_doctor'=>'Native Doctor (Traditional Doctor)',
                                         'zoe'=>'Zoe (Sande Society Leader)',
                                         'bodio'=>'Bodio (Traditional Priest/Diviner)',
                                         'sowei'=>'Sowei (Sande Society Instructor)',
                                         'zoebah'=>'Zoebah (Poro Society Leader)',
                                         'country_doctor'=>'Country Doctor (Rural Traditional Healer)',
-                                        'medicine_man'=>'Medicine Man',
-                                        'medicine_woman'=>'Medicine Woman',
-                                        'spiritual_healer'=>'Spiritual Healer',
                                         'diviner'=>'Diviner (Fortune Teller)',
                                         'traditional_midwife'=>'Traditional Midwife',
                                         'bone_setter'=>'Bone Setter',
                                         'circumciser'=>'Traditional Circumciser',
-                                        'rain_maker'=>'Rain Maker',
-                                        'juju_man'=>'Juju Man (Charm Maker)',
-                                        'juju_woman'=>'Juju Woman (Charm Maker)',
                                         'poro_elder'=>'Poro Society Elder',
                                         'sande_elder'=>'Sande Society Elder',
                                         'tribal_chief'=>'Tribal Chief',
@@ -124,12 +117,8 @@
                                         'drum_master'=>'Drum Master',
                                         'story_teller'=>'Story Teller',
                                         'blacksmith'=>'Blacksmith',
-                                        'potter'=>'Potter',
-                                        'weaver'=>'Weaver',
-                                        'fisherman'=>'Traditional Fisherman',
-                                        'hunter'=>'Traditional Hunter',
-                                        'farmer'=>'Traditional Farmer'
                                     ];
+
                                     foreach ($positions as $key => $label): 
                                 ?>
                                     <option value="<?= $key ?>" <?= old('tradCertHolderOperationType', $certificate['tradCertHolderOperationType']) == $key ? 'selected' : '' ?>><?= $label ?></option>
@@ -165,6 +154,7 @@
 
                     <!-- Certificate Details -->
                     <div class="row mb-4">
+
                         <div class="col-12">
                             <h5 class="text-primary mb-3 border-bottom pb-2">
                                 <i class="fas fa-certificate mr-2"></i>Certificate Details
@@ -182,6 +172,16 @@
                             <label for="tradRevenueNo" class="form-label font-weight-bold">Revenue Number</label>
                             <input type="text" class="form-control" id="tradRevenueNo" name="tradRevenueNo" 
                                 value="<?= old('tradRevenueNo', $certificate['tradRevenueNo']) ?>">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="tradCertAmtPaid" class="form-label font-weight-bold">Amount Paid <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control <?= session('errors.tradCertAmtPaid') ? 'is-invalid' : '' ?>" 
+                                id="tradCertAmtPaid" name="tradCertAmtPaid" 
+                                value="<?= old('tradCertAmtPaid', $certificate['tradCertAmtPaid']) ?>" required>
+                            <?php if (session('errors.tradCertAmtPaid')): ?>
+                                <div class="invalid-feedback"><?= session('errors.tradCertAmtPaid') ?></div>
+                            <?php endif; ?>
                         </div>
 
                     </div>

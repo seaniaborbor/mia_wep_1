@@ -10,6 +10,8 @@ use App\Models\BranchModel;
 use App\Models\UsersModel;
 use App\Models\MarriageCertificateModel;
 use App\Models\DivorceCertificateModel;
+use App\Models\FileModel;
+
 
 
 class NativeDocCertController extends BaseController
@@ -26,6 +28,7 @@ class NativeDocCertController extends BaseController
         $this->userModel = new UsersModel();
         $this->weddingCertModel = new MarriageCertificateModel();
         $this->divorceCertificateModel = new DivorceCertificateModel();
+        $this->fileModel = new FileModel();
 
     }
 
@@ -38,8 +41,14 @@ class NativeDocCertController extends BaseController
             return redirect()->to('/dashboard/nativecert');
             exit();
         }
+
         // Get current user's branch ID
         $branchId = session()->get('userData')['branchId'];
+
+        if($this->request->getGet('branch')){
+
+            $branchId = $this->request->getGet('branch');
+        }
 
         // Get certificates only for the user's branch
         $certificates = $this->certificateModel
@@ -47,6 +56,11 @@ class NativeDocCertController extends BaseController
             ->orderBy('tradCertCertCreatedAt', 'DESC')
             ->join('login_users', 'login_users.userId = traditionalcertificates.tradCertInsertedBy')
             ->findAll();
+
+        $breanch = $this->branchModel->find($branchId);
+        if(empty($breanch)){
+            return redirect()->back()->with("redirec", "The Breanch you are looking for doesnot exist");
+        }
 
         // Calculate dashboard statistics
         $totalCertificates = count($certificates);
@@ -100,6 +114,7 @@ class NativeDocCertController extends BaseController
                     : 0
             ],
             'countyStats' => $countyStats,
+            'branchName' => $breanch['branchName'],
             'passLink' => 'nativecert'
         ];
 
@@ -215,7 +230,16 @@ class NativeDocCertController extends BaseController
                     'integer' => 'Only an integer is allowed to as an revenue number',
                     'max_length' => 'Revenue number is already used',
                 ]
-            ]
+            ],
+            'tradCertAmtPaid' => [
+                'rules' => 'required|integer|greater_than[0]',
+                'errors' => [
+                    'required' => 'Certificate duration is required',
+                    'integer' => 'Duration must be a number',
+                    'greater_than' => 'Duration must be greater than 0'
+                ]
+            ],
+           
         ];
 
         if (!$this->validate($validationRules)) {
@@ -252,6 +276,8 @@ class NativeDocCertController extends BaseController
         $data['tradCertInsertedBy'] = session()->get('userData')['userId'];
         $data['tradCertLastUpdatedBy'] = session()->get('userData')['userId'];
         $data['tradCertBranch'] = session()->get('userData')['branchId'];
+        $data['tradCertAppliedType'] = "Clerk Entry";
+
 
         try {
             if ($this->certificateModel->save($data)) {
@@ -300,24 +326,33 @@ class NativeDocCertController extends BaseController
             'isIssued' => $this->isIssued($certificate),
             'passLink' => 'nativecert'
         ];
+        
 
         // Fetch signer profiles (A, B, and C)
         $signerProfiles = [];
 
-        $signerProfiles['SIGNA_profile'] = isset($data['certificate'][0]['divorceSIGN_A_ID'])
-                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_A_ID'])
+        $signerProfiles['tradCertSignatoryA'] = isset($data['certificate']['tradCertSignatoryAID'])
+                ? $this->userModel->find($data['certificate']['tradCertSignatoryAID'])
                 : null;
 
-        $signerProfiles['SIGNB_profile'] = isset($data['certificate'][0]['divorceSIGN_B_ID'])
-                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_B_ID'])
+        $signerProfiles['tradCertSignatoryB'] = isset($data['certificate']['tradCertSignatoryBID'])
+                ? $this->userModel->find($data['certificate']['tradCertSignatoryBID'])
                 : null;
 
-        $signerProfiles['SIGNC_profile'] = isset($data['certificate'][0]['divorceSIGN_C_ID'])
-                ? $this->userModel->find($data['certificate'][0]['divorceSIGN_C_ID'])
+        $signerProfiles['tradCertSignatoryC'] = isset($data['certificate']['tradCertSignatoryCID'])
+                ? $this->userModel->find($data['certificate']['tradCertSignatoryCID'])
                 : null;
 
         $data['signerProfiles'] = $signerProfiles;
-        
+        $data['lastEditedByProfile'] = $this->userModel->find($certificate['tradCertLastUpdatedBy']);
+
+
+        $data['attachedFiles'] = $this->fileModel->select('login_users.userFullName, login_users.userId, attached_file_table.*')
+                                    ->join('login_users', 'login_users.userId = attached_file_table.fileCreatedBy')
+                                    ->where('fileCertificateId', $id)
+                                    ->where('certificateFile_category', 'traditional')->findAll();
+        // print_r($data['signerProfiles']);
+        // exit();
 
         return view('dashboard/view_herbal_cert', $data);
     }
@@ -427,6 +462,14 @@ class NativeDocCertController extends BaseController
                     'integer' => 'Duration must be a number',
                     'greater_than' => 'Duration must be greater than 0'
                 ]
+            ],
+            'tradCertAmtPaid' => [
+                'rules' => 'required|integer|greater_than[0]',
+                'errors' => [
+                    'required' => 'Certificate duration is required',
+                    'integer' => 'Duration must be a number',
+                    'greater_than' => 'Duration must be greater than 0'
+                ]
             ]
         ];
 
@@ -435,7 +478,7 @@ class NativeDocCertController extends BaseController
         }
 
         $data = $this->request->getPost();
-        $data['tradCertLastUpdatedBy'] = session()->get('user_id') ?? 'system';
+        $data['tradCertLastUpdatedBy'] = session()->get('user_id');
 
         // Handle file upload if new picture is provided
         $pictureFile = $this->request->getFile('tradCertHolderPic');
@@ -476,6 +519,7 @@ class NativeDocCertController extends BaseController
         $branchId = session()->get('userData')['branchId'];
         $userId = session()->get('userData')['userId'];
         $signature = ""; // we will use this to store the signatory actual signature
+        $data = [];
 
         
 
@@ -499,16 +543,22 @@ class NativeDocCertController extends BaseController
         //  check if the certificate is signed - and if not set the signatory signature stored in the session (SIGNATORY A)
         if(session()->get('userData')['userAccountType'] == 'tradCertSignatoryA' && $certificate['tradCertSignatoryA'] == ''){
             $signature = session()->get('userData')['userSignature'];
+            $data['tradCertSignatoryADate'] = date('Y-m-d'); 
+            $data['tradCertSignatoryAID'] = session()->get('userData')['userId'];
         }
 
          //  check if the certificate is signed - and if not set the signatory signature stored in the session (SIGNATORY B)
         if(session()->get('userData')['userAccountType'] == 'tradCertSignatoryB' && $certificate['tradCertSignatoryB'] == ''){
             $signature = session()->get('userData')['userSignature'];
+            $data['tradCertSignatoryBDate'] = date('Y-m-d'); 
+            $data['tradCertSignatoryBID'] = session()->get('userData')['userId'];
         }
 
           //  check if the certificate is signed - and if not set the signatory signature stored in the session (SIGNATORY C)
         if(session()->get('userData')['userAccountType'] == 'tradCertSignatoryC' && $certificate['tradCertSignatoryC'] == ''){
             $signature = session()->get('userData')['userSignature'];
+            $data['tradCertSignatoryCDate'] = date('Y-m-d'); 
+            $data['tradCertSignatoryCID'] = session()->get('userData')['userId']; 
         }
 
         // check if a signature is set 
@@ -519,6 +569,10 @@ class NativeDocCertController extends BaseController
 
         $data[session()->get('userData')['userAccountType']] = $signature;
         $data['tradCertLastUpdatedBy'] = session()->get('userData')['userId'];
+
+        // print_r($data);
+        // exit();
+
 
 
          if ($this->certificateModel->update($id, $data)){
@@ -535,7 +589,7 @@ class NativeDocCertController extends BaseController
     /**
      * Check if certificate is completed (all signatories present)
      */
-    private function isCertificateCompleted($certificate): bool
+private function isCertificateCompleted($certificate): bool
     {
         return !empty($certificate['tradCertSignatoryA']) && 
                !empty($certificate['tradCertSignatoryB']) && 
@@ -545,7 +599,7 @@ class NativeDocCertController extends BaseController
     /**
      * Get incomplete certificates (API endpoint)
      */
-    public function incomplete()
+public function incomplete()
     {
         $certificates = $this->certificateModel->findAll();
         $incomplete = array_filter($certificates, function($cert) {
@@ -559,7 +613,7 @@ class NativeDocCertController extends BaseController
     /**
      * Get dashboard stats (API endpoint)
      */
-    public function stats()
+public function stats()
     {
         $certificates = $this->certificateModel->findAll();
         

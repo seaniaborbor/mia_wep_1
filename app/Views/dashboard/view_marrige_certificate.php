@@ -306,6 +306,17 @@
                                 </div>
                             </div>
                         </div>
+                         <?php if(isset($isCompleted)) : ?>
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <p>The certificate is completed, please click <a href="#">here </a> to mark it as Issued. </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                     </div>
 
                     <!-- ==================== SIDEBAR ==================== -->
