@@ -1,34 +1,94 @@
 <?php $this->extend('dashboard/partials/layout') ?>
 <?= $this->section('main') ?>
-
 <div class="row mt-3">
     <div class="col-12">
         <div class="card shadow-sm border-0">
-            <!-- ==================== HEADER ==================== -->
-            <div class="card-header bg-white border-0 py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="text-dark mb-0 font-weight-bold">
-                        Herbal Certificate Details
-                    </h4>
-
+            <div class="card-header d-flex justify-content-between border-bottom-primary py-3">
+                <div>
+                    <h1 class="h3 mb-0 text-primary font-weight-bold">
+                        <i class="fas fa-leaf text-success mr-2"></i>
+                        Culture Certificate Details
+                        <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
+                            <?php if(isset($certificate['branchName']) && !empty($certificate['branchName'])): ?>
+                                <?= htmlspecialchars($certificate['branchName']) ?>
+                            <?php else: ?> 
+                                <?= htmlspecialchars(session()->get('userData')['branchName'] ?? 'Unknown Branch') ?>
+                            <?php endif; ?>
+                        </p>
+                    </h1>
+                </div>
+                <div class="d-flex align-items-center">
                     <?php
                         $signA = !empty($certificate['tradCertSignatoryA']);
                         $signB = !empty($certificate['tradCertSignatoryB']);
                         $signC = !empty($certificate['tradCertSignatoryC']);
                         $isCompleted = $signA && $signB && $signC;
-                        $anySignature = $signA || $signB || $signC;
-                        $allMissing   = !$signA && !$signB && !$signC;
+                        $allMissing = !$signA && !$signB && !$signC;
+                        $userBranch = session()->get('userData')['userBreanch'] ?? '';
+                        $certBranch = $certificate['tradCertBranch'] ?? '';
+                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
+                        $isSameBranch = ($userBranch == $certBranch);
                     ?>
-                    <span class="badge badge-pill px-3 py-2 liberia-status-badge
-                        <?= $isCompleted
-                            ? 'bg-success text-white'
-                            : 'bg-warning text-dark animate__animated animate__pulse animate__infinite' ?>">
-                        <?= $isCompleted ? 'Completed' : 'Pending' ?>
-                    </span>
+                    
+                    <!-- Generate Button -->
+                    <a href="/dashboard/nativecert/generate_certificate/<?= $certificate['tradCertId'] ?>" 
+                       class="btn btn-sm btn-primary btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span class="text">Generate</span>
+                    </a>
+                    
+                    <!-- Print Button -->
+                    <button onclick="window.print();" class="btn btn-sm btn-info btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-print"></i>
+                        </span>
+                        <span class="text">Print</span>
+                    </button>
+                    
+                    <!-- Sign Button (for non-ENTRY users when not completed) -->
+                    <?php if ($isSameBranch && $userAccountType !== 'tradCertEntryClerk' && !$isCompleted): ?>
+                    <a href="/nativecert/add-signatories/<?= $certificate['tradCertId'] ?>" 
+                       class="btn btn-sm btn-success btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-signature"></i>
+                        </span>
+                        <span class="text">Sign</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Edit Button (for ENTRY users when no signatures) -->
+                    <?php if ($isSameBranch && $userAccountType === 'tradCertEntryClerk' && $allMissing): ?>
+                    <a href="/dashboard/nativecert/edit/<?= $certificate['tradCertId'] ?>" 
+                       class="btn btn-sm btn-warning btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                        <span class="text">Edit</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Allow Edit Button (for SIGNC users when complete) -->
+                    <?php if ($isSameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
+                    <a href="/dashboard/nativecert/allow_edit/<?= $certificate['tradCertId'] ?>" 
+                       class="btn btn-sm btn-secondary btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-unlock"></i>
+                        </span>
+                        <span class="text">Allow Edit</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Back Button -->
+                    <a href="/nativecert" class="btn btn-sm btn-dark btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-arrow-left"></i>
+                        </span>
+                        <span class="text">Back</span>
+                    </a>
                 </div>
             </div>
-
-            <!-- ==================== BODY ==================== -->
             <div class="card-body p-4">
                 <?php if (session()->has('success')): ?>
                     <div class="alert alert-success alert-dismissible fade show border-0 liberia-alert" role="alert">
@@ -36,11 +96,9 @@
                         <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
                     </div>
                 <?php endif; ?>
-
                 <div class="row">
                     <!-- ==================== MAIN CONTENT ==================== -->
                     <div class="col-lg-8">
-
                         <!-- Certificate Summary -->
                         <div class="card border-0 bg-light mb-4 liberia-card-accent">
                             <div class="card-body py-3">
@@ -67,9 +125,7 @@
                             <div class="col-md-6">
                                 <div class="card h-100 border-0 shadow-sm liberia-card-red">
                                     <div class="card-header bg-white py-2 border-bottom">
-                                        <h6 class="m-0 liberia-red">
-                                            <i class="fas fa-user liberia-blue mr-2"></i>Holder's Particulars
-                                        </h6>
+                                        <h6 class="m-0 liberia-red">Holder's Particulars</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -81,8 +137,8 @@
                                                 <?php
                                                     $photoName = $certificate['tradCertHolderPic'] ?? '';
                                                     $photoPath = FCPATH . 'uploads/certificate_holders/' . $photoName;
-                                                    $photoUrl  = base_url('uploads/certificate_holders/' . $photoName);
-                                                    $hasPhoto  = !empty($photoName) && file_exists($photoPath);
+                                                    $photoUrl = base_url('uploads/certificate_holders/' . $photoName);
+                                                    $hasPhoto = !empty($photoName) && file_exists($photoPath);
                                                 ?>
                                                 <?php if ($hasPhoto): ?>
                                                     <img src="<?= $photoUrl ?>" alt="Holder Photo"
@@ -104,9 +160,7 @@
                             <div class="col-md-6">
                                 <div class="card h-100 border-0 shadow-sm liberia-card-blue">
                                     <div class="card-header bg-white py-2 border-bottom">
-                                        <h6 class="m-0 liberia-blue">
-                                            <i class="fas fa-map-marker-alt liberia-red mr-2"></i>Location
-                                        </h6>
+                                        <h6 class="m-0 liberia-blue">Location</h6>
                                     </div>
                                     <div class="card-body">
                                         <p><span class="govt-label">Town/City:</span><br><?= esc($certificate['tradCertHolderTownorCity']) ?></p>
@@ -121,9 +175,7 @@
                         <!-- Certificate Details -->
                         <div class="card border-0 shadow-sm mb-4 liberia-card-red">
                             <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-red">
-                                    <i class="fas fa-info-circle liberia-blue mr-2"></i>Certificate Details
-                                </h6>
+                                <h6 class="m-0 liberia-red">Certificate Details</h6>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -170,7 +222,6 @@
                                         <p class="mb-1"><?= esc($certificate['tradCertAppliedType']) ?></p>
                                     </div>
                                     <?php endif; ?>
-
                                 </div>
                             </div>
                         </div>
@@ -178,9 +229,7 @@
                         <!-- Attached Files -->
                         <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
                             <div class="card-header bg-white py-2 border-bottom d-flex justify-content-between align-items-center">
-                                <h6 class="m-0 liberia-blue">
-                                    <i class="fas fa-paperclip liberia-red mr-2"></i>Attached Files
-                                </h6>
+                                <h6 class="m-0 liberia-blue">Attached Files</h6>
                                 <button type="button" class="btn btn-sm liberia-btn-blue" data-toggle="modal" data-target="#uploadFileModal">
                                     Upload File
                                 </button>
@@ -201,8 +250,8 @@
                                                 <?php foreach ($attachedFiles as $file): ?>
                                                     <?php
                                                         $filePath = 'uploads/certificates/' . $file['certificateFile'];
-                                                        $fileUrl  = base_url($filePath);
-                                                        $fileExt  = strtolower(pathinfo($file['certificateFile'], PATHINFO_EXTENSION));
+                                                        $fileUrl = base_url($filePath);
+                                                        $fileExt = strtolower(pathinfo($file['certificateFile'], PATHINFO_EXTENSION));
                                                     ?>
                                                     <tr>
                                                         <td>
@@ -240,9 +289,7 @@
                         <!-- Signatories Grid -->
                         <div class="card border-0 shadow-sm liberia-card-blue">
                             <div class="card-header bg-white py-2 border-bottom d-flex justify-content-between align-items-center">
-                                <h6 class="m-0 <?= $isCompleted ? 'liberia-blue' : 'liberia-red' ?>">
-                                    <i class="fas fa-signature liberia-red mr-2"></i>Signatories
-                                </h6>
+                                <h6 class="m-0 <?= $isCompleted ? 'liberia-blue' : 'liberia-red' ?>">Signatories</h6>
                                 <?php if (!$isCompleted): ?>
                                     <span class="badge badge-danger px-3 py-2 animate__animated animate__flash animate__infinite">
                                         Incomplete
@@ -253,18 +300,18 @@
                                 <div class="row text-center">
                                     <?php foreach (['A', 'B', 'C'] as $sig): ?>
                                         <?php
-                                            $sigKey      = "tradCertSignatory{$sig}";
-                                            $sigDateKey  = "tradCertSignatory{$sig}Date";
-                                            $sigName     = $certificate[$sigKey] ?? '';
-                                            $sigDate     = $certificate[$sigDateKey] ?? '';
-                                            $sigPath     = FCPATH . "uploads/users/signatures/{$sigName}";
-                                            $sigUrl      = base_url("uploads/users/signatures/{$sigName}");
-                                            $hasSig      = !empty($sigName) && file_exists($sigPath);
+                                            $sigKey = "tradCertSignatory{$sig}";
+                                            $sigDateKey = "tradCertSignatory{$sig}Date";
+                                            $sigName = $certificate[$sigKey] ?? '';
+                                            $sigDate = $certificate[$sigDateKey] ?? '';
+                                            $sigPath = FCPATH . "uploads/users/signatures/{$sigName}";
+                                            $sigUrl = base_url("uploads/users/signatures/{$sigName}");
+                                            $hasSig = !empty($sigName) && file_exists($sigPath);
                                         ?>
                                         <div class="col-md-4 mb-3">
                                             <div class="p-3 border rounded <?= $hasSig ? 'border-success liberia-signed' : 'border-light' ?>">
                                                 <?php if ($hasSig): ?>
-                                                    <img src="<?= $sigUrl ?>" alt="Signature <?= $sig ?>"
+                                                    <img src="<?= $sigUrl ?>" alt="Signature <?= $sig ?>" 
                                                          class="img-fluid mb-2" style="max-height:50px;">
                                                     <p class="mb-0 small liberia-blue">Signed</p>
                                                     <?php if ($sigDate): ?>
@@ -281,37 +328,27 @@
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-
-                                <?php if ($isCompleted && !$isIssued): ?>
-                                    <div class="alert alert-light mt-3 liberia-alert-warning">
-                                        <i class="fas fa-exclamation-triangle liberia-red mr-2"></i>
-                                        The three signatories for this document have signed. Please mark it as <b>Issued</b> if the holder have received it. 
-                                        <a href="/dashboard/nativecert/issue-certificate/<?= $certificate['tradCertId'] ?>" class="alert-link liberia-blue">Mark as "Issued"</a>
-                                    </div>
-                                <?php endif; ?>
+                                <div class="row">
+                                    <?php if($isCompleted && !$isIssued): ?>
+                                        <p>The certificate is completed but has not been marked as issued. Please 
+                                            mark it as issued by clicking <a href="/dashboard/nativecert/issue-certificate/<?= $certificate['tradCertId'] ?>">here</a>
+                                        </p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- ==================== SIDEBAR ==================== -->
                     <div class="col-lg-4">
-
                         <!-- Actions -->
                         <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
                             <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-blue">
-                                    <i class="fas fa-cogs liberia-red mr-2"></i>Actions
-                                </h6>
+                                <h6 class="m-0 liberia-blue">Actions</h6>
                             </div>
                             <div class="card-body">
                                 <div class="d-grid gap-2">
-                                    <?php
-                                        $userBranch      = session()->get('userData')['userBreanch'] ?? '';
-                                        $certBranch      = $certificate['tradCertBranch'] ?? '';
-                                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
-                                        $sameBranch      = ($userBranch == $certBranch);
-                                    ?>
-                                    <?php if ($sameBranch): ?>
+                                    <?php if ($isSameBranch): ?>
                                         <!-- ENTRY user: Edit & Delete only if NO signatures -->
                                         <?php if ($userAccountType === 'tradCertEntryClerk' && $allMissing): ?>
                                             <a href="/dashboard/nativecert/edit/<?= $certificate['tradCertId'] ?>"
@@ -322,22 +359,29 @@
                                         <?php endif; ?>
 
                                         <!-- Non-ENTRY: Sign if not complete -->
-                                        <?php if ($userAccountType !== 'ENTRY' && !$isCompleted): ?>
+                                        <?php if ($userAccountType !== 'tradCertEntryClerk' && !$isCompleted): ?>
                                             <a href="/nativecert/add-signatories/<?= $certificate['tradCertId'] ?>"
                                                class="btn btn-sm liberia-btn-blue">Sign</a>
                                         <?php endif; ?>
 
+                                        <!-- Allow Edit: ONLY for SIGNC when document is complete -->
+                                        <?php if ($userAccountType === 'SIGNC'): ?>
+                                            <a href="/dashboard/nativecert/allow_edit/<?= $certificate['tradCertId'] ?>"
+                                               class="btn btn-sm liberia-btn-red">Allow Edit</a>
+                                        <?php endif; ?>
+
                                         <!-- Always available -->
-                                        <a href="/dashboard/nativecert/print/<?= $certificate['tradCertId'] ?>"
-                                           class="btn btn-sm liberia-btn-blue">Print</a>
+                                        <a href="/dashboard/nativecert/generate_certificate/<?= $certificate['tradCertId'] ?>"
+                                           class="btn btn-sm liberia-btn-blue">Generate</a>
+                                        <button onclick="window.print();" class="btn btn-sm liberia-btn-blue">Print</button>
                                     <?php endif; ?>
                                     <a href="/nativecert" class="btn btn-sm btn-outline-secondary">Back</a>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Editing Guidelines (only for ENTRY when no signatures) -->
-                        <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
+                        <!-- Editing Guidelines -->
+                        <?php if ($userAccountType === 'tradCertEntryClerk' && $allMissing): ?>
                         <div class="card shadow-sm border-0 mb-4">
                             <div class="card-header bg-primary text-white py-3">
                                 <h5 class="mb-0">Editing Guidelines</h5>
@@ -383,7 +427,7 @@
                             </div>
                         <?php endif; ?>
 
-                        <!-- Signatory Profiles (if any) -->
+                        <!-- Signatory Profiles -->
                         <?php
                         $signers = [];
                         foreach (['A','B','C'] as $lbl) {
@@ -402,9 +446,9 @@
                                 <?php foreach ($signers as $signer): ?>
                                     <?php
                                         $photoPath = FCPATH . '/uploads/users/pictures/' . ($signer['userPicture'] ?? '');
-                                        $photoUrl  = base_url('/uploads/users/pictures/' . ($signer['userPicture'] ?? ''));
-                                        $hasPhoto  = !empty($signer['userPicture']) && file_exists($photoPath);
-                                        $sigKey    = "tradCertSignatory" . $signer['signatoryLabel'];
+                                        $photoUrl = base_url('/uploads/users/pictures/' . ($signer['userPicture'] ?? ''));
+                                        $hasPhoto = !empty($signer['userPicture']) && file_exists($photoPath);
+                                        $sigKey = "tradCertSignatory" . $signer['signatoryLabel'];
                                         $hasSigned = !empty($certificate[$sigKey]);
                                     ?>
                                     <div class="p-3 border-bottom signer-card">
@@ -437,6 +481,116 @@
                             </div>
                         </div>
                         <?php endif; ?>
+
+                        <!-- Certificate History -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-2 border-bottom">
+                                <h6 class="m-0 liberia-blue">Certificate History</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <!-- Created By -->
+                                <?php if (!empty($tradCertInsertedBy)): ?>
+                                    <div class="p-3 border-bottom signer-card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <?php
+                                                    $creatorPhotoPath = FCPATH . '/uploads/users/pictures/' . ($tradCertInsertedBy['userPicture'] ?? '');
+                                                    $creatorPhotoUrl = base_url('/uploads/users/pictures/' . ($tradCertInsertedBy['userPicture'] ?? ''));
+                                                    $creatorHasPhoto = !empty($tradCertInsertedBy['userPicture']) && file_exists($creatorPhotoPath);
+                                                ?>
+                                                <?php if ($creatorHasPhoto): ?>
+                                                    <img src="<?= $creatorPhotoUrl ?>" alt="<?= esc($tradCertInsertedBy['userFullName']) ?>"
+                                                         class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
+                                                <?php else: ?>
+                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width:50px;height:50px;">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 class="mb-0"><?= esc($tradCertInsertedBy['userFullName']) ?></h6>
+                                                <small class="text-muted">
+                                                    Created By - <?= esc($tradCertInsertedBy['userPosition']) ?>
+                                                </small>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <?= date('M j, Y g:i A', strtotime($certificate['tradCertCertCreatedAt'])) ?>
+                                                </small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-info badge-pill">
+                                                    Creator
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Last Updated By -->
+                                <?php if (!empty($tradCertLastUpdatedBy) && is_array($tradCertLastUpdatedBy) && $tradCertLastUpdatedBy['userId'] != $certificate['tradCertInsertedBy']): ?>
+                                    <div class="p-3 border-bottom signer-card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <?php
+                                                    $updaterPhotoPath = FCPATH . '/uploads/users/pictures/' . ($tradCertLastUpdatedBy['userPicture'] ?? '');
+                                                    $updaterPhotoUrl = base_url('/uploads/users/pictures/' . ($tradCertLastUpdatedBy['userPicture'] ?? ''));
+                                                    $updaterHasPhoto = !empty($tradCertLastUpdatedBy['userPicture']) && file_exists($updaterPhotoPath);
+                                                ?>
+                                                <?php if ($updaterHasPhoto): ?>
+                                                    <img src="<?= $updaterPhotoUrl ?>" alt="<?= esc($tradCertLastUpdatedBy['userFullName']) ?>"
+                                                         class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
+                                                <?php else: ?>
+                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width:50px;height:50px;">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 class="mb-0"><?= esc($tradCertLastUpdatedBy['userFullName']) ?></h6>
+                                                <small class="text-muted">
+                                                    Last Edited By - <?= esc($tradCertLastUpdatedBy['userPosition']) ?>
+                                                </small>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <?= date('M j, Y g:i A', strtotime($certificate['tradCertLastUpdatedAt'])) ?>
+                                                </small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-warning badge-pill">
+                                                    Editor
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php elseif (!empty($certificate['tradCertLastUpdatedAt']) && $certificate['tradCertLastUpdatedAt'] != $certificate['tradCertCertCreatedAt']): ?>
+                                    <!-- Show update timestamp even if same user but different time -->
+                                    <div class="p-3 border-bottom signer-card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:50px;height:50px;">
+                                                    <i class="fas fa-edit text-muted"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 class="mb-0">Last Updated</h6>
+                                                <small class="text-muted">
+                                                    <?= date('M j, Y g:i A', strtotime($certificate['tradCertLastUpdatedAt'])) ?>
+                                                </small>
+                                                <?php if (!empty($tradCertLastUpdatedBy) && is_array($tradCertLastUpdatedBy) && $tradCertLastUpdatedBy['userId'] == $certificate['tradCertInsertedBy']): ?>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        (by <?= esc($tradCertLastUpdatedBy['userFullName']) ?>)
+                                                    </small>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -450,13 +604,19 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="filePreviewTitle">File Preview</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
             </div>
             <div class="modal-body p-0">
-                <div id="filePreviewContainer" style="height:70vh;"></div>
+                <div id="filePreviewContainer" style="height:70vh;">
+                    <!-- Injected via JS -->
+                </div>
             </div>
             <div class="modal-footer">
-                <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>Download</a>
+                <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>
+                    Download
+                </a>
                 <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -469,7 +629,9 @@
         <div class="modal-content">
             <div class="modal-header liberia-card-blue">
                 <h5 class="modal-title liberia-blue">Upload File</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
             </div>
             <form action="/dashboard/certificate_files/upload_file/<?= $certificate['tradCertId'] ?>"
                   method="post" enctype="multipart/form-data">
@@ -503,33 +665,42 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
 <style>
-    .signer-card { transition: background .2s; }
-    .signer-card:hover { background: #f8f9fa; }
-    .liberia-status-badge { font-size: .9rem; font-weight: 600; }
-    .animate__pulse { animation-duration: 2s; }
+    .signer-card {
+        transition: background .2s;
+    }
+    .signer-card:hover {
+        background: #f8f9fa;
+    }
+    .liberia-status-badge {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    .animate__pulse {
+        animation-duration: 2s;
+    }
 </style>
 
 <script>
-    // File upload label
+    // File Upload Label
     document.getElementById('fileUpload')?.addEventListener('change', function (e) {
         const label = e.target.nextElementSibling;
         label.innerText = e.target.files[0]?.name || 'Choose file...';
     });
 
-    // File preview modal
+    // File Preview Modal
     document.querySelectorAll('.file-preview-link').forEach(link => {
         link.addEventListener('click', function (e) {
             e.preventDefault();
             const title = this.dataset.title;
-            const url   = this.dataset.url;
-            const type  = this.dataset.type;
+            const url = this.dataset.url;
+            const type = this.dataset.type;
             document.getElementById('filePreviewTitle').textContent = title;
             document.getElementById('fileDownloadLink').href = url;
             const container = document.getElementById('filePreviewContainer');
             container.innerHTML = '';
             if (type === 'pdf') {
                 container.innerHTML = `<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`;
-            } else if (['jpg','jpeg','png','gif'].includes(type)) {
+            } else if (['jpg', 'jpeg', 'png', 'gif'].includes(type)) {
                 container.innerHTML = `<img src="${url}" class="img-fluid h-100 w-100" style="object-fit:contain;">`;
             } else {
                 container.innerHTML = `
@@ -543,5 +714,4 @@
         });
     });
 </script>
-
 <?= $this->endSection() ?>

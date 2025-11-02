@@ -354,7 +354,12 @@ class NativeDocCertController extends BaseController
                                     ->join('login_users', 'login_users.userId = attached_file_table.fileCreatedBy')
                                     ->where('fileCertificateId', $id)
                                     ->where('certificateFile_category', 'traditional')->findAll();
-        // print_r($data['signerProfiles']);
+       
+        $data['tradCertInsertedBy'] = $this->userModel->find($data['certificate']['tradCertInsertedBy']);
+        $data['tradCertLastUpdatedBy'] =$this->userModel->find($data['certificate']['tradCertLastUpdatedBy']);;
+        $data['tradCertLastUpdatedAt'] = $data['certificate']['tradCertLastUpdatedAt'];
+
+        // print_r($data);
         // exit();
 
         return view('dashboard/view_herbal_cert', $data);

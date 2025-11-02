@@ -90,9 +90,9 @@ class FileUploadController extends BaseController
         } elseif ($certificateType === "traditional") {
             $certificate = $this->traditionalModel->find($cert_id);
             if (!empty($certificate)) {
-                $cert_signed = !empty($certificate['tradSIGN_A']) ||
-                               !empty($certificate['tradSIGN_B']) ||
-                               !empty($certificate['tradSIGN_C']);
+                $cert_signed = !empty($certificate['tradCertSignatoryA']) ||
+                               !empty($certificate['tradCertSignatoryB']) ||
+                               !empty($certificate['tradCertSignatoryC']);
             }
         }
 
@@ -172,12 +172,13 @@ class FileUploadController extends BaseController
 
             }
         } elseif ($certificate_type === "traditional") {
-            
+
             $cert_data = $this->traditionalModel->find($cert_id);
+            
             if (!empty($cert_data)) {
-                $cert_signed = !empty($cert_data['tradSIGN_A']) ||
-                               !empty($cert_data['tradSIGN_B']) ||
-                               !empty($cert_data['tradSIGN_C']);
+                $cert_signed = !empty($cert_data['tradCertSignatoryA']) ||
+                               !empty($cert_data['tradCertSignatoryB']) ||
+                               !empty($cert_data['tradCertSignatoryC']);
 
                  $cert_data['tradCertLastUpdatedBy'] = session()->get('userData')['userId'];
                  $this->traditionalModel->update($cert_id, $cert_data);

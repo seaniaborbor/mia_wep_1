@@ -21,7 +21,7 @@
                 </div>
                 <div class="d-flex align-items-center">
                     <!-- Create New Button -->
-                    <a href="/dashboard/wedcert/create" class="btn btn-sm btn-success btn-icon-split mr-2">
+                    <a href="/dashboard/nativecert/create" class="btn btn-sm btn-success btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-plus"></i>
                         </span>
@@ -54,7 +54,7 @@
                         <div class="dropdown-menu dropdown-menu-right">
                             <?php foreach ($allBranches as $branch): ?>
                                 <a class="dropdown-item <?php echo ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : ''; ?>" 
-                                   href="/dashboard/wedcert?branch=<?= htmlspecialchars($branch['branchId']) ?>">
+                                   href="/dashboard/nativecert?branch=<?= htmlspecialchars($branch['branchId']) ?>">
                                     <i class="fas fa-building mr-2"></i>
                                     <?= htmlspecialchars($branch['branchName']) ?>
                                 </a>

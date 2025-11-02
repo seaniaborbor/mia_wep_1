@@ -114,9 +114,7 @@ $userData = session()->get('userData');
                             if(in_array(session()->get('userData')['userAccountType'], ['tradCertSignatoryA','tradCertSignatoryB','tradCertSignatoryC','tradCertEntryClerk', 'SIGNC'])){
                                 // redirect to /dashboard/nativecert
                                 ?>
-                                    <h6 class="collapse-header">Native Doc Certificate</h6>
                                     <a class="collapse-item" href="/dashboard/nativecert"> Culture Cert Log</a>
-                                    <a class="collapse-item" href="/dashboard/nativecert/create">Issue Cuture Cert</a>
                                 <?php 
                             }
                         ?>
