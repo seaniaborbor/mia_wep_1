@@ -3,25 +3,90 @@
 <div class="row mt-3">
     <div class="col-12">
         <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-0 py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="text-dark mb-0 font-weight-bold">
+            <div class="card-header d-flex justify-content-between border-bottom-primary py-3">
+                <div>
+                    <h1 class="h3 mb-0 text-primary font-weight-bold">
+                        <i class="fas fa-heart-broken text-danger mr-2"></i>
                         Divorce Certificate Details
-                    </h4>
+                        <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
+                            <?php if(isset($certificate[0]['branchName']) && !empty($certificate[0]['branchName'])): ?>
+                                <?= htmlspecialchars($certificate[0]['branchName']) ?>
+                            <?php else: ?> 
+                                <?= htmlspecialchars(session()->get('userData')['branchName'] ?? 'Unknown Branch') ?>
+                            <?php endif; ?>
+                        </p>
+                    </h1>
+                </div>
+                <div class="d-flex align-items-center">
                     <?php
                         $signA = !empty($certificate[0]['divorceSIGN_A']);
                         $signB = !empty($certificate[0]['divorceSIGN_B']);
                         $signC = !empty($certificate[0]['divorceSIGN_C']);
                         $isCompleted = $signA && $signB && $signC;
-                        $anySignature = $signA || $signB || $signC;
                         $allMissing = !$signA && !$signB && !$signC;
+                        $userBranch = session()->get('userData')['userBreanch'] ?? '';
+                        $certBranch = $certificate[0]['divorcebreanch_id'] ?? '';
+                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
+                        $isSameBranch = ($userBranch == $certBranch);
                     ?>
-                    <span class="badge badge-pill px-3 py-2 liberia-status-badge 
-                        <?= $isCompleted 
-                            ? 'bg-success text-white' 
-                            : 'bg-warning text-dark animate__animated animate__pulse animate__infinite' ?>">
-                        <?= $isCompleted ? 'Completed' : 'Pending' ?>
-                    </span>
+                    
+                    <!-- Generate Button -->
+                    <a href="/dashboard/divorce_cert/generate_certificate/<?= $certificate[0]['divorceCertId'] ?>" 
+                       class="btn btn-sm btn-primary btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span class="text">Generate</span>
+                    </a>
+                    
+                    <!-- Print Button -->
+                    <button onclick="window.print();" class="btn btn-sm btn-info btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-print"></i>
+                        </span>
+                        <span class="text">Print</span>
+                    </button>
+                    
+                    <!-- Sign Button (for non-ENTRY users when not completed) -->
+                    <?php if ($isSameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
+                    <a href="/dashboard/divorce_cert/sign/<?= $certificate[0]['divorceCertId'] ?>" 
+                       class="btn btn-sm btn-success btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-signature"></i>
+                        </span>
+                        <span class="text">Sign</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Edit Button (for ENTRY users when no signatures) -->
+                    <?php if ($isSameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
+                    <a href="/dashboard/edit_divorce_cert/<?= $certificate[0]['divorceCertId'] ?>" 
+                       class="btn btn-sm btn-warning btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                        <span class="text">Edit</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Allow Edit Button (for SIGNC users when complete) -->
+                    <?php if ($isSameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
+                    <a href="/dashboard/divorce_cert/allow_edit/<?= $certificate[0]['divorceCertId'] ?>" 
+                       class="btn btn-sm btn-secondary btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-unlock"></i>
+                        </span>
+                        <span class="text">Allow Edit</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Back Button -->
+                    <a href="/divorcecert" class="btn btn-sm btn-dark btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-arrow-left"></i>
+                        </span>
+                        <span class="text">Back</span>
+                    </a>
                 </div>
             </div>
             <div class="card-body p-4">
@@ -232,7 +297,7 @@
                                         <div class="col-md-4 mb-3">
                                             <div class="p-3 border rounded <?= $hasSig ? 'border-success liberia-signed' : 'border-light' ?>">
                                                 <?php if ($hasSig): ?>
-                                                    <img src="<?= $sigUrl ?>" alt="Signature <?= $sig ?>"
+                                                    <img src="<?= $sigUrl ?>" alt="Signature <?= $sig ?>" 
                                                          class="img-fluid mb-2" style="max-height:50px;">
                                                     <p class="mb-0 small liberia-blue">Signed</p>
                                                     <?php if ($sigDate): ?>
@@ -268,12 +333,6 @@
                             </div>
                             <div class="card-body">
                                 <div class="d-grid gap-2">
-                                    <?php
-                                        $userBranch = session()->get('userData')['userBreanch'] ?? '';
-                                        $certBranch = $certificate[0]['divorcebreanch_id'] ?? '';
-                                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
-                                        $isSameBranch = ($userBranch == $certBranch);
-                                    ?>
                                     <?php if ($isSameBranch): ?>
                                         <!-- ENTRY user: Edit & Delete only if NO signatures -->
                                         <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
@@ -410,6 +469,116 @@
                             </div>
                         </div>
                         <?php endif; ?>
+
+                        <!-- Certificate History -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-2 border-bottom">
+                                <h6 class="m-0 liberia-blue">Certificate History</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <!-- Created By -->
+                                <?php if (!empty($createdBy)): ?>
+                                    <div class="p-3 border-bottom signer-card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <?php
+                                                    $creatorPhotoPath = FCPATH . '/uploads/users/pictures/' . ($createdBy['userPicture'] ?? '');
+                                                    $creatorPhotoUrl = base_url('/uploads/users/pictures/' . ($createdBy['userPicture'] ?? ''));
+                                                    $creatorHasPhoto = !empty($createdBy['userPicture']) && file_exists($creatorPhotoPath);
+                                                ?>
+                                                <?php if ($creatorHasPhoto): ?>
+                                                    <img src="<?= $creatorPhotoUrl ?>" alt="<?= esc($createdBy['userFullName']) ?>"
+                                                         class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
+                                                <?php else: ?>
+                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width:50px;height:50px;">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 class="mb-0"><?= esc($createdBy['userFullName']) ?></h6>
+                                                <small class="text-muted">
+                                                    Created By - <?= esc($createdBy['userPosition']) ?>
+                                                </small>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <?= date('M j, Y g:i A', strtotime($certificate[0]['divorcecreated_at'])) ?>
+                                                </small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-info badge-pill">
+                                                    Creator
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Last Updated By -->
+                                <?php if (!empty($divorceupdated_by) && is_array($divorceupdated_by) && $divorceupdated_by['userId'] != $certificate[0]['divorcecreated_by']): ?>
+                                    <div class="p-3 border-bottom signer-card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <?php
+                                                    $updaterPhotoPath = FCPATH . '/uploads/users/pictures/' . ($divorceupdated_by['userPicture'] ?? '');
+                                                    $updaterPhotoUrl = base_url('/uploads/users/pictures/' . ($divorceupdated_by['userPicture'] ?? ''));
+                                                    $updaterHasPhoto = !empty($divorceupdated_by['userPicture']) && file_exists($updaterPhotoPath);
+                                                ?>
+                                                <?php if ($updaterHasPhoto): ?>
+                                                    <img src="<?= $updaterPhotoUrl ?>" alt="<?= esc($divorceupdated_by['userFullName']) ?>"
+                                                         class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
+                                                <?php else: ?>
+                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width:50px;height:50px;">
+                                                        <i class="fas fa-user text-muted"></i>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 class="mb-0"><?= esc($divorceupdated_by['userFullName']) ?></h6>
+                                                <small class="text-muted">
+                                                    Last Edited By - <?= esc($divorceupdated_by['userPosition']) ?>
+                                                </small>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <?= date('M j, Y g:i A', strtotime($certificate[0]['divorceupdated_at'])) ?>
+                                                </small>
+                                            </div>
+                                            <div>
+                                                <span class="badge badge-warning badge-pill">
+                                                    Editor
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php elseif (!empty($certificate[0]['divorceupdated_at']) && $certificate[0]['divorceupdated_at'] != $certificate[0]['divorcecreated_at']): ?>
+                                    <!-- Show update timestamp even if same user but different time -->
+                                    <div class="p-3 border-bottom signer-card">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                     style="width:50px;height:50px;">
+                                                    <i class="fas fa-edit text-muted"></i>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ml-3">
+                                                <h6 class="mb-0">Last Updated</h6>
+                                                <small class="text-muted">
+                                                    <?= date('M j, Y g:i A', strtotime($certificate[0]['divorceupdated_at'])) ?>
+                                                </small>
+                                                <?php if (!empty($divorceupdated_by) && is_array($divorceupdated_by) && $divorceupdated_by['userId'] == $certificate[0]['divorcecreated_by']): ?>
+                                                    <br>
+                                                    <small class="text-muted">
+                                                        (by <?= esc($divorceupdated_by['userFullName']) ?>)
+                                                    </small>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

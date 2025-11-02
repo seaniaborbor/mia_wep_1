@@ -31,7 +31,7 @@ class DivorceCertificateModel extends Model
         'divorceRefNo',
         'divorceCode',
         'divorceRevNo',
-        'divorcecreated_by',
+        'divorceupdated_by',
         
         
         'divorcecreated_at',

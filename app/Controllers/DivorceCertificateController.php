@@ -241,8 +241,18 @@ public function view($certificate_id)
             $signerProfiles['SIGNC_profile'] = isset($data['certificate'][0]['divorceSIGN_C_ID'])
                 ? $this->userModel->find($data['certificate'][0]['divorceSIGN_C_ID'])
                 : null;
+
             $data['signerProfiles'] = $signerProfiles;
-            $data['isIssued'] = $this->isIssued($data['certificate']);
+            $data['isIssued'] = $this->isIssued($data['certificate'][0]);
+
+            $data['createdBy'] = $this->userModel->find($data['certificate'][0]['divorcecreated_by']);
+            $data['divorceupdated_by'] =$this->userModel->find($data['certificate'][0]['divorceupdated_by']);;
+            $data['divorceupdated_at'] = $data['certificate'][0]['divorceupdated_at'];
+
+
+
+            // print_r($data);
+            // exit();
 
            
             return view('dashboard/view_a_divorce_cert', $data);
@@ -306,6 +316,7 @@ public function sign($certificate_id)
             $updateData['divorceSIGN_A_ID'] = $loginUserId;
             $updateData['divorceSIGN_A_branch'] = $loginUserBranch;
 
+
         } elseif ($loginUserAccountType == 'SIGNB' && empty($data['certificate']['divorceSIGN_B'])) {
             $updateData['divorceSIGN_B'] = $userSignature;
             $updateData['divorceSIGN_B_DATE_SIGNED'] = date('Y-m-d H:i:s');
@@ -318,6 +329,9 @@ public function sign($certificate_id)
             $updateData['divorceSIGN_C_ID'] = $loginUserId;
             $updateData['divorceSIGN_C_branch'] = $loginUserBranch;
         }
+
+            $updateData['divorceupdated_by'] = $loginUserId;
+
 
         // Ensure there's data to update
         if (empty($updateData)) {
@@ -338,7 +352,7 @@ public function sign($certificate_id)
 
 
 public function edit_certificate($certificate_id)
-{
+    {
      // check if the user account is allowed to view marriage certificate
         if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
             return redirect()->back()->with('error', 'You do not have permission to view this certificate.');

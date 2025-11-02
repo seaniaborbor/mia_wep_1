@@ -5,16 +5,68 @@
 <div class="row mt-3">
     <div class="col-12">
         <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between bg-white border-bottom-success py-3">
-                <h4 class="text-success mb-0 font-weight-bold">
-                    <i class="fas fa-leaf text-success mr-2"></i><?= $branchName ? $branchName : "Missing breanch name "; ?>
-                </h4>
-                    <a href="/dashboard/nativecert/general" class="btn btn-primary btn-icon-split btn-sm">
+            <div class="card-header d-flex justify-content-between border-bottom-primary py-3">
+                <div>
+                    <h1 class="h3 mb-0 text-primary font-weight-bold">
+                        <i class="fas fa-shield-alt text-danger mr-2"></i>
+                        Culture Certificates Log
+                        <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
+                            <?php if(isset($breanchDetail) && !empty($breanchDetail)): ?>
+                                <?= htmlspecialchars($breanchDetail['branchName']) ?>
+                            <?php else: ?> 
+                                <?= htmlspecialchars(session()->get('userData')['branchName']) ?>
+                            <?php endif; ?>
+                        </p>
+                    </h1>
+                </div>
+                <div class="d-flex align-items-center">
+                    <!-- Create New Button -->
+                    <a href="/dashboard/wedcert/create" class="btn btn-sm btn-success btn-icon-split mr-2">
                         <span class="icon text-white-50">
-                            <i class="fas fa-globe"></i>
+                            <i class="fas fa-plus"></i>
                         </span>
-                        <span class="text">Nation's Dashboard</span>
+                        <span class="text">Create New</span>
                     </a>
+                    <!-- Branch Dropdown (Split Button) -->
+                    <div class="btn-group mr-2">
+                        <a href="#" class="btn btn-sm btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-code-branch"></i>
+                            </span>
+                            <span class="text">
+                                <?php
+                                    $currentBranch = 'Select Branch';
+                                    if (isset($branchDetail['branchId']) && !empty($allBranches)) {
+                                        foreach ($allBranches as $b) {
+                                            if ($b['branchId'] == $branchDetail['branchId']) {
+                                                $currentBranch = htmlspecialchars($b['branchName']);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    echo $currentBranch;
+                                ?>
+                            </span>
+                        </a>
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <?php foreach ($allBranches as $branch): ?>
+                                <a class="dropdown-item <?php echo ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : ''; ?>" 
+                                   href="/dashboard/wedcert?branch=<?= htmlspecialchars($branch['branchId']) ?>">
+                                    <i class="fas fa-building mr-2"></i>
+                                    <?= htmlspecialchars($branch['branchName']) ?>
+                                </a>
+                            <?php endforeach; ?>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/dashboard/general">
+                                <i class="fas fa-flag mr-2"></i>
+                                Nation's Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body p-4">

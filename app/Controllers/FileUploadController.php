@@ -76,9 +76,9 @@ class FileUploadController extends BaseController
         if ($certificateType === "marriage") {
             $certificate = $this->marriageModel->find($cert_id);
             if (!empty($certificate)) {
-                $cert_signed = !empty($certificate['marriageSIGN_A']) ||
-                               !empty($certificate['marriageSIGN_B']) ||
-                               !empty($certificate['marriageSIGN_C']);
+                $cert_signed = !empty($certificate['SIGNA']) ||
+                               !empty($certificate['SIGNB']) ||
+                               !empty($certificate['SIGNC']);
             }
         } elseif ($certificateType === "divorce") {
             $certificate = $this->divorceModel->find($cert_id);
@@ -99,6 +99,8 @@ class FileUploadController extends BaseController
         if (empty($certificate)) {
             return redirect()->back()->with('error', 'Invalid certificate record.');
         }
+
+
 
         // Stop upload if certificate has been signed
         if ($cert_signed) {
@@ -150,9 +152,14 @@ class FileUploadController extends BaseController
         if ($certificate_type === "marriage") {
             $cert_data = $this->marriageModel->find($cert_id);
             if (!empty($cert_data)) {
-                $cert_signed = !empty($cert_data['marriageSIGN_A']) ||
-                               !empty($cert_data['marriageSIGN_B']) ||
-                               !empty($cert_data['marriageSIGN_C']);
+
+                $cert_signed = !empty($cert_data['SIGNA']) ||
+                               !empty($cert_data['SIGNB']) ||
+                               !empty($cert_data['SIGNC']);
+
+                $cert_data['last_edited_by'] = session()->get('userData')['userId'];
+                $this->marriageModel->update($cert_id, $cert_data);
+
             }
         } elseif ($certificate_type === "divorce") {
             $cert_data = $this->divorceModel->find($cert_id);
@@ -160,13 +167,20 @@ class FileUploadController extends BaseController
                 $cert_signed = !empty($cert_data['divorceSIGN_A']) ||
                                !empty($cert_data['divorceSIGN_B']) ||
                                !empty($cert_data['divorceSIGN_C']);
+                $cert_data['divorceupdated_by'] = session()->get('userData')['userId'];
+                $this->divorceModel->update($cert_id, $cert_data);
+
             }
         } elseif ($certificate_type === "traditional") {
+            
             $cert_data = $this->traditionalModel->find($cert_id);
             if (!empty($cert_data)) {
                 $cert_signed = !empty($cert_data['tradSIGN_A']) ||
                                !empty($cert_data['tradSIGN_B']) ||
                                !empty($cert_data['tradSIGN_C']);
+
+                 $cert_data['tradCertLastUpdatedBy'] = session()->get('userData')['userId'];
+                 $this->traditionalModel->update($cert_id, $cert_data);
             }
         }
 

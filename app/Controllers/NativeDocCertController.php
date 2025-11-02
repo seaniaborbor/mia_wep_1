@@ -118,6 +118,9 @@ class NativeDocCertController extends BaseController
             'passLink' => 'nativecert'
         ];
 
+         $data['breanchDetail'] = $this->branchModel->find($branchId);
+        $data['allBranches'] = $this->branchModel->findAll();
+
         return view('dashboard/herbal_certificate_dashboard', $data);
     }
 

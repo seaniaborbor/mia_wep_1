@@ -64,7 +64,7 @@ public function index()
         $data['breanchDetail'] = $this->branchModel->find($branchId);
         $data['allBranches'] = $this->branchModel->findAll();
 
-           
+
 
         return view('dashboard/marriage_certificate_list', $data);
 }
@@ -170,6 +170,7 @@ public function sign($cert_id){
             if($certificate['SIGNA'] === null){
                 $certificate['SIGNA'] = session()->get('userData')['userSignature'];
                 $certificate['SIGNA_id'] = session()->get('userData')['userId'];
+                $certificate['last_edited_by'] = session()->get('userData')['userId'];
                 $certificate['SIGNA_signedDate'] = date('Y-m-d');  // Full date format
                 if($this->weddingCertModel->update($cert_id, $certificate)){
                     return redirect()->back()->with("success", "Your signature has been affixed to this wedding certificate and cannot be channged. The date and time are also recorded when you signed this document");
@@ -186,6 +187,7 @@ public function sign($cert_id){
 
                 $certificate['SIGNB'] = session()->get('userData')['userSignature'];
                  $certificate['SIGNB_id'] = session()->get('userData')['userId'];
+                $certificate['last_edited_by'] = session()->get('userData')['userId'];
                 $certificate['SIGNB_signedDate'] = date('Y-m-d');  // Full date format
 
                 if($this->weddingCertModel->update($cert_id, $certificate)){
@@ -205,7 +207,9 @@ public function sign($cert_id){
 
                 $certificate['SIGNC'] = session()->get('userData')['userSignature'];
                 $certificate['SIGNC_id'] = session()->get('userData')['userId'];
+                $certificate['last_edited_by'] = session()->get('userData')['userId'];
                 $certificate['SIGNC_signedDate'] = date('Y-m-d');  // Full date format
+
 
                 if($this->weddingCertModel->update($cert_id, $certificate)){
                     return redirect()->back()->with("success", "Your signature has been affixed to this wedding certificate and cannot be channged. The date and time are also recorded when you signed this document");
