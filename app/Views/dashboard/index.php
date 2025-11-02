@@ -6,20 +6,70 @@
     <!-- Page Header -->
     <div class="card mb-4">
         <div class="card-header bg-white border-bottom-primary py-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="col-md-10">
-                    <h1 class="h3 mb-0 text-primary font-weight-bold">
-                        <i class="fas fa-tachometer-alt mr-2"></i><?= session()->get('userData')['branchName']?> Dashboard
-                    </h1>
+            <div class=" ">
+                
+                <!-- Assume this is within your dashboard/index.php view -->
+<div class="row d-flex align-items-middle justify-content-between">
+    <div class="col-md-10">
+       <h1 class="h3 mb-0 text-primary font-weight-bold">
+        <i class="fas fa-certificate text-danger mr-2"></i>
+        Marriage & Divorce Certificates Dashboard
+        <p style="font-size:13px; margin-left: 50px;" class="text-danger">
+            <?php if(isset($breanchDetail) && !empty($breanchDetail)): ?>
+                <?= htmlspecialchars($breanchDetail['branchName']) ?>
+            <?php else: ?> 
+                <?= htmlspecialchars(session()->get('userData')['branchName']) ?>
+            <?php endif; ?>
+        </p>
+    </h1>
+
                 </div>
-                <div class="col-md-2">
-                    <a href="/dashboard/general" class="btn btn-primary btn-icon-split w-100">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-globe"></i>
-                        </span>
-                        <span class="text">Nation's Dashboard</span>
-                    </a>
-                </div>
+    <div class="col-md-2">
+        <div class="d-flex align-items-center">
+                    <!-- Branch Dropdown (Split Button) -->
+                    <div class="btn-group w-auto">
+                        <button type="button" class="btn btn-sm btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-globe"></i>
+                            </span>
+                            <span class="text">
+                                <?php
+                                    $currentBranch = 'Switch';
+                                    if (isset($branchDetail['branchId']) && !empty($allBranches)) {
+                                        foreach ($allBranches as $b) {
+                                            if ($b['branchId'] == $branchDetail['branchId']) {
+                                                $currentBranch = htmlspecialchars($b['branchName']);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    echo $currentBranch;
+                                ?>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Switch Branch</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <?php foreach ($allBranches as $branch): ?>
+                                <li>
+                                    <a class="dropdown-item <?php echo ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : ''; ?>" 
+                                       href="/dashboard?branch=<?= htmlspecialchars($branch['branchId']) ?>">
+                                        <?= htmlspecialchars($branch['branchName']) ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="/dashboard/general">
+                                    Nation's Dashboard
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+    </div>
+    <!-- Other columns (e.g., for search, filters, etc.) -->
+</div>
             </div>
         </div>
     </div>

@@ -32,12 +32,16 @@ class DivorceCertificateController extends BaseController
             $data['title'] = 'Users List';
             $data['passLink'] = 'certificates';
 
-            // Fetch completed divorce certificates (all three signatures present)
+             $branchId = session()->get('userData')['branchId'];
+
+                if($this->request->getGet('branch') && !empty($this->request->getGet('branch'))){
+                    $branchId = $this->request->getGet('branch');
+                }
 
             // Completed certificates (all signatures must be present)
             $data['branch_complete_certificate'] = $this->divorceCertificateModel
                 ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
-                ->where('divorce_certificates.divorcebreanch_id', session()->get('userData')['userBreanch'])
+                ->where('divorce_certificates.divorcebreanch_id', $branchId)
                 ->where('divorce_certificates.divorceSIGN_A !=', null)
                 ->where('divorce_certificates.divorceSIGN_B !=', null)
                 ->where('divorce_certificates.divorceSIGN_C !=', null)
@@ -47,7 +51,7 @@ class DivorceCertificateController extends BaseController
             // Uncompleted certificates (any one signature missing)
             $data['branch_uncomplete_certificate'] = $this->divorceCertificateModel
                 ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
-                ->where('divorce_certificates.divorcebreanch_id', session()->get('userData')['userBreanch'])
+                ->where('divorce_certificates.divorcebreanch_id', $branchId)
                 ->groupStart()
                     ->where('divorce_certificates.divorceSIGN_A', null)
                     ->orWhere('divorce_certificates.divorceSIGN_B', null)
@@ -60,6 +64,9 @@ class DivorceCertificateController extends BaseController
             $data['total_complete_certificate'] = count($data['branch_complete_certificate']);
             $data['total_uncomplete_certificate'] = count($data['branch_uncomplete_certificate']);
      
+
+        $data['breanchDetail'] = $this->branchModel->find($branchId);
+        $data['allBranches'] = $this->branchModel->findAll();
 
             return view('dashboard/divorce_certificate_log', $data);
 }
@@ -237,10 +244,7 @@ public function view($certificate_id)
             $data['signerProfiles'] = $signerProfiles;
             $data['isIssued'] = $this->isIssued($data['certificate']);
 
-            print_r($this->isIssued($data['certificate']));
-            exit();
-            
-
+           
             return view('dashboard/view_a_divorce_cert', $data);
         }
         
@@ -248,13 +252,14 @@ public function view($certificate_id)
 
 public function edite()
         {
+            
             $data['title'] = 'Users List';
             $data['passLink'] = 'certificates';
             
 
             return view('dashboard/divorce_certificate_log', $data);
         }
-        
+
 
 public function sign($certificate_id)
     {
@@ -440,6 +445,7 @@ public function edit_certificate($certificate_id)
                 ->with('error', 'Error: ' . $e->getMessage())
                 ->withInput();
         }
+
         // Validate and update the certificate data here
         // ...
 

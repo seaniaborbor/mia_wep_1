@@ -57,6 +57,12 @@ class BranchController extends Controller
         $data['title'] = 'View Branch';
         $data['passLink'] = 'branches';
 
+        $branchId = session()->get('userData')['branchId'];
+
+        if($this->request->getGet('branch') && !empty($this->request->getGet('branch'))){
+            $branchId = $this->request->getGet('branch');
+        }
+
         $branch = $this->branchModel->where('branchId', $branch_id)
                   ->join('login_users', 'login_users.userId = branchs_table.branchCreatedBy')->first();
         
@@ -112,6 +118,9 @@ class BranchController extends Controller
             ->where('branchs_table.branchId', $branch_id)
             ->where('login_users.userAccountActiveStatus', 0)
             ->findAll();
+
+         $data['breanchDetail'] = $this->branchModel->find($branch_id);
+        $data['allBranches'] = $this->branchModel->findAll();
 
         
 

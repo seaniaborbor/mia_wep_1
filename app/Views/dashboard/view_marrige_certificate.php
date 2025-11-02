@@ -1,38 +1,87 @@
 <?php $this->extend('dashboard/partials/layout') ?>
 <?= $this->section('main') ?>
-
 <div class="row mt-3">
     <div class="col-12">
-        <div class="card shadow-sm border-0">
-            <!-- ==================== HEADER ==================== -->
-            <div class="card-header bg-white border-0 py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="text-dark mb-0 font-weight-bold">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between border-bottom-primary py-3">
+                <div>
+                    <h1 class="h3 mb-0 text-primary font-weight-bold">
+                        <i class="fas fa-heart text-danger mr-2"></i>
                         Marriage Certificate Details
-                    </h4>
+                        <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
+                            <?php if(isset($certificate['branchName']) && !empty($certificate['branchName'])): ?>
+                                <?= htmlspecialchars($certificate['branchName']) ?>
+                            <?php else: ?> 
+                                <?= htmlspecialchars(session()->get('userData')['branchName'] ?? 'Unknown Branch') ?>
+                            <?php endif; ?>
+                        </p>
+                    </h1>
+                </div>
+                <div class="d-flex align-items-center">
+                    <!-- Print Button -->
+                    <a href="/dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>" 
+                       class="btn btn-sm btn-primary btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-print"></i>
+                        </span>
+                        <span class="text">Print</span>
+                    </a>
+                    
+                    <!-- Sign Button (for non-ENTRY users when not completed) -->
                     <?php
                         $signA = !empty($certificate['SIGNA']);
                         $signB = !empty($certificate['SIGNB']);
                         $signC = !empty($certificate['SIGNC']);
                         $isCompleted = $signA && $signB && $signC;
-                        $anySignature = $signA || $signB || $signC;
-                        $allMissing   = !$signA && !$signB && !$signC;
+                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
+                        $userBranch = session()->get('userData')['userBreanch'] ?? '';
+                        $certBranch = $certificate['cert_branch'] ?? '';
+                        $sameBranch = ($userBranch == $certBranch);
+                        $allMissing = !$signA && !$signB && !$signC;
                     ?>
-                    <span class="badge badge-pill px-3 py-2 liberia-status-badge
-                        <?= $isCompleted
-                            ? 'bg-success text-white'
-                            : 'bg-warning text-dark animate__animated animate__pulse animate__infinite' ?>">
-                        <?= $isCompleted ? 'Completed' : 'Pending' ?>
-                    </span>
-                    <?php if($certificate['isWedCertIssued'] == 1): ?>
-                        <span class="btn btn-sm btn-success rounded-circle">
-                            <i class="fa fa-check-circle"></i>
+                    
+                    <?php if ($sameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
+                    <a href="/dashboard/wedcert/sign/<?= $certificate['marriage_cert_id'] ?>" 
+                       class="btn btn-sm btn-success btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-signature"></i>
                         </span>
+                        <span class="text">Sign</span>
+                    </a>
                     <?php endif; ?>
+
+                    <!-- Edit Button (for ENTRY users when no signatures) -->
+                    <?php if ($sameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
+                    <a href="/dashboard/wedcert/edit/<?= $certificate['marriage_cert_id'] ?>" 
+                       class="btn btn-sm btn-warning btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                        <span class="text">Edit</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Allow Edit Button (for SIGNC users when complete) -->
+                    <?php if ($sameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
+                    <a href="/dashboard/wedcert/allow_edit/<?= $certificate['marriage_cert_id'] ?>" 
+                       class="btn btn-sm btn-info btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-unlock"></i>
+                        </span>
+                        <span class="text">Allow Edit</span>
+                    </a>
+                    <?php endif; ?>
+
+                    <!-- Back Button -->
+                    <a href="//dashboard/wedcert" class="btn btn-sm btn-secondary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-arrow-left"></i>
+                        </span>
+                        <span class="text">Back</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- ==================== BODY ==================== -->
             <div class="card-body p-4">
                 <?php if (session()->has('success')): ?>
                     <div class="alert alert-success alert-dismissible fade show border-0 liberia-alert" role="alert">
@@ -120,7 +169,7 @@
                                             <i class="fas fa-female liberia-red mr-2"></i>Bride's Particulars
                                         </h6>
                                     </div>
-                                    <div the card-body">
+                                    <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <p><span class="govt-label">Full Name:</span><br><?= esc($certificate['bride_name']) ?></p>
@@ -245,7 +294,7 @@
                                                         <td><?= date('M j, Y', strtotime($file['fileCreatedAt'])) ?></td>
                                                         <td><?= esc($file['userFullName']) ?></td>
                                                         <td>
-                                                            <a href="/dashboard/wedcert/delete_file/<?= $file['fileId'] ?>/<?= $certificate['marriage_cert_id'] ?>"
+                                                            <a href="/dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate['marriage_cert_id'] ?>"
                                                                class="btn btn-sm btn-outline-danger"
                                                                onclick="return confirm('Delete this file?');">
                                                                 Delete
@@ -336,12 +385,6 @@
                             </div>
                             <div class="card-body">
                                 <div class="d-grid gap-2">
-                                    <?php
-                                        $userBranch      = session()->get('userData')['userBreanch'] ?? '';
-                                        $certBranch      = $certificate['cert_branch'] ?? '';
-                                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
-                                        $sameBranch      = ($userBranch == $certBranch);
-                                    ?>
                                     <?php if ($sameBranch): ?>
                                         <!-- ENTRY user: Edit & Delete only if NO signatures -->
                                         <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
@@ -480,32 +523,80 @@
                                 <h6 class="m-0 liberia-blue">Certificate Metadata</h6>
                             </div>
                             <div class="card-body p-0">
-                                <div class="rounded row align-items-center rounded m-2 shadow-sm">
-                                    <div class="col-md-3 text-center">
+                                <?php
+                                // Prepare metadata profiles for Created By and Last Edited By
+                                $metadataProfiles = [];
+                                
+                                // Creator profile
+                                if (!empty($createdBy)) {
+                                    $metadataProfiles[] = [
+                                        'userFullName' => $createdBy['userFullName'] ?? 'Unknown',
+                                        'userPosition' => $createdBy['userPosition'] ?? 'Unknown',
+                                        'userPicture' => $createdBy['userPicture'] ?? '',
+                                        'label' => 'Creator',
+                                        'date' => date('M j, Y, g:i A', strtotime($certificate['created_at'])),
+                                        'badgeClass' => 'badge-primary'
+                                    ];
+                                }
+                                
+                                // Editor profile - handle the array structure
+                                if (!empty($lastEditedByProfile) && is_array($lastEditedByProfile)) {
+                                    // Check if it's a multi-dimensional array and get the first element
+                                    $editorProfile = is_array($lastEditedByProfile[0] ?? null) ? $lastEditedByProfile[0] : $lastEditedByProfile;
+                                    
+                                    if (!empty($editorProfile['userFullName'])) {
+                                        $metadataProfiles[] = [
+                                            'userFullName' => $editorProfile['userFullName'],
+                                            'userPosition' => $editorProfile['userPosition'] ?? 'Unknown',
+                                            'userPicture' => $editorProfile['userPicture'] ?? '',
+                                            'label' => 'Last Editor',
+                                            'date' => date('M j, Y, g:i A', strtotime($last_edited_at)),
+                                            'badgeClass' => 'badge-info'
+                                        ];
+                                    }
+                                }
+                                ?>
+                                <?php if (!empty($metadataProfiles)): ?>
+                                    <?php foreach ($metadataProfiles as $profile): ?>
                                         <?php
-                                            $photoPath = FCPATH . 'uploads/users/pictures/' . ($createdBy['userPicture'] ?? '');
-                                            $photoUrl = base_url('uploads/users/pictures/' . ($createdBy['userPicture'] ?? ''));
-                                            $hasPhoto = !empty($createdBy['userPicture']) && file_exists($photoPath);
+                                            $photoPath = FCPATH . 'uploads/users/pictures/' . ($profile['userPicture'] ?? '');
+                                            $photoUrl = base_url('uploads/users/pictures/' . ($profile['userPicture'] ?? ''));
+                                            $hasPhoto = !empty($profile['userPicture']) && file_exists($photoPath);
                                         ?>
-                                        <?php if ($hasPhoto): ?>
-                                            <img src="<?= $photoUrl ?>" alt="<?= esc($createdBy['userFullName']) ?>"
-                                                 class="rounded-circle shadow-sm img-thumbnail"
-                                                 style="width:100px;height:100px;object-fit:cover;">
-                                        <?php else: ?>
-                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center shadow-sm img-thumbnail"
-                                                 style="width:100px;height:100px;">
-                                                <i class="fas fa-user text-muted fa-2x"></i>
+                                        <div class="p-3 border-bottom signer-card">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <?php if ($hasPhoto): ?>
+                                                        <img src="<?= $photoUrl ?>" alt="<?= esc($profile['userFullName']) ?>"
+                                                             class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
+                                                    <?php else: ?>
+                                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                                                             style="width:50px;height:50px;">
+                                                            <i class="fas fa-user text-muted"></i>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="flex-grow-1 ml-3">
+                                                    <h6 class="mb-0"><?= esc($profile['userFullName']) ?></h6>
+                                                    <small class="text-muted">
+                                                        <?= esc($profile['label']) ?> – <?= esc($profile['userPosition']) ?>
+                                                    </small><br>
+                                                    <small class="text-muted"><?= esc($profile['date']) ?></small>
+                                                </div>
+                                                <div>
+                                                    <span class="badge <?= esc($profile['badgeClass']) ?> badge-pill">
+                                                        <?= esc($profile['label']) ?>
+                                                    </span>
+                                                </div>
                                             </div>
-                                        <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="p-3 text-center text-muted">
+                                        <i class="fas fa-info-circle mb-2"></i>
+                                        <p class="mb-0">No metadata available</p>
                                     </div>
-                                    <div class="col-md-9">
-                                        <p class="mb-0"><strong>Uploaded by:</strong> <?= esc($createdBy['userFullName']) ?></p>
-                                        <small class="mb-0"><strong>Position:</strong> <?= esc($createdBy['userPosition']) ?></small><br>
-                                        <small class="mb-0"><strong>Email:</strong> <?= esc($createdBy['userEmail']) ?></small><br>
-                                        <small class="mb-0"><strong>Created on:</strong> <?= date('M j, Y, g:i A', strtotime($certificate['created_at'])) ?></small><br>
-                                        <small class="mb-0"><strong>Last Edited:</strong> <?= date('M j, Y, g:i A', strtotime($last_edited_at)) ?></small>
-                                    </div>
-                                </div>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -513,106 +604,107 @@
                 </div>
             </div>
         </div>
-    </重点
+    </div>
+</div>
 
-    <!-- ==================== FILE PREVIEW MODAL ==================== -->
-    <div class="modal fade" id="filePreviewModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="filePreviewTitle">File Preview</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-                </div>
-                <div class="modal-body p-0">
-                    <div id="filePreviewContainer" style="height:70vh;"></div>
+<!-- ==================== FILE PREVIEW MODAL ==================== -->
+<div class="modal fade" id="filePreviewModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filePreviewTitle">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="filePreviewContainer" style="height:70vh;"></div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>Download</a>
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== UPLOAD FILE MODAL ==================== -->
+<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header liberia-card-blue">
+                <h5 class="modal-title liberia-blue">Upload File</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+            </div>
+            <form action="/dashboard/certificate_files/upload_file/<?= $certificate['marriage_cert_id'] ?>"
+                  method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="fileTitle" class="font-weight-bold">File Title</label>
+                        <input type="text" class="form-control" id="fileTitle" name="fileTitle" required
+                               placeholder="Enter a descriptive title">
+                    </div>
+                    <div class="form-group">
+                        <label for="fileUpload" class="font-weight-bold">Select File</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile"
+                                   required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            <label class="custom-file-label" for="fileUpload">Choose file...</label>
+                        </div>
+                        <small class="form-text text-muted">Max 5 MB. Supported: PDF, DOC, JPG, PNG</small>
+                    </div>
+                    <input type="hidden" name="certificateFile_category" value="marriage">
                 </div>
                 <div class="modal-footer">
-                    <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>Download</a>
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn liberia-btn-blue">Upload File</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <!-- ==================== UPLOAD FILE MODAL ==================== -->
-    <div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header liberia-card-blue">
-                    <h5 class="modal-title liberia-blue">Upload File</h5>
-                    <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-                </div>
-                <form action="/dashboard/certificate_files/upload_file/<?= $certificate['marriage_cert_id'] ?>"
-                      method="post" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="fileTitle" class="font-weight-bold">File Title</label>
-                            <input type="text" class="form-control" id="fileTitle" name="fileTitle" required
-                                   placeholder="Enter a descriptive title">
-                        </div>
-                        <div class="form-group">
-                            <label for="fileUpload" class="font-weight-bold">Select File</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile"
-                                       required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                                <label class="custom-file-label" for="fileUpload">Choose file...</label>
-                            </div>
-                            <small class="form-text text-muted">Max 5 MB. Supported: PDF, DOC, JPG, PNG</small>
-                        </div>
-                        <input type="hidden" name="certificateFile_category" value="marriage">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn liberia-btn-blue">Upload File</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<!-- Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    .signer-card { transition: background .2s; }
+    .signer-card:hover { background: #f8f9fa; }
+    .liberia-status-badge { font-size: .9rem; font-weight: 600; }
+    .animate__pulse { animation-duration: 2s; }
+</style>
 
-    <style>
-        .signer-card { transition: background .2s; }
-        .signer-card:hover { background: #f8f9fa; }
-        .liberia-status-badge { font-size: .9rem; font-weight: 600; }
-        .animate__pulse { animation-duration: 2s; }
-    </style>
+<script>
+    // File upload label
+    document.getElementById('fileUpload')?.addEventListener('change', function (e) {
+        const label = e.target.nextElementSibling;
+        label.innerText = e.target.files[0]?.name || 'Choose file...';
+    });
 
-    <script>
-        // File upload label
-        document.getElementById('fileUpload')?.addEventListener('change', function (e) {
-            const label = e.target.nextElementSibling;
-            label.innerText = e.target.files[0]?.name || 'Choose file...';
+    // File preview modal
+    document.querySelectorAll('.file-preview-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const title = this.dataset.title;
+            const url   = this.dataset.url;
+            const type  = this.dataset.type;
+            document.getElementById('filePreviewTitle').textContent = title;
+            document.getElementById('fileDownloadLink').href = url;
+            const container = document.getElementById('filePreviewContainer');
+            container.innerHTML = '';
+            if (type === 'pdf') {
+                container.innerHTML = `<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`;
+            } else if (['jpg','jpeg','png','gif'].includes(type)) {
+                container.innerHTML = `<img src="${url}" class="img-fluid h-100 w-100" style="object-fit:contain;">`;
+            } else {
+                container.innerHTML = `
+                    <div class="p-5 text-center text-muted">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>Preview not available for .${type} files</p>
+                        <a href="${url}" class="btn btn-primary btn-sm" download>Download to View</a>
+                    </div>`;
+            }
+            $('#filePreviewModal').modal('show');
         });
-
-        // File preview modal
-        document.querySelectorAll('.file-preview-link').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const title = this.dataset.title;
-                const url   = this.dataset.url;
-                const type  = this.dataset.type;
-                document.getElementById('filePreviewTitle').textContent = title;
-                document.getElementById('fileDownloadLink').href = url;
-                const container = document.getElementById('filePreviewContainer');
-                container.innerHTML = '';
-                if (type === 'pdf') {
-                    container.innerHTML = `<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`;
-                } else if (['jpg','jpeg','png','gif'].includes(type)) {
-                    container.innerHTML = `<img src="${url}" class="img-fluid h-100 w-100" style="object-fit:contain;">`;
-                } else {
-                    container.innerHTML = `
-                        <div class="p-5 text-center text-muted">
-                            <i class="fas fa-file-alt fa-3x mb-3"></i>
-                            <p>Preview not available for .${type} files</p>
-                            <a href="${url}" class="btn btn-primary btn-sm" download>Download to View</a>
-                        </div>`;
-                }
-                $('#filePreviewModal').modal('show');
-            });
-        });
-    </script>
+    });
+</script>
 
 <?= $this->endSection() ?>

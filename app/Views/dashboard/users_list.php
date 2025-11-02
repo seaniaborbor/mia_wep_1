@@ -27,16 +27,74 @@ function labelUser($userBranch, $userAccountType)
 <div class="row mt-3">
     <div class="col-12">
         <div class="card shadow-sm">
-            <div class="card-header bg-white border-bottom-primary d-flex justify-content-between">
-                <h4 class="text-primary mb-0 font-weight-bold">
-                    <i class="fas fa-id-badge mr-2"></i>User Accounts & Profiles
-                </h4>
-                <a href="/dashboard/users/create" class="btn btn-sm btn-primary btn-icon-split ">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-user-plus"></i>
-                    </span>
-                    <span class="text">Add User</span>
-                </a>
+             <div class="card-header d-flex justify-content-between bg-white border-bottom-primary py-3">
+                <div>
+                    <h1 class="h3 mb-0 text-primary font-weight-bold">
+                        <i class="fas fa-users text-danger mr-2"></i>
+                        Users Log
+                        <p style="font-size:13px; margin-left: 50px;" class="text-danger">
+                            <?php if(isset($breanchDetail) && !empty($breanchDetail)): ?>
+                                <?= htmlspecialchars($breanchDetail['branchName']) ?>
+                            <?php else: ?> 
+                                <?= htmlspecialchars(session()->get('userData')['branchName']) ?>
+                            <?php endif; ?>
+                        </p>
+                    </h1>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="btn-group p-0 w-auto ">
+
+                    <!-- Create New Button -->
+                        <?php if(session()->get('userData')['userBreanch'] == 1 && session()->get('userData')['userBreanch']): ?>
+                           <a href="/dashboard/users/create" class="btn btn-sm btn-success btn-icon-split mr-2">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-user-plus"></i>
+                        </span>
+                        <span class="text">Create</span>
+                            </a>                  
+                        <?php endif; ?>
+                    
+                    <!-- Branch Dropdown (Split Button) -->
+                        <button type="button" class="btn btn-sm btn-primary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-globe"></i>
+                            </span>
+                            <span class="text">
+                                <?php
+                                    $currentBranch = 'Select Branch';
+                                    if (isset($branchDetail['branchId']) && !empty($allBranches)) {
+                                        foreach ($allBranches as $b) {
+                                            if ($b['branchId'] == $branchDetail['branchId']) {
+                                                $currentBranch = htmlspecialchars($b['branchName']);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    echo $currentBranch;
+                                ?>
+                            </span>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Switch Branch</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <?php foreach ($allBranches as $branch): ?>
+                                <li>
+                                    <a class="dropdown-item <?php echo ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : ''; ?>" 
+                                       href="/dashboard/users?branch=<?= htmlspecialchars($branch['branchId']) ?>">
+                                        <?= htmlspecialchars($branch['branchName']) ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                            <li class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="/dashboard/general">
+                                    Nation's Dashboard
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body p-4">

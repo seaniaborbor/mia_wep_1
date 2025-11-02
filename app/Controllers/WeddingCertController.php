@@ -33,12 +33,17 @@ public function index()
             exit();
         }
 
+        $branchId = session()->get('userData')['branchId'];
+
+        if($this->request->getGet('branch') && !empty($this->request->getGet('branch'))){
+            $branchId = $this->request->getGet('branch');
+        }
 
         $data['title'] = 'Marriage Certificates';
         $data['passLink'] = 'certificates';
         $data['branch_complete_certificate'] = $this->weddingCertModel
             ->join('branchs_table', 'branchs_table.branchId = marriage_certificates.cert_branch')
-            ->where('marriage_certificates.cert_branch', session()->get('userData')['userBreanch'])
+            ->where('marriage_certificates.cert_branch', $branchId)
             ->where('marriage_certificates.SIGNA !=', null)
             ->where('marriage_certificates.SIGNB !=', null)
             ->where('marriage_certificates.SIGNC !=', null)
@@ -47,7 +52,7 @@ public function index()
 
         $data['branch_uncomplete_certificate'] = $this->weddingCertModel
                 ->join('branchs_table', 'branchs_table.branchId = marriage_certificates.cert_branch')
-                ->where('marriage_certificates.cert_branch', session()->get('userData')['userBreanch'])
+                ->where('marriage_certificates.cert_branch', $branchId)
                 ->groupStart()
                     ->where('marriage_certificates.SIGNA', null)
                     ->orWhere('marriage_certificates.SIGNB', null)
@@ -55,6 +60,12 @@ public function index()
                 ->groupEnd()
                 ->orderBy('marriage_certificates.marriage_cert_id', 'DESC')
                 ->findAll();
+
+        $data['breanchDetail'] = $this->branchModel->find($branchId);
+        $data['allBranches'] = $this->branchModel->findAll();
+
+           
+
         return view('dashboard/marriage_certificate_list', $data);
 }
 
@@ -65,8 +76,8 @@ public function view($cert_id)
 {
     // Check user permission
     if (!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])) {
-        return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-    }
+            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+        }
 
     // Fetch certificate details
     $data['passLink'] = 'certificates';
@@ -114,13 +125,17 @@ public function view($cert_id)
 
     // view who last edited the the certificate
     $data['lastEditedByProfile'] = $this->userModel->find($certificate['last_edited_by']);
+    //   echo  $certificate['last_edited_by'];
+    // exit();
+
     $data['createdBy'] = $this->userModel->find($certificate['ENTRY']);
     $data['last_edited_at'] = $certificate['last_edited_at'];
 
     // print_r($data);
     // exit();
 
-    // Render the certificate view
+    
+
     return view('dashboard/view_marrige_certificate', $data);
 }
 

@@ -32,6 +32,7 @@ class DashboardController extends BaseController
        
     }
 
+
 public function index()
 {
       // check if the user account is allowed to view marriage certificate activities
@@ -43,6 +44,10 @@ public function index()
 
     $data['passLink'] = 'dashboard';
     $branchId = session()->get('userData')['branchId'];
+
+    if($this->request->getGet('branch') && !empty($this->request->getGet('branch'))){
+        $branchId = $this->request->getGet('branch');
+    }
     
     // Branch-specific data
     $data['branchMarriages'] = $this->marriageModel->where('cert_branch', $branchId)
@@ -124,6 +129,12 @@ public function index()
         'marriages' => $this->mapMonthlyData($allMonths, $monthlyMarriages),
         'divorces' => $this->mapMonthlyData($allMonths, $monthlyDivorces)
     ];
+
+    $data['breanchDetail'] = $this->branchModel->find($branchId);
+    $data['allBranches'] = $this->branchModel->findAll();
+
+    // print_r($data['allBranches']);
+    // exit();
 
     return view('dashboard/index', $data);
 }

@@ -49,11 +49,11 @@ $userData = session()->get('userData');
 <!-- Optional: Buttons extension CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
 <style>
-    body, h1, h2, h3, h4, h5, h6, 
+    /*body, h1, h2, h3, h4, h5, h6, 
     .card, .table, .nav-tabs, .badge, 
     .btn, .form-control, .dropdown-menu {
         font-family: "Times New Roman", Times, serif !important;
-    }
+    }*/
 </style>
 </head>
 
@@ -68,8 +68,7 @@ $userData = session()->get('userData');
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-start" href="/dashboard">
-               <img src="/dashboard_asset/img/mialogo.PNG" alt="" width="50" height="50">
-                <div class="sidebar-brand-text mx-3">Matrimonial Database</div>
+               <img src="/dashboard_asset/img/soft_logo.png" alt="" class="img-fluid">
             </a>
 
             <!-- Divider -->
@@ -106,10 +105,7 @@ $userData = session()->get('userData');
                         ?>
                             <h6 class="collapse-header">Marriage Certificate</h6>
                             <a class="collapse-item" href="/dashboard/wedcert">Marriage Cert. Log</a>
-                            <a class="collapse-item" href="/dashboard/wedcert/create">Issue Marriage Cert.</a>
-                            <h6 class="collapse-header">Divorce Certificate</h6>
                             <a class="collapse-item" href="/dashboard/divorce_cert">Divorce Cert. Log</a>
-                            <a class="collapse-item" href="/dashboard/divorce_cert/create">Issue Divorce Cert.</a>
                         <?php
                         endif;
                         ?>
@@ -140,9 +136,6 @@ $userData = session()->get('userData');
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Actions</h6>
                         <a class="collapse-item" href="/dashboard/users">View Users</a>
-                        <?php if($userData['userBreanch'] == 1): ?>
-                            <a class="collapse-item" href="/dashboard/users/create">Create User</a>                           
-                        <?php endif; ?>
                     </div>
                 </div>
             </li>
@@ -193,7 +186,7 @@ $userData = session()->get('userData');
                     
                       <a href="#" class="navbar-brand">
                             <h6 class="text-primary text-uppercase fw-bold">
-                                <?= $userData['branchName'] ?>
+                                Ministry of Internal Affairs
                             </h6>
                         </a>
 

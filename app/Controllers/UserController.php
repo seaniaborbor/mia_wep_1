@@ -22,22 +22,33 @@ class UserController extends BaseController
 
     public function index()
     {
+
         $data['title'] = 'Users List';
         $data['passLink'] = 'users';
+
+        $branchId = session()->get('userData')['userBreanch'];
+
+         if($this->request->getGet('branch') && !empty($this->request->getGet('branch'))){
+            $branchId = $this->request->getGet('branch');
+        }
 
         $data['users_active'] = $this->userModel
             ->select('login_users.*, branchs_table.branchName')
             ->join('branchs_table', 'branchs_table.branchId = login_users.userBreanch', 'left')
-            ->where('branchs_table.branchId', session()->get('userData')['userBreanch'])
+            ->where('branchs_table.branchId',  $branchId)
             ->where('login_users.userAccountActiveStatus', 1)
             ->findAll();
 
         $data['users_inactive'] = $this->userModel
             ->select('login_users.*, branchs_table.branchName')
             ->join('branchs_table', 'branchs_table.branchId = login_users.userBreanch', 'left')
-            ->where('branchs_table.branchId', session()->get('userData')['userBreanch'])
+            ->where('branchs_table.branchId',  $branchId)
             ->where('login_users.userAccountActiveStatus', 0)
             ->findAll();
+
+         $data['breanchDetail'] = $this->branchModel->find($branchId);
+         $data['allBranches'] = $this->branchModel->findAll();
+
 
 
 
