@@ -21,7 +21,7 @@
                 </div>
                 <div class="d-flex align-items-center">
                     <!-- Create New Button -->
-                    <a href="/dashboard/divorce_cert/create" class="btn btn-sm btn-primary btn-icon-split mr-2">
+                    <a href="/dashboard/divorce_cert/create" class="btn btn-sm btn-success btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-user-plus"></i>
                         </span>

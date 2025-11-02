@@ -36,7 +36,7 @@ public function index()
 
     $verificationCode = trim(strip_tags($this->request->getGet('cc')));
     $certificateType = strtolower(trim(strip_tags($this->request->getGet('toc'))));
-    $allowedTypes = ['w', 'd'];
+    $allowedTypes = ['w', 'd','c'];
 
     if (!empty($verificationCode) && in_array($certificateType, $allowedTypes)) {
 
@@ -46,8 +46,6 @@ public function index()
             $data['wedCert'] = $this->marriageModel
                 ->where('reference_no', $verificationCode)
                 ->first();
-
-                
 
             $data['file_to_include'] = !empty($data['wedCert']) ?
                 'partials/fragments/success_wedding_msg.php' :

@@ -26,35 +26,40 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <style>
-        /* Sticky FAQ Section */
-        .faq-sticky {
-          position: sticky;
-          top: 90px; /* adjust based on your navbar height */
-          z-index: 10;
-        }
+/* Sticky FAQ Section */
+.faq-sticky {
+  position: sticky;
+  top: 90px; /* adjust based on your navbar height */
+  z-index: 10;
+}
 
-        :root {
-            --liberia-blue: #002366;
-            --liberia-red: #BF0A30;
-            --liberia-white: #FFFFFF;
-            --liberia-light-blue: #E6EEFF;
-            --dark: #0A0E17;
-            --light: #F5F9FF;
-            --gradient: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
-        }
-        
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            background-color: var(--liberia-white);
-            color: #333;
-            overflow-x: hidden;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 700;
-        }
-        
+:root {
+    --liberia-blue: #002366;
+    --liberia-red: #BF0A30;
+    --liberia-white: #FFFFFF;
+    --liberia-light-blue: #E6EEFF;
+    --dark: #0A0E17;
+    --light: #F5F9FF;
+    --gradient: linear-gradient(135deg, var(--liberia-blue) 0%, var(--liberia-red) 100%);
+}
+
+/* Import Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--liberia-white);
+    color: #333;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+}
         /* Top Header */
         .top-header {
             background: var(--liberia-blue);

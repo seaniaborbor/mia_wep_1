@@ -52,11 +52,12 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Date of Birth</label>
-                <input type="date" name="groom_dob" class="form-control" required>
+                <input type="date" name="groom_dob" class="form-control" required max="<?= date('Y-m-d', strtotime('-21 years')) ?>">
+                <small class="form-text text-muted">Must be at least 21 years old</small>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Age</label>
-                <input type="number" name="groom_age" class="form-control" min="18" required>
+                <input type="number" name="groom_age" class="form-control" min="21" required readonly>
             </div>
         </div>
         <div class="row">
@@ -170,11 +171,12 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Date of Birth</label>
-                <input type="date" name="bride_dob" class="form-control" required>
+                <input type="date" name="bride_dob" class="form-control" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>">
+                <small class="form-text text-muted">Must be at least 18 years old</small>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Age</label>
-                <input type="number" name="bride_age" class="form-control" min="18" required>
+                <input type="number" name="bride_age" class="form-control" min="18" required readonly>
             </div>
         </div>
         <div class="row">
@@ -398,6 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
     showStep(currentStep);
     updateConditionalFields();
     updateProgress();
+    initializeAgeCalculation();
     
     // Next step button click handler
     document.querySelectorAll('.next-step').forEach(button => {
@@ -439,6 +442,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Skip validation for readonly age fields
+            if (input.hasAttribute('readonly')) {
+                return;
+            }
+            
             if (input.hasAttribute('required') && !input.value.trim()) {
                 input.classList.add('is-invalid');
                 isValid = false;
@@ -448,6 +456,17 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (input.type === 'file' && input.required && !input.files.length) {
                 input.classList.add('is-invalid');
                 isValid = false;
+            } else if (input.type === 'date' && input.required) {
+                // Validate age requirements
+                if (input.name === 'groom_dob' && !isGroomAgeValid(input.value)) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else if (input.name === 'bride_dob' && !isBrideAgeValid(input.value)) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
             } else {
                 input.classList.remove('is-invalid');
             }
@@ -506,11 +525,95 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Initialize age calculation for date of birth fields
+    function initializeAgeCalculation() {
+        // Groom age calculation
+        const groomDob = document.querySelector('input[name="groom_dob"]');
+        const groomAge = document.querySelector('input[name="groom_age"]');
+        
+        groomDob.addEventListener('change', function() {
+            if (this.value) {
+                const age = calculateAge(this.value);
+                groomAge.value = age;
+                
+                if (!isGroomAgeValid(this.value)) {
+                    this.classList.add('is-invalid');
+                    alert('Groom must be at least 21 years old.');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            }
+        });
+        
+        // Bride age calculation
+        const brideDob = document.querySelector('input[name="bride_dob"]');
+        const brideAge = document.querySelector('input[name="bride_age"]');
+        
+        brideDob.addEventListener('change', function() {
+            if (this.value) {
+                const age = calculateAge(this.value);
+                brideAge.value = age;
+                
+                if (!isBrideAgeValid(this.value)) {
+                    this.classList.add('is-invalid');
+                    alert('Bride must be at least 18 years old.');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            }
+        });
+    }
+    
+    // Calculate age from date of birth
+    function calculateAge(birthDate) {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        
+        return age;
+    }
+    
+    // Validate groom age (21+)
+    function isGroomAgeValid(birthDate) {
+        const age = calculateAge(birthDate);
+        return age >= 21;
+    }
+    
+    // Validate bride age (18+)
+    function isBrideAgeValid(birthDate) {
+        const age = calculateAge(birthDate);
+        return age >= 18;
+    }
+    
     // Form submission handler
     form.addEventListener('submit', function(e) {
-        if (!validateStep(steps.length - 1)) {
+        // Final validation before submission
+        let isFormValid = true;
+        
+        for (let i = 0; i < steps.length; i++) {
+            if (!validateStep(i)) {
+                isFormValid = false;
+                break;
+            }
+        }
+        
+        if (!isFormValid) {
             e.preventDefault();
             alert('Please fix the errors in the form before submitting.');
+            // Show the first step with errors
+            for (let i = 0; i < steps.length; i++) {
+                if (!validateStep(i)) {
+                    currentStep = i;
+                    showStep(currentStep);
+                    updateProgress();
+                    break;
+                }
+            }
         }
     });
     

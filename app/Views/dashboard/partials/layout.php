@@ -196,42 +196,7 @@ $userData = session()->get('userData');
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                      
-                           <!-- Marriage Certificate Notifications -->
-    <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="#" id="marriageMessagesDropdown" role="button"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-ring"></i>
-            <!-- Counter - Messages -->
-            <span class="badge badge-danger badge-counter marriage-counter">0</span>
-        </a>
-        <!-- Dropdown - Messages -->
-        <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-            aria-labelledby="marriageMessagesDropdown">
-            <h6 class="dropdown-header">
-                Marriage Cert. Notifications
-            </h6>
-        </div>
-    </li>
 
-    <!-- Divorce Certificate Notifications -->
-    <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="#" id="divorceMessagesDropdown" role="button"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-heart-broken"></i>
-            <!-- Counter - Messages -->
-            <span class="badge badge-danger badge-counter divorce-counter">0</span>
-        </a>
-        <!-- Dropdown - Messages -->
-        <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-            aria-labelledby="divorceMessagesDropdown">
-            <h6 class="dropdown-header">
-                Divorce Cert. Notifications
-            </h6>
-        </div>
-    </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
@@ -396,99 +361,6 @@ $(document).ready(function() {
 });
 </script>
 
-<script>
-function fetchNotifications() {
-    $.ajax({
-        url: '/dashboard/ajax/show_notification',
-        method: 'GET',
-        dataType: 'json',
-        success: function(response) {
-            if (response.status === 'success' && response.notifications.length > 0) {
-                const notifications = response.notifications;
-                
-                // Separate marriage and divorce notifications
-                const marriageNotifications = notifications.filter(notif => notif.certificate_type === 'marriage');
-                const divorceNotifications = notifications.filter(notif => notif.certificate_type === 'divorce');
-                
-                // Process marriage notifications
-                processNotificationType(marriageNotifications, 'marriage');
-                
-                // Process divorce notifications
-                processNotificationType(divorceNotifications, 'divorce');
-            } else {
-                // No notifications - clear both
-                clearNotifications('marriage');
-                clearNotifications('divorce');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error("Notification fetch error:", error);
-        }
-    });
-}
-
-function processNotificationType(notifications, type) {
-    if (notifications.length > 0) {
-        const messageList = $(`.dropdown-menu[aria-labelledby="${type}MessagesDropdown"]`);
-        const badgeCounter = $(`.${type}-counter`);
-        
-        // Remove old notification items (but leave header)
-        messageList.find('.dropdown-item.d-flex').remove();
-        
-        // Add each notification
-        notifications.forEach(notif => {
-            const link = `/dashboard/${type === 'marriage' ? 'wedcert' : 'divorce_cert'}/view/${notif.certificate_id}`;
-            const messageItem = `
-                <a class="dropdown-item d-flex align-items-center" href="${link}">
-                    <div class="dropdown-list-image mr-3">
-                        <img class="rounded-circle" src="/uploads/users/pictures/${notif.userPicture || 'default-user.jpg'}" alt="User">
-                        <div class="status-indicator bg-success"></div>
-                    </div>
-                    <div>
-                        <div class="text-truncate">${decodeHtml(notif.comment_text)}</div>
-                        <div class="small text-gray-500">${notif.userFullName} · ${formatDate(notif.date_notified)}</div>
-                    </div>
-                </a>
-            `;
-            $(messageItem).insertAfter(messageList.find('.dropdown-header'));
-        });
-
-        // Update badge
-        badgeCounter.text(notifications.length).removeClass('d-none');
-
-        // Add footer if not present
-        if (messageList.find('.dropdown-item.text-center').length === 0) {
-            messageList.append(`
-                <a class="dropdown-item text-center small text-gray-500" href="/dashboard/${type === 'marriage' ? 'wedcert' : 'divorce_cert'}">Read More Messages</a>
-            `);
-        }
-    } else {
-        clearNotifications(type);
-    }
-}
-
-function clearNotifications(type) {
-    $(`.dropdown-menu[aria-labelledby="${type}MessagesDropdown"] .dropdown-item.d-flex`).remove();
-    $(`.${type}-counter`).addClass('d-none');
-}
-
-// Utility: Format date to readable format
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-// Utility: Decode HTML entities
-function decodeHtml(html) {
-    const txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-}
-
-// Poll every 5 seconds
-setInterval(fetchNotifications, 5000);
-$(document).ready(fetchNotifications);
-</script>
 
 
 </body>
