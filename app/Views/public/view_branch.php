@@ -1,8 +1,6 @@
 <?= $this->extend('public/partials/layout') ?>
-
 <?= $this->section('main') ?>
-
-<?php if (!empty($branch) && !empty($operators)): ?>
+<?php if (!empty($branch)): ?>
 <div class="container mt-4">
     <div class="row">
         <!-- Branch Details Card - Left Side (Larger) -->
@@ -17,11 +15,11 @@
                         </div>
                     </div>
                 </div>
-                
+               
                 <div class="card-body">
                     <!-- Animated Ribbon -->
                     <div class="ribbon ribbon-top-right"><span>OFFICIAL</span></div>
-                    
+                   
                     <!-- Branch Header -->
                     <div class="branch-header text-center mb-4">
                         <div class="branch-icon mb-3">
@@ -33,7 +31,6 @@
                         <h4 class="text-liberia-blue"><?= esc($branch['branchName'] ?? 'N/A') ?></h4>
                         <p class="text-muted"><?= esc($branch['branchCityOrTown'] ?? 'N/A') ?>, <?= esc($branch['branchCounty'] ?? 'N/A') ?> County</p>
                     </div>
-
                     <!-- Branch Information Grid -->
                     <div class="row">
                         <div class="col-md-6">
@@ -46,7 +43,7 @@
                                         <p class="highlight-text"><?= esc($branch['branchCode'] ?? 'N/A') ?></p>
                                     </div>
                                 </div>
-                                
+                               
                                 <div class="info-item slide-in" style="animation-delay: 0.1s;">
                                     <i class="fas fa-map-marker-alt text-liberia-red"></i>
                                     <div>
@@ -54,17 +51,11 @@
                                         <p><?= esc($branch['branchCityOrTown'] ?? 'N/A') ?>, <?= esc($branch['branchCounty'] ?? 'N/A') ?></p>
                                     </div>
                                 </div>
-                                
-                                <div class="info-item slide-in" style="animation-delay: 0.2s;">
-                                    <i class="fas fa-calendar-alt text-liberia-blue"></i>
-                                    <div>
-                                        <strong>Established</strong>
-                                        <p><?= isset($branch['branchCreatedAt']) ? date('F j, Y', strtotime($branch['branchCreatedAt'])) : 'N/A' ?></p>
-                                    </div>
-                                </div>
+                               
+                               
                             </div>
                         </div>
-                        
+                       
                         <div class="col-md-6">
                             <div class="info-section">
                                 <h6 class="text-liberia-blue mb-3"><i class="fas fa-address-card me-2"></i>Contact Information</h6>
@@ -75,7 +66,7 @@
                                         <p><?= esc($branch['branchContact'] ?? 'N/A') ?></p>
                                     </div>
                                 </div>
-                                
+                               
                                 <div class="info-item slide-in" style="animation-delay: 0.4s;">
                                     <i class="fas fa-envelope text-liberia-blue"></i>
                                     <div>
@@ -83,69 +74,11 @@
                                         <p><?= esc($branch['branchEmail'] ?? 'N/A') ?></p>
                                     </div>
                                 </div>
-                                
-                                <div class="info-item slide-in" style="animation-delay: 0.5s;">
-                                    <i class="fas fa-user-plus text-liberia-red"></i>
-                                    <div>
-                                        <strong>Created By</strong>
-                                        <p>User ID: <?= esc($branch['branchCreatedBy'] ?? 'N/A') ?></p>
-                                    </div>
-                                </div>
+                               
+                    
                             </div>
                         </div>
                     </div>
-
-                    <!-- Statistics Section -->
-                    <div class="branch-stats mt-4 pt-4 border-top">
-                        <h5 class="text-liberia-blue mb-4"><i class="fas fa-chart-pie me-2"></i>Branch Statistics</h5>
-                        <div class="row">
-                            <div class="col-md-3 col-6">
-                                <div class="stat-card bounce-in text-center">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-users text-liberia-blue"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <h4 class="stat-number"><?= count($operators) ?></h4>
-                                        <p class="stat-label">Total Operators</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6">
-                                <div class="stat-card bounce-in text-center" style="animation-delay: 0.2s;">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-user-check text-success"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <h4 class="stat-number"><?= count(array_filter($operators, function($op) { return $op['userAccountActiveStatus'] ?? false; })) ?></h4>
-                                        <p class="stat-label">Active Operators</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6">
-                                <div class="stat-card bounce-in text-center" style="animation-delay: 0.4s;">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-signature text-liberia-red"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <h4 class="stat-number"><?= count(array_filter($operators, function($op) { return in_array($op['userAccountType'] ?? '', ['SIGNA', 'SIGNB', 'SIGNC', 'tradCertSignatoryA', 'tradCertSignatoryB', 'tradCertSignatoryC']); })) ?></h4>
-                                        <p class="stat-label">Signatories</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-6">
-                                <div class="stat-card bounce-in text-center" style="animation-delay: 0.6s;">
-                                    <div class="stat-icon">
-                                        <i class="fas fa-user-edit text-warning"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <h4 class="stat-number"><?= count(array_filter($operators, function($op) { return in_array($op['userAccountType'] ?? '', ['ENTRY', 'tradCertEntryClerk']); })) ?></h4>
-                                        <p class="stat-label">Data Clerks</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Additional Information -->
                     <div class="additional-info mt-4 pt-4 border-top">
                         <h6 class="text-liberia-blue mb-3"><i class="fas fa-star me-2"></i>Branch Features</h6>
@@ -169,17 +102,15 @@
                 </div>
             </div>
         </div>
-
-        <!-- Operators Profile Cards - Right Side -->
+        <!-- Operators Section or Notice - Right Side -->
         <div class="col-md-4">
-            <div class="operators-section">
-                <div class="operators-header mb-4">
-                    <h4 class="text-liberia-blue"><i class="fas fa-user-shield me-2"></i>Branch Operators</h4>
-                    <p class="text-muted"><?= count($operators) ?> authorized personnel</p>
-                </div>
-
-                <div class="operators-list">
-                    <?php if (!empty($operators)): ?>
+            <?php if (!empty($operators)): ?>
+                <div class="operators-section">
+                    <div class="operators-header mb-4">
+                        <h4 class="text-liberia-blue"><i class="fas fa-user-shield me-2"></i>Branch Operators</h4>
+                        <p class="text-muted"><?= count($operators) ?> authorized personnel</p>
+                    </div>
+                    <div class="operators-list">
                         <?php foreach ($operators as $index => $operator): ?>
                             <div class="operator-card-wrapper mb-3">
                                 <div class="card operator-card shadow-sm" data-aos="fade-left" data-aos-delay="<?= $index * 100 ?>">
@@ -189,8 +120,8 @@
                                             <div class="col-4 text-center">
                                                 <div class="profile-picture-container">
                                                     <?php if (!empty($operator['userPicture'])): ?>
-                                                        <img src="/uploads/users/pictures/<?= esc($operator['userPicture']) ?>" 
-                                                             alt="<?= esc($operator['userFullName'] ?? 'Operator') ?>" 
+                                                        <img src="/Uploads/users/pictures/<?= esc($operator['userPicture']) ?>"
+                                                             alt="<?= esc($operator['userFullName'] ?? 'Operator') ?>"
                                                              class="profile-picture"
                                                              onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiMwMDI4NjgiLz4KPHBhdGggZD0iTTQwIDQ0QzQ2LjYyODQgNDQgNTIgMzguNjI4NCA1MiAzMkM1MiAyNS4zNzE2IDQ2LjYyODQgMjAgNDAgMjBDMzMuMzcxNiAyMCAyOCAyNS4zNzE2IDI4IDMyQzI4IDM4LjYyODQgMzMuMzcxNiA0NCA0MCA0NFoiIGZpbGw9IiNCRjBBMzAiLz4KPHBhdGggZD0iTTQwIDQ0QzQ3LjczMTUgNDQgNTQgMzcuNzMxNSA1NCAzMEM1NCAyMi4yNjg1IDQ3LjczMTUgMTYgNDAgMTZDMzIuMjY4NSAxNiAyNiAyMi4yNjg1IDI2IDMwQzI2IDM3LjczMTUgMzIuMjY4NSA0NCA0MCA0NFoiIGZpbGw9IiNGRkZGRkYiLz4KPC9zdmc+'">
                                                     <?php else: ?>
@@ -200,16 +131,14 @@
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
-                                            
                                             <!-- Operator Details Column -->
                                             <div class="col-8">
                                                 <div class="operator-info">
                                                     <h6 class="operator-name text-liberia-blue mb-1"><?= esc($operator['userFullName'] ?? 'Unknown User') ?></h6>
-                                                    <div class="operator-badge mb-2 
+                                                    <div class="operator-badge mb-2
                                                         <?= $operator['userAccountActiveStatus'] ? 'badge-active' : 'badge-inactive' ?>">
                                                         <?= $operator['userAccountActiveStatus'] ? 'ACTIVE' : 'INACTIVE' ?>
                                                     </div>
-                                                    
                                                     <div class="operator-details">
                                                         <div class="detail-item">
                                                             <i class="fas fa-id-card text-liberia-red me-1"></i>
@@ -223,7 +152,6 @@
                                                             <i class="fas fa-phone text-liberia-red me-1"></i>
                                                             <small><?= esc($operator['userPhone'] ?? 'N/A') ?></small>
                                                         </div>
-                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -232,27 +160,28 @@
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <div class="alert alert-liberia-red shake text-center">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            No operators found for this branch.
-                        </div>
-                    <?php endif; ?>
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="alert alert-warning shake text-center" role="alert">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h4 class="alert-heading">Branch Configuration in Progress</h4>
+                    <p>This branch is still being set up. No operators are currently assigned.</p>
+                    <hr>
+                    <p class="mb-0">Please check back soon for updates!</p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
-
 <?php else: ?>
     <div class="container mt-4">
         <div class="alert alert-liberia-red shake">
             <i class="fas fa-exclamation-triangle me-2"></i>
-            No branch or operator data available.
+            No branch data available.
         </div>
     </div>
 <?php endif; ?>
-
 <style>
 /* Liberia National Colors */
 :root {
@@ -262,53 +191,44 @@
     --liberia-light-blue: rgba(0, 40, 104, 0.1);
     --liberia-light-red: rgba(191, 10, 48, 0.1);
 }
-
 /* Enhanced Background Gradients */
 .bg-liberia-blue-gradient {
     background: linear-gradient(135deg, var(--liberia-blue) 0%, #001a4d 100%) !important;
 }
-
 .bg-liberia-red-gradient {
     background: linear-gradient(135deg, var(--liberia-red) 0%, #a00928 100%) !important;
 }
-
 /* Text colors */
 .text-liberia-red { color: var(--liberia-red) !important; }
 .text-liberia-blue { color: var(--liberia-blue) !important; }
-
 /* Background colors */
 .bg-liberia-red { background-color: var(--liberia-red) !important; }
 .bg-liberia-blue { background-color: var(--liberia-blue) !important; }
-
 /* Main Container */
 .container {
     animation: fadeIn 0.8s ease-out;
 }
-
 /* Branch Card Styles */
 .branch-card {
     animation: slideUp 0.6s ease-out;
     position: relative;
     overflow: hidden;
 }
-
 .branch-card:hover {
     transform: translateY(-5px);
     transition: transform 0.3s ease;
 }
-
 /* Ribbon Style */
 .ribbon {
     position: absolute;
-    right: -5px; 
+    right: -5px;
     top: -5px;
     z-index: 1;
     overflow: hidden;
-    width: 75px; 
-    height: 75px; 
+    width: 75px;
+    height: 75px;
     text-align: right;
 }
-
 .ribbon span {
     font-size: 10px;
     font-weight: bold;
@@ -321,14 +241,13 @@
     display: block;
     background: var(--liberia-red);
     position: absolute;
-    top: 19px; 
+    top: 19px;
     right: -21px;
 }
-
 .ribbon span::before {
     content: "";
-    position: absolute; 
-    left: 0px; 
+    position: absolute;
+    left: 0px;
     top: 100%;
     z-index: -1;
     border-left: 3px solid transparent;
@@ -336,11 +255,10 @@
     border-bottom: 3px solid transparent;
     border-top: 3px solid #8c0010;
 }
-
 .ribbon span::after {
     content: "";
-    position: absolute; 
-    right: 0px; 
+    position: absolute;
+    right: 0px;
     top: 100%;
     z-index: -1;
     border-left: 3px solid transparent;
@@ -348,7 +266,6 @@
     border-bottom: 3px solid transparent;
     border-top: 3px solid #8c0010;
 }
-
 /* Status Badge */
 .status-badge {
     background: rgba(255, 255, 255, 0.2);
@@ -358,7 +275,6 @@
     font-weight: bold;
     backdrop-filter: blur(10px);
 }
-
 /* Branch Header */
 .branch-header {
     background: linear-gradient(135deg, var(--liberia-light-blue) 0%, transparent 100%);
@@ -366,23 +282,19 @@
     border-radius: 10px;
     margin: -10px -10px 20px -10px;
 }
-
 .branch-icon {
     position: relative;
 }
-
 .icon-container {
     position: relative;
     display: inline-block;
 }
-
 .icon-container i {
     font-size: 3rem;
     color: var(--liberia-blue);
     z-index: 2;
     position: relative;
 }
-
 .pulse-ring {
     position: absolute;
     top: 50%;
@@ -395,14 +307,12 @@
     animation: pulse 3s infinite;
     opacity: 0;
 }
-
 /* Profile Picture Styles */
 .profile-picture-container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
 .profile-picture {
     width: 70px;
     height: 70px;
@@ -412,13 +322,11 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
-
 .profile-picture:hover {
     transform: scale(1.05);
     border-color: var(--liberia-red);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
-
 .profile-picture-placeholder {
     width: 70px;
     height: 70px;
@@ -431,16 +339,13 @@
     border: 3px solid var(--liberia-blue);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
 .profile-picture-placeholder i {
     font-size: 1.5rem;
 }
-
 /* Info Sections */
 .info-section {
     margin-bottom: 20px;
 }
-
 .info-item {
     display: flex;
     align-items: center;
@@ -450,89 +355,27 @@
     background: var(--liberia-light-blue);
     transition: all 0.3s ease;
 }
-
 .info-item:hover {
     background: rgba(0, 40, 104, 0.15);
     transform: translateX(5px);
 }
-
 .info-item i {
     font-size: 1.2rem;
     margin-right: 15px;
     width: 20px;
     text-align: center;
 }
-
 .info-item strong {
     display: block;
     font-size: 0.85rem;
     color: var(--liberia-blue);
     margin-bottom: 2px;
 }
-
 .info-item p {
     margin: 0;
     font-weight: 500;
     color: #2d3748;
 }
-
-/* Statistics */
-.branch-stats {
-    background: var(--liberia-light-blue);
-    border-radius: 15px;
-    padding: 20px;
-}
-
-.stat-card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    height: 100%;
-}
-
-.stat-card:hover {
-    border-color: var(--liberia-blue);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 40, 104, 0.2);
-}
-
-.stat-icon i {
-    font-size: 2rem;
-    margin-bottom: 10px;
-}
-
-.stat-number {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--liberia-blue);
-    margin: 0;
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 0.8rem;
-    color: #6c757d;
-    margin: 5px 0 0 0;
-}
-
-/* Features List */
-.features-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.features-list li {
-    padding: 8px 0;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.features-list li:last-child {
-    border-bottom: none;
-}
-
 /* Operator Cards - Enhanced Side-by-side Design */
 .operator-card {
     animation: slideUp 0.6s ease-out;
@@ -541,24 +384,20 @@
     border-radius: 10px;
     height: 100%;
 }
-
 .operator-card:hover {
     transform: translateY(-3px);
     border-color: var(--liberia-light-blue);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
 }
-
 .operator-info {
     padding-left: 10px;
 }
-
 .operator-name {
     font-weight: 600;
     margin-bottom: 5px;
     font-size: 0.95rem;
     line-height: 1.2;
 }
-
 .operator-badge {
     padding: 3px 8px;
     border-radius: 8px;
@@ -566,22 +405,18 @@
     font-weight: bold;
     display: inline-block;
 }
-
 .badge-active {
     background: var(--liberia-blue);
     color: white;
 }
-
 .badge-inactive {
     background: #6c757d;
     color: white;
 }
-
 /* Operator Details */
 .operator-details {
     margin: 8px 0 0 0;
 }
-
 .detail-item {
     display: flex;
     align-items: center;
@@ -589,7 +424,6 @@
     font-size: 0.75rem;
     line-height: 1.2;
 }
-
 .detail-item i {
     margin-right: 6px;
     width: 12px;
@@ -597,19 +431,31 @@
     flex-shrink: 0;
     font-size: 0.7rem;
 }
-
 .detail-item small {
     word-break: break-word;
     font-size: 0.75rem;
 }
-
 /* Operators List - No Scroll */
 .operators-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-
+/* Alert Styling for Notice */
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd, #ffeeba);
+    border: 2px solid #ffca2c;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.alert-heading {
+    color: #856404;
+    font-weight: bold;
+}
+.alert i {
+    color: #856404;
+}
 /* Animations */
 @keyframes slideUp {
     from {
@@ -621,12 +467,10 @@
         transform: translateY(0);
     }
 }
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-
 @keyframes pulse {
     0% {
         transform: translate(-50%, -50%) scale(0.8);
@@ -637,7 +481,6 @@
         opacity: 0;
     }
 }
-
 @keyframes bounceIn {
     0% {
         opacity: 0;
@@ -655,84 +498,64 @@
         transform: scale(1);
     }
 }
-
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
     20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
-
 @keyframes shine {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
-
 /* Animation Classes */
 .bounce-in {
     animation: bounceIn 0.6s ease-out;
 }
-
 .slide-in {
     animation: slideUp 0.8s ease-out;
 }
-
 .fade-in {
     animation: fadeIn 1s ease-out;
 }
-
 .shake {
     animation: shake 0.5s ease-in-out;
 }
-
 .pulse {
     animation: pulse 2s infinite;
 }
-
 .shine {
     animation: shine 2s infinite;
 }
-
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-max-width: 768px) {
     .branch-header {
         padding: 15px;
     }
-    
-    .stat-card {
-        margin-bottom: 15px;
-    }
-    
+   
     .operator-card {
         margin-bottom: 15px;
     }
-    
+   
     .info-item {
         padding: 10px;
     }
-    
+   
     .profile-picture,
     .profile-picture-placeholder {
         width: 60px;
         height: 60px;
     }
-    
+   
     .profile-picture-placeholder i {
         font-size: 1.2rem;
     }
-    
+   
     .operator-info {
         padding-left: 15px;
     }
 }
-
-/* Card Footer */
-.card-footer {
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 8px 12px;
-}
 </style>
-
 <!-- AOS Library for Scroll Animations -->
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -743,5 +566,4 @@
         offset: 100
     });
 </script>
-
 <?= $this->endSection() ?>
