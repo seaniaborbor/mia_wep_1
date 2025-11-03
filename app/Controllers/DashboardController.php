@@ -174,8 +174,8 @@ public function general_dashboard()
 
     // Traditional certificates data
     $data['allTraditionalCerts'] = $this->traditionalModel
-                                  ->select('TraditionalCertificates.*, branchs_table.branchName')
-                                  ->join('branchs_table', 'TraditionalCertificates.tradCertBranch = branchs_table.branchId')
+                                  ->select('traditionalcertificates.*, branchs_table.branchName')
+                                  ->join('branchs_table', 'traditionalcertificates.tradCertBranch = branchs_table.branchId')
                                   ->orderBy('tradCertCertCreatedAt', 'DESC')
                                   ->findAll();
 
@@ -219,8 +219,8 @@ public function general_dashboard()
 
     // Traditional certificates per branch
     $data['traditionalCertsPerBranch'] = $this->traditionalModel
-                                        ->select('branchs_table.branchId, branchs_table.branchName, COUNT(TraditionalCertificates.tradCertId) as count')
-                                        ->join('branchs_table', 'TraditionalCertificates.tradCertBranch = branchs_table.branchId')
+                                        ->select('branchs_table.branchId, branchs_table.branchName, COUNT(traditionalcertificates.tradCertId) as count')
+                                        ->join('branchs_table', 'traditionalcertificates.tradCertBranch = branchs_table.branchId')
                                         ->groupBy('branchs_table.branchId, branchs_table.branchName')
                                         ->orderBy('branchs_table.branchName')
                                         ->findAll();
