@@ -62,6 +62,7 @@ public function index()
         }
     }
 
+
     return view('public/verification_page', $data);
 }
 

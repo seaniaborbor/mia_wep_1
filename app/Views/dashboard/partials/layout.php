@@ -68,7 +68,7 @@ $userData = session()->get('userData');
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-start" href="/dashboard">
-               <img src="/dashboard_asset/img/soft_logo.png" alt="" class="img-fluid">
+               <img src="/dashboard_asset/img/soft_logo1.png" alt="" class="img-fluid">
             </a>
 
             <!-- Divider -->

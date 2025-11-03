@@ -3,6 +3,7 @@
 namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Models\BranchModel;
+use App\Models\UsersModel;
 
 class HomeController extends BaseController
 {
@@ -10,6 +11,7 @@ class HomeController extends BaseController
     {
         helper(['text', 'form']);
         $this->branchModel = new BranchModel();
+        $this->userModel = new UsersModel();
     }
     // load the home page
   public function index(){
@@ -146,4 +148,22 @@ public function chat()
         'response' => "System busy. For immediate help, visit the Ministry of Internal Affairs or call (+231) XXX-XXXX during work hours."
     ]);
 }
+
+
+public function viewBranch($branch_code)
+{
+    $data['branch'] = $this->branchModel->where('branchCode', $branch_code)->first();
+
+    if (!$data['branch']) {
+        return redirect()->to('/')->with('error', 'Branch not found.');
+    }
+
+    // get the users operators whose acconts are active
+    $data['operators'] = $this->userModel->where('userBreanch', $data['branch']['branchId'])->where('userAccountActiveStatus', 1)->findAll();
+
+    // print_r($data); exit;
+    return view('public/view_branch', $data);
+}
+
+
 }

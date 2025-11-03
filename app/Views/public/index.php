@@ -188,7 +188,7 @@
                 
                 <i class="fas fa-leaf certificate-icon"></i>
                 
-                <h3 class="certificate-name">Traditional Healer/Herbalist Certificate</h3>
+                <h3 class="certificate-name">Culture Certificate</h3>
                 
                 <div class="certificate-description">
                     <p>Official recognition for traditional medicine practitioners in Liberia</p>
@@ -395,9 +395,15 @@
                     </div>
                 </div>
                 
-                <div class="center-code">
+               <div class="d-flex justify-content-between">
+                 <div class="center-code">
                     Code: <?= esc($branch['branchCode']) ?>
                 </div>
+                <a href="/b/<?=$branch['branchCode']?>" class="center-code">
+                    More Info
+                </a>
+               </div>
+                
             </div>
             <?php endforeach; ?>
         </div>

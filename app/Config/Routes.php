@@ -37,6 +37,7 @@ $routes->get('/logout', 'AuthController::logout');
 
 $routes->get('/v', 'VerificationController::index');
 $routes->post('/v', 'VerificationController::index');
+$routes->get('/b/(:any)', 'HomeController::viewBranch/$1'); // the to the branch page
 
 $routes->get('/instrunction/(:any)', 'VerificationController::instrunction/$1'); // the to the instrunction page
 
