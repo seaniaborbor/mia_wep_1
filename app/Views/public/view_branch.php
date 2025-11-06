@@ -120,7 +120,7 @@
                                             <div class="col-4 text-center">
                                                 <div class="profile-picture-container">
                                                     <?php if (!empty($operator['userPicture'])): ?>
-                                                        <img src="/Uploads/users/pictures/<?= esc($operator['userPicture']) ?>"
+                                                        <img src="/uploads/users/pictures/<?= esc($operator['userPicture']) ?>"
                                                              alt="<?= esc($operator['userFullName'] ?? 'Operator') ?>"
                                                              class="profile-picture"
                                                              onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiMwMDI4NjgiLz4KPHBhdGggZD0iTTQwIDQ0QzQ2LjYyODQgNDQgNTIgMzguNjI4NCA1MiAzMkM1MiAyNS4zNzE2IDQ2LjYyODQgMjAgNDAgMjBDMzMuMzcxNiAyMCAyOCAyNS4zNzE2IDI4IDMyQzI4IDM4LjYyODQgMzMuMzcxNiA0NCA0MCA0NFoiIGZpbGw9IiNCRjBBMzAiLz4KPHBhdGggZD0iTTQwIDQ0QzQ3LjczMTUgNDQgNTQgMzcuNzMxNSA1NCAzMEM1NCAyMi4yNjg1IDQ3LjczMTUgMTYgNDAgMTZDMzIuMjY4NSAxNiAyNiAyMi4yNjg1IDI2IDMwQzI2IDM3LjczMTUgMzIuMjY4NSA0NCA0MCA0NFoiIGZpbGw9IiNGRkZGRkYiLz4KPC9zdmc+'">
