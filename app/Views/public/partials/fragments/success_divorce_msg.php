@@ -66,7 +66,7 @@
                             <div class="col-md-4">
                                 <div class="signature-card bounce-in">
                                     <div class="signature-img-container">
-                                        <img src="<?= base_url('uploads/signatures/' . esc($divoCert['divorceSIGN_A'])) ?>" alt="Signature A" class="signature-img">
+                                        <img src="<?= base_url('uploads/users/signatures/' . esc($divoCert['divorceSIGN_A'])) ?>" alt="Signature A" class="signature-img">
                                     </div>
                                     <div class="signature-date">Signed: <?= date('M d, Y', strtotime($divoCert['divorceSIGN_A_DATE_SIGNED'])) ?></div>
                                 </div>
@@ -74,7 +74,7 @@
                             <div class="col-md-4">
                                 <div class="signature-card bounce-in" style="animation-delay: 0.2s;">
                                     <div class="signature-img-container">
-                                        <img src="<?= base_url('uploads/signatures/' . esc($divoCert['divorceSIGN_B'])) ?>" alt="Signature B" class="signature-img">
+                                        <img src="<?= base_url('uploads/users/signatures/' . esc($divoCert['divorceSIGN_B'])) ?>" alt="Signature B" class="signature-img">
                                     </div>
                                     <div class="signature-date">Signed: <?= date('M d, Y', strtotime($divoCert['divorceSIGN_B_DATE_SIGNED'])) ?></div>
                                 </div>
@@ -82,7 +82,7 @@
                             <div class="col-md-4">
                                 <div class="signature-card bounce-in" style="animation-delay: 0.4s;">
                                     <div class="signature-img-container">
-                                        <img src="<?= base_url('uploads/signatures/' . esc($divoCert['divorceSIGN_C'])) ?>" alt="Signature C" class="signature-img">
+                                        <img src="<?= base_url('uploads/users/signatures/' . esc($divoCert['divorceSIGN_C'])) ?>" alt="Signature C" class="signature-img">
                                     </div>
                                     <div class="signature-date">Signed: <?= date('M d, Y', strtotime($divoCert['divorceSIGN_C_DATE_SIGNED'])) ?></div>
                                 </div>

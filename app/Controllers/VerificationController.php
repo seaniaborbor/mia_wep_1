@@ -7,7 +7,7 @@ use App\Models\BranchModel;
 use App\Models\MarriageCertificateModel;
 use App\Models\DivorceCertificateModel;
 use App\Models\UsersModel;
-use App\Models\NotificationModel;
+use App\Models\TraditionalCertificateModel;
 
 class VerificationController extends BaseController
 {
@@ -15,7 +15,7 @@ class VerificationController extends BaseController
     protected $marriageModel;
     protected $divorceModel;
     protected $userModel;
-    protected $notificationModel;
+    protected $traditionalModel;
 
     public function __construct()
     {
@@ -24,12 +24,14 @@ class VerificationController extends BaseController
         $this->marriageModel = new MarriageCertificateModel();
         $this->divorceModel = new DivorceCertificateModel();
         $this->userModel = new UsersModel();
-        $this->notificationModel = new NotificationModel();
+        $this->traditionalModel = new TraditionalCertificateModel();
+
     }
 
     
 public function index()
 {
+    
     $data = [];
     $data['file_to_include'] = 'partials/fragments/guideline_card.php';
     $data['hide_form'] = '';
@@ -43,6 +45,7 @@ public function index()
         $data['hide_form'] = 'd-none';
 
         if ($certificateType === 'w') {
+
             $data['wedCert'] = $this->marriageModel
                 ->where('reference_no', $verificationCode)
                 ->first();
@@ -52,6 +55,7 @@ public function index()
                 'partials/fragments/invalid_essages.php';
 
         } elseif ($certificateType === 'd') {
+
             $data['divoCert'] = $this->divorceModel
                 ->where('divorceRefNo', $verificationCode)
                 ->first();
@@ -59,7 +63,19 @@ public function index()
             $data['file_to_include'] = !empty($data['divoCert']) ?
                 'partials/fragments/success_divorce_msg.php' :
                 'partials/fragments/invalid_essages.php';
+
+        } elseif ($certificateType === 'c') {
+
+            $data['tradCert'] = $this->traditionalModel
+                ->where('tradCertCevNo', $verificationCode)
+                ->first();
+                // print_r($data['cultureCert']);
+                // exit();
+            $data['file_to_include'] = !empty($data['tradCert']) ?
+                'partials/fragments/success_culture.php' :
+                'partials/fragments/invalid_essages.php';
         }
+
     }
 
 

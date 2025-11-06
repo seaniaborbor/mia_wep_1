@@ -242,8 +242,7 @@
                                 <option value="" disabled selected>Select certificate type</option>
                                 <option value="w">Marriage Certificate</option>
                                 <option value="d">Divorce Certificate</option>
-                                <option value="b">Bachelor Certificate</option>
-                                <option value="s">Spinster Certificate</option>
+                                <option value="c">Culture Certificate</option>
                             </select>
                         </div>
 

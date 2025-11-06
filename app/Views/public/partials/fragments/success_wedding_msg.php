@@ -205,7 +205,7 @@
                             <div class="col-md-4">
                                 <div class="signature-card bounce-in">
                                     <div class="signature-img-container">
-                                        <img src="<?= base_url('uploads/signatures/' . esc($wedCert['SIGNA'])) ?>" alt="Signature A" class="signature-img">
+                                        <img src="<?= base_url('uploads/users/signatures/' . esc($wedCert['SIGNA'])) ?>" alt="Signature A" class="signature-img">
                                     </div>
                                     <div class="signature-date">Signed: <?= !empty($wedCert['SIGNA_signedDate']) ? date('F j, Y', strtotime($wedCert['SIGNA_signedDate'])) : 'N/A' ?></div>
                                 </div>
@@ -213,7 +213,7 @@
                             <div class="col-md-4">
                                 <div class="signature-card bounce-in" style="animation-delay: 0.2s;">
                                     <div class="signature-img-container">
-                                        <img src="<?= base_url('uploads/signatures/' . esc($wedCert['SIGNB'])) ?>" alt="Signature B" class="signature-img">
+                                        <img src="<?= base_url('uploads/users/signatures/' . esc($wedCert['SIGNB'])) ?>" alt="Signature B" class="signature-img">
                                     </div>
                                     <div class="signature-date">Signed: <?= !empty($wedCert['SIGNB_signedDate']) ? date('F j, Y', strtotime($wedCert['SIGNB_signedDate'])) : 'N/A' ?></div>
                                 </div>
@@ -221,7 +221,7 @@
                             <div class="col-md-4">
                                 <div class="signature-card bounce-in" style="animation-delay: 0.4s;">
                                     <div class="signature-img-container">
-                                        <img src="<?= base_url('uploads/signatures/' . esc($wedCert['SIGNC'])) ?>" alt="Signature C" class="signature-img">
+                                        <img src="<?= base_url('uploads/users/signatures/' . esc($wedCert['SIGNC'])) ?>" alt="Signature C" class="signature-img">
                                     </div>
                                     <div class="signature-date">Signed: <?= !empty($wedCert['SIGNC_signedDate']) ? date('F j, Y', strtotime($wedCert['SIGNC_signedDate'])) : 'N/A' ?></div>
                                 </div>
