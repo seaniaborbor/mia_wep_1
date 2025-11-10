@@ -31,7 +31,7 @@
                     ?>
                     
                     <!-- Generate Button -->
-                    <a href="/dashboard/nativecert/generate_certificate/<?= $certificate['tradCertId'] ?>" 
+                    <a href="/dashboard/nativecert/print/<?= $certificate['tradCertId'] ?>" 
                        class="btn btn-sm btn-primary btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-file-pdf"></i>
