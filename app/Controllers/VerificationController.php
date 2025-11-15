@@ -90,6 +90,9 @@ public function instrunction($instrunctions_to_show)
     $info_cards = [
         'marriage_cert_info',
         'divorce_cert_info',
+        'bachelor_cert_info',
+        'spinster_cert_info',
+        'culture_cert_info',
         'not_available_info',
     ];
 
