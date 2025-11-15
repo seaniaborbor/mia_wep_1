@@ -1656,10 +1656,10 @@ h1, h2, h3, h4, h5, h6 {
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
             <a class="navbar-brand" href="/">
-                <img src="/uploads/imgs/logo.png" alt="Liberia Coat of Arms">
+                <img src="/uploads/imgs/logo.png" alt="Liberia Coat of Arms" class="d-none d-md-block">
                 <div class="brand-text">
                     <div class="brand-title">Ministry of Internal Affairs</div>
-                    <div class="brand-subtitle">Decentralized Digital Certificate Management System</div>
+                    <div class="brand-subtitle d-none d-md-block">Decentralized Digital Certificate Management System</div>
                 </div>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
