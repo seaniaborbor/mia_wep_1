@@ -178,31 +178,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
             });
         }
-// === QR CODE ===
-function drawQRCode(sn) {
 
-    const mydomain = "<?= base_url() ?>";     // make sure this prints a proper URL (no HTML tags)
-    const qrData = `${mydomain}/v?cc=sn=${sn}&toc=c`; 
-    const qrSize = 220;
+        // === QR CODE ===
+        function drawQRCode() {
+            const mydomain = "<?=base_url()?>";
+            const qrData = `${mydomain}/v?cc=sn=${sn}&toc=c`;
+            const qrSize = 220;
+            const qrImg = new Image();
+            qrImg.crossOrigin = "Anonymous";
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(qrData)}`;
 
-    const qrImg = new Image();
-    qrImg.crossOrigin = "Anonymous";
+            qrImg.onload = function () {
+                const qrX = (CERT_WIDTH - qrSize) / 2;
+                const qrY = CERT_HEIGHT - 449;
+                ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+            };
 
-    // Generate QR
-    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(qrData)}`;
-
-    qrImg.onload = function () {
-        const qrX = (CERT_WIDTH - qrSize) / 2;
-        const qrY = CERT_HEIGHT - 449;
-        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-    };
-
-    qrImg.onerror = function () {
-        console.warn('QR code failed to load:', qrImg.src);
-    };
-}
-
-
+            qrImg.onerror = function () {
+                console.warn('QR code failed to load');
+            };
+        }
     }
 
     // Helpers
