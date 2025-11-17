@@ -67,7 +67,7 @@ public function index()
         } elseif ($certificateType === 'c') {
 
             $data['tradCert'] = $this->traditionalModel
-                ->where('tradCertCevNo', $verificationCode)
+                ->where('tradCertSn', $verificationCode)
                 ->first();
                 // print_r($data['cultureCert']);
                 // exit();
