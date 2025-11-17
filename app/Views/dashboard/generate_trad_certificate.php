@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = <?= json_encode($certificate) ?>;
         console.log('Certificate Data:', data);
 
-        const sn = data.tradCertSn || '';
+        const sn = data.tradCertCevNo || '';
         const revenueNo = data.tradRevenueNo || '';
         const name = data.tradCertHolderName || '';
         const town = data.tradCertHolderTownorCity || '';
