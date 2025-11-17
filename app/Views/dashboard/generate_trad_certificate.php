@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // === QR CODE ===
         function drawQRCode() {
-            const mydomain = <?=base_url()?>
+            const mydomain = "<?=base_url()?>";
             const qrData = `${mydomain}/v?cc=sn=${sn}&toc=c`;
             const qrSize = 220;
             const qrImg = new Image();
