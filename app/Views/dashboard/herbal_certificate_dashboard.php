@@ -1,189 +1,165 @@
 <?php $this->extend('dashboard/partials/layout') ?>
-
 <?= $this->section('main') ?>
 
-<div class="row mt-3">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between border-bottom-primary py-3">
-                <div>
-                    <h1 class="h3 mb-0 text-primary font-weight-bold">
-                        <i class="fas fa-shield-alt text-danger mr-2"></i>
-                        Culture Certificates Log
-                        <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
-                            <?php if(isset($breanchDetail) && !empty($breanchDetail)): ?>
-                                <?= htmlspecialchars($breanchDetail['branchName']) ?>
-                            <?php else: ?> 
-                                <?= htmlspecialchars(session()->get('userData')['branchName']) ?>
-                            <?php endif; ?>
-                        </p>
-                    </h1>
-                </div>
-                <div class="d-flex align-items-center">
-                    <!-- Create New Button -->
-                    <a href="/dashboard/nativecert/create" class="btn btn-sm btn-success btn-icon-split mr-2">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-plus"></i>
-                        </span>
-                        <span class="text">Create New</span>
-                    </a>
-                    <!-- Branch Dropdown (Split Button) -->
-                    <div class="btn-group mr-2">
-                        <a href="#" class="btn btn-sm btn-primary btn-icon-split">
-                            <span class="icon text-white-50">
-                                <i class="fas fa-code-branch"></i>
-                            </span>
-                            <span class="text">
-                                <?php
-                                    $currentBranch = 'Select Branch';
-                                    if (isset($branchDetail['branchId']) && !empty($allBranches)) {
-                                        foreach ($allBranches as $b) {
-                                            if ($b['branchId'] == $branchDetail['branchId']) {
-                                                $currentBranch = htmlspecialchars($b['branchName']);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    echo $currentBranch;
-                                ?>
-                            </span>
+<div class="container-fluid">
+
+    <!-- Page Heading + Actions -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Culture Certificates Log</h1>
+            <p class="mb-0 mt-2 text-gray-600">
+                <?php if(isset($breanchDetail) && !empty($breanchDetail)): ?>
+                    <?= esc($breanchDetail['branchName']) ?>
+                <?php else: ?>
+                    <?= esc(session()->get('userData')['branchName']) ?>
+                <?php endif; ?>
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <!-- Create New Button -->
+            <a href="/dashboard/nativecert/create" class="btn btn-danger btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span class="text">Create New</span>
+            </a>
+
+            <!-- Branch Switcher Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="branchDropdown" data-toggle="dropdown">
+                    <i class="fas fa-building fa-sm fa-fw mr-2 text-gray-400"></i>
+                    <?php
+                        $currentBranch = 'Select Branch';
+                        if (isset($branchDetail['branchId']) && !empty($allBranches)) {
+                            foreach ($allBranches as $b) {
+                                if ($b['branchId'] == $branchDetail['branchId']) {
+                                    $currentBranch = esc($b['branchName']);
+                                    break;
+                                }
+                            }
+                        }
+                        echo $currentBranch;
+                    ?>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="branchDropdown">
+                    <?php foreach ($allBranches as $branch): ?>
+                        <a class="dropdown-item <?= ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : '' ?>"
+                           href="/dashboard/nativecert?branch=<?= esc($branch['branchId']) ?>">
+                            <i class="fas fa-building fa-sm fa-fw mr-2 text-gray-400"></i>
+                            <?= esc($branch['branchName']) ?>
                         </a>
-                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <?php foreach ($allBranches as $branch): ?>
-                                <a class="dropdown-item <?php echo ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : ''; ?>" 
-                                   href="/dashboard/nativecert?branch=<?= htmlspecialchars($branch['branchId']) ?>">
-                                    <i class="fas fa-building mr-2"></i>
-                                    <?= htmlspecialchars($branch['branchName']) ?>
-                                </a>
-                            <?php endforeach; ?>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/dashboard/general">
-                                <i class="fas fa-flag mr-2"></i>
-                                Nation's Dashboard
-                            </a>
+                    <?php endforeach; ?>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/dashboard/general">
+                        <i class="fas fa-flag fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Nation's Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Certificates</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $dashboardStats['total'] ?? 0 ?></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-certificate fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="card-body p-4">
-                <!-- Certificate Stats Summary -->
-                <div class="row mb-4">
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <div class="card border-left-primary shadow-sm h-100">
-                            <div class="card-body py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary text-white">
-                                            <i class="fas fa-certificate"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Total Certificates
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                           <?= $dashboardStats['total'] ?? 0 ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Completed</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $dashboardStats['completed'] ?? 0 ?></div>
                         </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <div class="card border-left-success shadow-sm h-100">
-                            <div class="card-body py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success text-white">
-                                            <i class="fas fa-check-circle"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Completed Certificates
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?= $dashboardStats['completed'] ?? 0 ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <div class="card border-left-warning shadow-sm h-100">
-                            <div class="card-body py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning text-white">
-                                            <i class="fas fa-hourglass-half"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Pending Signatures
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?= $dashboardStats['pending'] ?? 0 ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="card border-left-info shadow-sm h-100">
-                            <div class="card-body py-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-info text-white">
-                                            <i class="fas fa-percentage"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Completion Rate
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            <?= $dashboardStats['completionRate'] ?? 0 ?>%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Tabs Navigation -->
-                <ul class="nav nav-pills mb-4" id="certificateTabs" role="tablist">
-                    <li class="nav-item mr-2">
-                        <a class="nav-link active py-2 px-3" id="uncompleted-tab" data-toggle="tab" href="#uncompleted" role="tab" aria-controls="uncompleted" aria-selected="true">
-                            <i class="fas fa-hourglass-half mr-2"></i> Pending Certificates
-                            <span class="badge badge-warning ml-2"><?= count($incompleteCertificates ?? []) ?></span>
-                        </a>
-                    </li>
-                    <li class="nav-item mr-2">
-                        <a class="nav-link py-2 px-3" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="false">
-                            <i class="fas fa-check mr-2"></i> Completed Certificates
-                            <span class="badge badge-success ml-2"><?= $dashboardStats['completed'] ?? 0 ?></span>
-                        </a>
-                    </li>
-                </ul>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Signatures</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $dashboardStats['pending'] ?? 0 ?></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hourglass-half fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <!-- Tab Content -->
-                <div class="tab-content" id="certificateTabsContent">
-                    <!-- Pending Certificates Tab -->
-                    <div class="tab-pane fade show active" id="uncompleted" role="tabpanel" aria-labelledby="uncompleted-tab">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Completion Rate</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"><?= $dashboardStats['completionRate'] ?? 0 ?>%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-percentage fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Records Card -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                <i class="fas fa-shield-alt mr-2"></i>Culture Certificate Records
+            </h6>
+        </div>
+        <div class="card-body">
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs mb-4" id="cultureTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab">
+                        <i class="fas fa-hourglass-half mr-2"></i>Pending Certificates
+                        <span class="badge badge-warning badge-counter ml-2"><?= count($incompleteCertificates ?? []) ?></span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="completed-tab" data-toggle="tab" href="#completed" role="tab">
+                        <i class="fas fa-check-circle mr-2"></i>Completed
+                        <span class="badge badge-success badge-counter ml-2"><?= $dashboardStats['completed'] ?? 0 ?></span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- Pending Certificates -->
+                <div class="tab-pane fade show active" id="pending" role="tabpanel">
+                    <?php if (!empty($incompleteCertificates)): ?>
                         <div class="table-responsive">
-                            <table class="table table-bordered datatable2 table-hover">
-                                <thead class="bg-light">
+                            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                                <thead>
                                     <tr>
                                         <th>Serial No</th>
                                         <th>Holder Name</th>
@@ -191,63 +167,61 @@
                                         <th>Operation Type</th>
                                         <th>Date Logged</th>
                                         <th>Missing Signatures</th>
-                                        <th>Actions</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if(!empty($incompleteCertificates)): ?>
-                                        <?php foreach($incompleteCertificates as $cert): ?>
+                                    <?php foreach ($incompleteCertificates as $cert): ?>
+                                        <?php
+                                            $missing = [];
+                                            if (empty($cert['tradCertSignatoryA'])) $missing[] = 'A';
+                                            if (empty($cert['tradCertSignatoryB'])) $missing[] = 'B';
+                                            if (empty($cert['tradCertSignatoryC'])) $missing[] = 'C';
+                                        ?>
                                         <tr>
+                                            <td><strong class="text-primary">#<?= esc($cert['tradCertSn'] ?? 'N/A') ?></strong></td>
+                                            <td><?= esc($cert['tradCertHolderName'] ?? 'N/A') ?></td>
                                             <td>
-                                                <span class="font-weight-bold text-primary"><?= $cert['tradCertSn'] ?? 'N/A' ?></span>
-                                            </td>
-                                            <td><?= $cert['tradCertHolderName'] ?? 'N/A' ?></td>
-                                            <td>
-                                                <span class="badge badge-<?= $cert['tradCertAppliedType'] === 'online' ? 'success' : 'primary' ?>">
-                                                    <?= ucfirst($cert['tradCertAppliedType']) ?>
+                                                <span class="badge badge-<?= ($cert['tradCertAppliedType'] ?? '') === 'online' ? 'success' : 'info' ?>">
+                                                    <?= ucfirst($cert['tradCertAppliedType'] ?? 'N/A') ?>
                                                 </span>
                                             </td>
-                                            <td><?= $cert['tradCertHolderOperationType'] ?? 'N/A' ?></td>
-                                            <td><?= !empty($cert['tradCertLastUpdatedAt']) ? date('M d, Y', strtotime($cert['tradCertLastUpdatedAt'])) : 'N/A' ?></td>
+                                            <td><?= esc($cert['tradCertHolderOperationType'] ?? 'N/A') ?></td>
                                             <td>
-                                                <?php
-                                                $missing = [];
-                                                if(empty($cert['tradCertSignatoryA'])) $missing[] = 'A';
-                                                if(empty($cert['tradCertSignatoryB'])) $missing[] = 'B';
-                                                if(empty($cert['tradCertSignatoryC'])) $missing[] = 'C';
-                                                ?>
-                                                <span class="badge badge-danger"><?= implode(', ', $missing) ?></span>
+                                                <i class="fas fa-calendar-alt fa-fw text-gray-400 mr-1"></i>
+                                                <?= !empty($cert['tradCertLastUpdatedAt']) ? date('M d, Y', strtotime($cert['tradCertLastUpdatedAt'])) : 'N/A' ?>
                                             </td>
                                             <td>
-                                                <a href="/dashboard/nativecert/view/<?= $cert['tradCertId'] ?>" class="btn btn-info btn-icon-split btn-sm">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-eye"></i>
-                                                    </span>
+                                                <span class="badge badge-danger font-weight-bold">
+                                                    <?= !empty($missing) ? implode(', ', $missing) : 'None' ?>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="/dashboard/nativecert/view/<?= esc($cert['tradCertId']) ?>"
+                                                   class="btn btn-warning btn-sm btn-icon-split">
+                                                    <span class="icon text-white-50"><i class="fas fa-eye"></i></span>
                                                     <span class="text">View</span>
                                                 </a>
                                             </td>
                                         </tr>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="7" class="text-center py-4">
-                                                <div class="text-muted">
-                                                    <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
-                                                    <p class="mb-0">No pending certificates! All certificates are completed.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    
-                    <!-- Completed Certificates Tab -->
-                    <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                    <?php else: ?>
+                        <div class="text-center py-5 text-success">
+                            <i class="fas fa-check-circle fa-3x mb-3 text-gray-300"></i>
+                            <p class="h5 mb-0">All certificates are fully signed and completed!</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Completed Certificates -->
+                <div class="tab-pane fade" id="completed" role="tabpanel">
+                    <?php if (!empty($certificates)): ?>
                         <div class="table-responsive">
-                            <table class="table datatable table-bordered table-hover">
-                                <thead class="bg-light">
+                            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                                <thead>
                                     <tr>
                                         <th>Serial No</th>
                                         <th>Holder Name</th>
@@ -255,81 +229,55 @@
                                         <th>Operation Type</th>
                                         <th>Date Issued</th>
                                         <th>Application Type</th>
-                                        <th>Actions</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if(!empty($certificates)): ?>
-                                        <?php foreach($certificates as $cert): ?>
-                                            <?php if(!empty($cert['tradCertSignatoryA']) && !empty($cert['tradCertSignatoryB']) && !empty($cert['tradCertSignatoryC'])): ?>
+                                    <?php foreach ($certificates as $cert): ?>
+                                        <?php if (!empty($cert['tradCertSignatoryA']) && !empty($cert['tradCertSignatoryB']) && !empty($cert['tradCertSignatoryC'])): ?>
                                             <tr>
+                                                <td><strong class="text-success">#<?= esc($cert['tradCertSn'] ?? 'N/A') ?></strong></td>
+                                                <td><?= esc($cert['tradCertHolderName'] ?? 'N/A') ?></td>
                                                 <td>
-                                                    <span class="font-weight-bold text-success"><?= $cert['tradCertSn'] ?? 'N/A' ?></span>
-                                                </td>
-                                                <td><?= $cert['tradCertHolderName'] ?? 'N/A' ?></td>
-                                                <td>
-                                                    <span class="badge badge-light"><?= $cert['tradCertHoldercounty'] ?? 'N/A' ?></span>
-                                                </td>
-                                                <td><?= $cert['tradCertHolderOperationType'] ?? 'N/A' ?></td>
-                                                <td><?= !empty($cert['tradCertDateIssued']) ? date('M d, Y', strtotime($cert['tradCertDateIssued'])) : 'Not Issued' ?></td>
-                                                <td>
-                                                    <span class="badge badge-<?= $cert['tradCertAppliedType'] === 'online' ? 'success' : 'primary' ?>">
-                                                        <?= ucfirst($cert['tradCertAppliedType']) ?>
+                                                    <span class="badge badge-light text-dark">
+                                                        <?= esc($cert['tradCertHoldercounty'] ?? 'N/A') ?>
                                                     </span>
                                                 </td>
+                                                <td><?= esc($cert['tradCertHolderOperationType'] ?? 'N/A') ?></td>
                                                 <td>
-                                                    <a href="/dashboard/nativecert/view/<?= $cert['tradCertId'] ?>" class="btn btn-info btn-icon-split btn-sm">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-eye"></i>
-                                                        </span>
+                                                    <i class="fas fa-calendar-check fa-fw text-gray-400 mr-1"></i>
+                                                    <?= !empty($cert['tradCertDateIssued']) ? date('M d, Y', strtotime($cert['tradCertDateIssued'])) : '<em class="text-muted">Pending</em>' ?>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-<?= ($cert['tradCertAppliedType'] ?? '') === 'online' ? 'success' : 'info' ?>">
+                                                        <?= ucfirst($cert['tradCertAppliedType'] ?? 'N/A') ?>
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href="/dashboard/nativecert/view/<?= esc($cert['tradCertId']) ?>"
+                                                       class="btn btn-success btn-sm btn-icon-split">
+                                                        <span class="icon text-white-50"><i class="fas fa-eye"></i></span>
                                                         <span class="text">View</span>
                                                     </a>
                                                 </td>
                                             </tr>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="7" class="text-center py-4">
-                                                <div class="text-muted">
-                                                    <i class="fas fa-certificate fa-2x mb-2 text-warning"></i>
-                                                    <p class="mb-0">No certificates found.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
+                                        <?php endif; ?>
+                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-
-                   
+                    <?php else: ?>
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-certificate fa-3x mb-3 text-gray-300"></i>
+                            <p class="h5 mb-0">No completed certificates yet.</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
+
             </div>
         </div>
     </div>
+
 </div>
 
 <?= $this->endSection() ?>
-
-<style>
-.icon-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-.btn-icon-split .icon {
-    padding: 0.375rem 0.75rem;
-    display: inline-block;
-}
-
-.badge-pill {
-    padding-right: 0.6em;
-    padding-left: 0.6em;
-    border-radius: 10rem;
-}
-</style>

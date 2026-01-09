@@ -32,7 +32,7 @@ class NativeDocCertController extends BaseController
 
     }
 
-    public function index(): string
+    public function index()
     {
 
               // check if the user account is allowed to view native doctor activities

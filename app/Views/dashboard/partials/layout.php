@@ -48,13 +48,7 @@ $userData = session()->get('userData');
 
 <!-- Optional: Buttons extension CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
-<style>
-    /*body, h1, h2, h3, h4, h5, h6, 
-    .card, .table, .nav-tabs, .badge, 
-    .btn, .form-control, .dropdown-menu {
-        font-family: "Times New Roman", Times, serif !important;
-    }*/
-</style>
+
 </head>
 
 <body id="page-top">
@@ -66,104 +60,18 @@ $userData = session()->get('userData');
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-start" href="/dashboard">
-               <img src="/dashboard_asset/img/soft_logo.png" alt="" class="img-fluid">
-            </a>
+            
 
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+            <!-- we load different sidebar items based on user role -->
+            <?php if($userData['userDepartment'] == 'System-Admin'): ?>
+                <?= $this->include('dashboard/partials/sidebarlinks/admin_sidebar_links.php') ?>
 
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="/dashboard">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span></a>
-            </li>
+            <?php elseif($userData['userDepartment'] == 'Matrimonial'): ?>
+                <?= $this->include('dashboard/partials/sidebarlinks/marriage_n_divorce_sidebar_links.php') ?>
 
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Interface
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item ">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Manage Certificates</span>
-                </a>
-                <div id="collapseTwo" class="collapse <?= mark_active('certificates', $passLink) ?>" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                         
-                      <?php
-                        // show marriage and divorce cert links only to allowed user accounts
-                        if(in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])):
-                        ?>
-                            <h6 class="collapse-header">Marriage Certificate</h6>
-                            <a class="collapse-item" href="/dashboard/wedcert">Marriage Cert. Log</a>
-                            <a class="collapse-item" href="/dashboard/divorce_cert">Divorce Cert. Log</a>
-                        <?php
-                        endif;
-                        ?>
-                        <?php 
-                            // check if the user account is allowed to view native doctor activities
-                            if(in_array(session()->get('userData')['userAccountType'], ['tradCertSignatoryA','tradCertSignatoryB','tradCertSignatoryC','tradCertEntryClerk', 'SIGNC'])){
-                                // redirect to /dashboard/nativecert
-                                ?>
-                                    <a class="collapse-item" href="/dashboard/nativecert"> Culture Cert Log</a>
-                                <?php 
-                            }
-                        ?>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <li class="nav-item ">
-                <a class="nav-link collapsed " href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Manage Users</span>
-                </a>
-                <div id="collapseUtilities" class="collapse <?= mark_active('users', $passLink) ?>" aria-labelledby="headingUtilities"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Actions</h6>
-                        <a class="collapse-item" href="/dashboard/users">View Users</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item ">
-                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-                    aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Manage Branches</span>
-                </a>
-                <div id="collapsePages" class="collapse <?= mark_active('branches', $passLink) ?>" aria-labelledby="headingPages"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Actions</h6>
-                        <a class="collapse-item" href="/dashboard/branches">View Branches</a>
-                        <?php if($userData['userBreanch'] == 1): ?>
-                        <a class="collapse-item" href="/dashboard/branches/create">Create Branche</a>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </li>
+            <?php elseif($userData['userDepartment'] == 'Viewer'): ?>
+                <?= $this->include('dashboard/partials/viewer_sidebar') ?>
+            <?php endif; ?>
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

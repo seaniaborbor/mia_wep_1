@@ -1,626 +1,489 @@
-<!-- marriage_form.php -->
-<form action="/dashboard/wedcert/create" method="post" enctype="multipart/form-data" id="marriageForm">
+<!-- partials/forms/create_marriage_certificate.php -->
+<form action="/matrimonial_dashboard/wedcert/create" method="post" enctype="multipart/form-data" id="marriageForm">
     <?= csrf_field() ?>
 
+    <!-- Flash Messages -->
+    <?php if (session()->has('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle mr-2"></i>
+            <?= session('success') ?>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (session()->has('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <?= session('error') ?>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+    <?php endif; ?>
+
     <!-- Progress Bar -->
-    <div class="container-fluid mb-4">
-        <div class="progress">
-            <div id="formProgress" class="progress-bar bg-primary progress-bar-striped progress-bar-animated" role="progressbar" style="width: 20%"></div>
+    <div class="card border-left-primary shadow mb-4">
+        <div class="card-body py-3">
+            <div class="progress" style="height: 10px;">
+                <div id="formProgress" class="progress-bar bg-primary" role="progressbar" style="width: 20%;"></div>
+            </div>
+            <small class="text-muted d-block mt-2">Step <strong id="currentStep">1</strong> of 5</small>
         </div>
     </div>
 
-    <!-- Step 1: Groom Info -->
-    <div class="step card p-4 mb-4" id="step1">
-        <h5 class="card-title mb-4 text-primary">Groom Information</h5>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Groom Name</label>
-                <input type="text" name="groom_name" class="form-control" required>
+    <!-- Step 1: Groom -->
+    <div class="step" id="step1">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-primary">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-male mr-2"></i> Groom Information
+                </h6>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Cell</label>
-                <input type="tel" name="groom_cell" class="form-control" pattern="[0-9]{10}" required>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Groom Name <span class="text-danger">*</span></label>
+                        <input type="text" name="groom_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Cell <span class="text-danger">*</span></label>
+                        <input type="tel" name="groom_cell" class="form-control" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>County of Origin <span class="text-danger">*</span></label>
+                        <select name="groom_county_of_origin" class="form-control" required>
+                            <option value="">Select County</option>
+                            <option>Bomi</option><option>Bong</option><option>Montserrado</option><option>Nimba</option>
+                            <!-- Add remaining counties -->
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Nationality <span class="text-danger">*</span></label>
+                        <input type="text" name="groom_nationality" class="form-control" value="Liberian" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Date of Birth <span class="text-danger">*</span></label>
+                        <input type="date" name="groom_dob" class="form-control" required max="<?= date('Y-m-d', strtotime('-21 years')) ?>">
+                        <small class="form-text text-muted">Must be at least 21 years old</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Age</label>
+                        <input type="number" name="groom_age" class="form-control" min="21" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Birth City <span class="text-danger">*</span></label>
+                        <input type="text" name="groom_birth_city" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Birth County <span class="text-danger">*</span></label>
+                        <select name="groom_birth_county" class="form-control" required>
+                            <option value="">Select County</option>
+                            <option>Bomi</option><option>Bong</option><option>Montserrado</option><option>Nimba</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label>Address <span class="text-danger">*</span></label>
+                        <textarea name="groom_address" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Married Before? <span class="text-danger">*</span></label>
+                        <select name="groom_married_before" class="form-control" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 conditional-field" data-condition="groom_married_before" data-value="1">
+                        <label>When?</label>
+                        <input type="date" name="groom_previous_marriage_date" class="form-control">
+                    </div>
+                    <div class="col-md-6 conditional-field" data-condition="groom_married_before" data-value="1">
+                        <label>Previous Spouse Name</label>
+                        <input type="text" name="groom_previous_spouse_name" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Father's Name <span class="text-danger">*</span></label>
+                        <input type="text" name="groom_father_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Mother's Name <span class="text-danger">*</span></label>
+                        <input type="text" name="groom_mother_name" class="form-control" required>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">County of Origin</label>
-                <select name="groom_county_of_origin" class="form-control" required>
-                    <option value="">Select County</option>
-                    <option value="Bomi">Bomi</option>
-                    <option value="Bong">Bong</option>
-                    <option value="Gbarpolu">Gbarpolu</option>
-                    <option value="Grand Bassa">Grand Bassa</option>
-                    <option value="Grand Cape Mount">Grand Cape Mount</option>
-                    <option value="Grand Gedeh">Grand Gedeh</option>
-                    <option value="Grand Kru">Grand Kru</option>
-                    <option value="Lofa">Lofa</option>
-                    <option value="Margibi">Margibi</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Montserrado">Montserrado</option>
-                    <option value="Nimba">Nimba</option>
-                    <option value="River Cess">River Cess</option>
-                    <option value="River Gee">River Gee</option>
-                    <option value="Sinoe">Sinoe</option>
-                </select>
+            <div class="card-footer text-right">
+                <button type="button" class="btn btn-primary next-step" data-step="1">
+                    Next <i class="fas fa-arrow-right ml-2"></i>
+                </button>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Nationality</label>
-                <input type="text" name="groom_nationality" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Date of Birth</label>
-                <input type="date" name="groom_dob" class="form-control" required max="<?= date('Y-m-d', strtotime('-21 years')) ?>">
-                <small class="form-text text-muted">Must be at least 21 years old</small>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Age</label>
-                <input type="number" name="groom_age" class="form-control" min="21" required readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Birth City</label>
-                <input type="text" name="groom_birth_city" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Birth County</label>
-                <select name="groom_birth_county" class="form-control" required>
-                    <option value="">Select County</option>
-                    <option value="Bomi">Bomi</option>
-                    <option value="Bong">Bong</option>
-                    <option value="Gbarpolu">Gbarpolu</option>
-                    <option value="Grand Bassa">Grand Bassa</option>
-                    <option value="Grand Cape Mount">Grand Cape Mount</option>
-                    <option value="Grand Gedeh">Grand Gedeh</option>
-                    <option value="Grand Kru">Grand Kru</option>
-                    <option value="Lofa">Lofa</option>
-                    <option value="Margibi">Margibi</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Montserrado">Montserrado</option>
-                    <option value="Nimba">Nimba</option>
-                    <option value="River Cess">River Cess</option>
-                    <option value="River Gee">River Gee</option>
-                    <option value="Sinoe">Sinoe</option>
-                </select>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Address</label>
-            <textarea name="groom_address" class="form-control" required></textarea>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Married Before?</label>
-                <select name="groom_married_before" class="form-control" required>
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                </select>
-            </div>
-            <div class="col-md-6 mb-3 conditional-field" data-condition="groom_married_before" data-value="1">
-                <label class="form-label">When?</label>
-                <input type="date" name="groom_previous_marriage_date" class="form-control">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3 conditional-field" data-condition="groom_married_before" data-value="1">
-                <label class="form-label">Previous Spouse Name</label>
-                <input type="text" name="groom_previous_spouse_name" class="form-control">
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Father's Name</label>
-                <input type="text" name="groom_father_name" class="form-control" required>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Mother's Name</label>
-            <input type="text" name="groom_mother_name" class="form-control" required>
-        </div>
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary btn-icon-split next-step" data-step="1">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                </span>
-                <span class="text">Next</span>
-            </button>
         </div>
     </div>
 
-    <!-- Step 2: Bride Info -->
-    <div class="step card p-4 mb-4" id="step2">
-        <h5 class="card-title mb-4 text-primary">Bride Information</h5>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Bride Name</label>
-                <input type="text" name="bride_name" class="form-control" required>
+    <!-- Step 2: Bride -->
+    <div class="step" id="step2" style="display:none;">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-danger">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-female mr-2"></i> Bride Information
+                </h6>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Cell</label>
-                <input type="tel" name="bride_cell" class="form-control" pattern="[0-9]{10}">
+            <div class="card-body">
+                <!-- Same structure as Groom, only colors and names changed -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Bride Name <span class="text-danger">*</span></label>
+                        <input type="text" name="bride_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Cell</label>
+                        <input type="tel" name="bride_cell" class="form-control" pattern="[0-9]{10}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>County of Origin <span class="text-danger">*</span></label>
+                        <select name="bride_county_of_origin" class="form-control" required>
+                            <option value="">Select County</option>
+                            <option>Bomi</option><option>Bong</option><option>Montserrado</option><option>Nimba</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Nationality <span class="text-danger">*</span></label>
+                        <input type="text" name="bride_nationality" class="form-control" value="Liberian" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Date of Birth <span class="text-danger">*</span></label>
+                        <input type="date" name="bride_dob" class="form-control" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>">
+                        <small class="form-text text-muted">Must be at least 18 years old</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Age</label>
+                        <input type="number" name="bride_age" class="form-control" min="18" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Birth City <span class="text-danger">*</span></label>
+                        <input type="text" name="bride_birth_city" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Birth County <span class="text-danger">*</span></label>
+                        <select name="bride_birth_county" class="form-control" required>
+                            <option value="">Select County</option>
+                            <option>Bomi</option><option>Bong</option><option>Montserrado</option><option>Nimba</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label>Address <span class="text-danger">*</span></label>
+                        <textarea name="bride_address" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Married Before? <span class="text-danger">*</span></label>
+                        <select name="bride_married_before" class="form-control" required>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 conditional-field" data-condition="bride_married_before" data-value="1">
+                        <label>When?</label>
+                        <input type="date" name="bride_previous_marriage_date" class="form-control">
+                    </div>
+                    <div class="col-md-6 conditional-field" data-condition="bride_married_before" data-value="1">
+                        <label>Previous Spouse Name</label>
+                        <input type="text" name="bride_previous_spouse_name" class="form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Father's Name <span class="text-danger">*</span></label>
+                        <input type="text" name="bride_father_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Mother's Name <span class="text-danger">*</span></label>
+                        <input type="text" name="bride_mother_name" class="form-control" required>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">County of Origin</label>
-                <select name="bride_county_of_origin" class="form-control" required>
-                    <option value="">Select County</option>
-                    <option value="Bomi">Bomi</option>
-                    <option value="Bong">Bong</option>
-                    <option value="Gbarpolu">Gbarpolu</option>
-                    <option value="Grand Bassa">Grand Bassa</option>
-                    <option value="Grand Cape Mount">Grand Cape Mount</option>
-                    <option value="Grand Gedeh">Grand Gedeh</option>
-                    <option value="Grand Kru">Grand Kru</option>
-                    <option value="Lofa">Lofa</option>
-                    <option value="Margibi">Margibi</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Montserrado">Montserrado</option>
-                    <option value="Nimba">Nimba</option>
-                    <option value="River Cess">River Cess</option>
-                    <option value="River Gee">River Gee</option>
-                    <option value="Sinoe">Sinoe</option>
-                </select>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left mr-2"></i> Previous</button>
+                    <button type="button" class="btn btn-primary next-step" data-step="2">Next <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Nationality</label>
-                <input type="text" name="bride_nationality" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Date of Birth</label>
-                <input type="date" name="bride_dob" class="form-control" required max="<?= date('Y-m-d', strtotime('-18 years')) ?>">
-                <small class="form-text text-muted">Must be at least 18 years old</small>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Age</label>
-                <input type="number" name="bride_age" class="form-control" min="18" required readonly>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Birth City</label>
-                <input type="text" name="bride_birth_city" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Birth County</label>
-                <select name="bride_birth_county" class="form-control" required>
-                    <option value="">Select County</option>
-                    <option value="Bomi">Bomi</option>
-                    <option value="Bong">Bong</option>
-                    <option value="Gbarpolu">Gbarpolu</option>
-                    <option value="Grand Bassa">Grand Bassa</option>
-                    <option value="Grand Cape Mount">Grand Cape Mount</option>
-                    <option value="Grand Gedeh">Grand Gedeh</option>
-                    <option value="Grand Kru">Grand Kru</option>
-                    <option value="Lofa">Lofa</option>
-                    <option value="Margibi">Margibi</option>
-                    <option value="Maryland">Maryland</option>
-                    <option value="Montserrado">Montserrado</option>
-                    <option value="Nimba">Nimba</option>
-                    <option value="River Cess">River Cess</option>
-                    <option value="River Gee">River Gee</option>
-                    <option value="Sinoe">Sinoe</option>
-                </select>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Address</label>
-            <textarea name="bride_address" class="form-control" required></textarea>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Married Before?</label>
-                <select name="bride_married_before" class="form-control" required>
-                    <option value="0">No</option>
-                    <option value="1">Yes</option>
-                </select>
-            </div>
-            <div class="col-md-6 mb-3 conditional-field" data-condition="bride_married_before" data-value="1">
-                <label class="form-label">When?</label>
-                <input type="date" name="bride_previous_marriage_date" class="form-control">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3 conditional-field" data-condition="bride_married_before" data-value="1">
-                <label class="form-label">Previous Spouse Name</label>
-                <input type="text" name="bride_previous_spouse_name" class="form-control">
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Father's Name</label>
-                <input type="text" name="bride_father_name" class="form-control" required>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Mother's Name</label>
-            <input type="text" name="bride_mother_name" class="form-control" required>
-        </div>
-        <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary btn-icon-split prev-step">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span class="text">Previous</span>
-            </button>
-            <button type="button" class="btn btn-primary btn-icon-split next-step" data-step="2">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                </span>
-                <span class="text">Next</span>
-            </button>
         </div>
     </div>
 
     <!-- Step 3: Photos & Marriage Details -->
-    <div class="step card p-4 mb-4" id="step3">
-        <h5 class="card-title mb-4 text-primary">Passport Photos & Marriage Details</h5>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Groom Passport Photo</label>
-                <input type="file" name="groom_passport_photo" class="form-control-file" accept="image/*" required>
-                <small class="form-text text-muted">Please upload a clear passport photo</small>
+    <div class="step" id="step3" style="display:none;">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-info">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-images mr-2"></i> Passport Photos & Marriage Details
+                </h6>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Bride Passport Photo</label>
-                <input type="file" name="bride_passport_photo" class="form-control-file" accept="image/*" required>
-                <small class="form-text text-muted">Please upload a clear passport photo</small>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-male fa-5x text-primary mb-3"></i>
+                            <h6>Groom Passport Photo <span class="text-danger">*</span></h6>
+                            <input type="file" name="groom_passport_photo" class="form-control" accept="image/*" required>
+                            <small class="text-muted">JPG/PNG, Max 2MB</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="text-center">
+                            <i class="fas fa-female fa-5x text-danger mb-3"></i>
+                            <h6>Bride Passport Photo <span class="text-danger">*</span></h6>
+                            <input type="file" name="bride_passport_photo" class="form-control" accept="image/*" required>
+                            <small class="text-muted">JPG/PNG, Max 2MB</small>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Place of Marriage <span class="text-danger">*</span></label>
+                        <input type="text" name="place_of_marriage" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Date of Marriage <span class="text-danger">*</span></label>
+                        <input type="date" name="date_of_marriage" class="form-control" required>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label>Bride Proposed Name</label>
+                        <input type="text" name="bride_proposed_name" class="form-control">
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Place of Marriage</label>
-                <input type="text" name="place_of_marriage" class="form-control" required>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left mr-2"></i> Previous</button>
+                    <button type="button" class="btn btn-primary next-step" data-step="3">Next <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Date of Marriage</label>
-                <input type="date" name="date_of_marriage" class="form-control" required>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Bride Proposed Name</label>
-            <input type="text" name="bride_proposed_name" class="form-control">
-        </div>
-        <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary btn-icon-split prev-step">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span class="text">Previous</span>
-            </button>
-            <button type="button" class="btn btn-primary btn-icon-split next-step" data-step="3">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                </span>
-                <span class="text">Next</span>
-            </button>
         </div>
     </div>
 
     <!-- Step 4: Witness & Declaration -->
-    <div class="step card p-4 mb-4" id="step4">
-        <h5 class="card-title mb-4 text-primary">Witness & Declaration</h5>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Witness Name</label>
-                <input type="text" name="witness_name" class="form-control" required>
+    <div class="step" id="step4" style="display:none;">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-warning">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-users mr-2"></i> Witness & Declaration
+                </h6>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Witness Contact</label>
-                <input type="tel" name="witness_contact" class="form-control" pattern="[0-9]{10}" required>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Witness Name <span class="text-danger">*</span></label>
+                        <input type="text" name="witness_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Witness Contact <span class="text-danger">*</span></label>
+                        <input type="tel" name="witness_contact" class="form-control" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Officiator Name <span class="text-danger">*</span></label>
+                        <input type="text" name="officiator_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Officiator Contact</label>
+                        <input type="tel" name="officiator_contact" class="form-control" pattern="[0-9]{10}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Certificate Cost (USD) <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="0" name="certificate_cost" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Cost in Words <span class="text-danger">*</span></label>
+                        <input type="text" name="certificate_cost_words" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Declarant Name <span class="text-danger">*</span></label>
+                        <input type="text" name="declarant_name" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Declaration Date <span class="text-danger">*</span></label>
+                        <input type="date" name="declaration_date" class="form-control" required>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Officiator Name</label>
-                <input type="text" name="officiator_name" class="form-control" required>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left mr-2"></i> Previous</button>
+                    <button type="button" class="btn btn-primary next-step" data-step="4">Next <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Officiator Contact</label>
-                <input type="tel" name="officiator_contact" class="form-control" pattern="[0-9]{10}">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Certificate Cost</label>
-                <input type="number" step="0.01" min="0" name="certificate_cost" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Cost in Words</label>
-                <input type="text" name="certificate_cost_words" class="form-control" required>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Declarant Name</label>
-                <input type="text" name="declarant_name" class="form-control" required>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Declaration Date</label>
-                <input type="date" name="declaration_date" class="form-control" required>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary btn-icon-split prev-step">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span class="text">Previous</span>
-            </button>
-            <button type="button" class="btn btn-primary btn-icon-split next-step" data-step="4">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-right"></i>
-                </span>
-                <span class="text">Next</span>
-            </button>
         </div>
     </div>
 
-    <!-- Step 5: Certification & Signatures -->
-    <div class="step card p-4 mb-4" id="step5">
-        <h5 class="card-title mb-4 text-primary">Certification & Approval</h5>
-    
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Revenue No.</label>
-                <input type="text" name="revenue_no" class="form-control" required>
+    <!-- Step 5: Final Certification -->
+    <div class="step" id="step5" style="display:none;">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 bg-success">
+                <h6 class="m-0 font-weight-bold text-white">
+                    <i class="fas fa-certificate mr-2"></i> Final Certification
+                </h6>
             </div>
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Certification Date</label>
-                <input type="date" name="certification_day" class="form-control" required>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>Revenue Number <span class="text-danger">*</span></label>
+                        <input type="text" name="revenue_no" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>Certification Date <span class="text-danger">*</span></label>
+                        <input type="date" name="certification_day" class="form-control" required>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button type="button" class="btn btn-secondary btn-icon-split prev-step">
-                <span class="icon text-white-50">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span class="text">Previous</span>
-            </button>
-            <button type="submit" class="btn btn-success btn-icon-split">
-                <span class="icon text-white-50">
-                    <i class="fas fa-check"></i>
-                </span>
-                <span class="text">Submit Form</span>
-            </button>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary prev-step"><i class="fas fa-arrow-left mr-2"></i> Previous</button>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-check mr-2"></i> Submit Marriage Certificate
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </form>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
+
+    const steps = Array.from(document.querySelectorAll('.step'));
+    const progress = document.getElementById('formProgress');
+    const stepNum = document.getElementById('currentStep');
     const form = document.getElementById('marriageForm');
-    const steps = document.querySelectorAll('.step');
-    const progressBar = document.getElementById('formProgress');
-    let currentStep = 0;
-    
-    // Initialize form
-    showStep(currentStep);
-    updateConditionalFields();
-    updateProgress();
-    initializeAgeCalculation();
-    
-    // Next step button click handler
-    document.querySelectorAll('.next-step').forEach(button => {
-        button.addEventListener('click', function() {
-            const stepNumber = parseInt(this.getAttribute('data-step')) - 1;
-            if (validateStep(stepNumber)) {
-                currentStep++;
-                showStep(currentStep);
-                updateProgress();
-            }
-        });
-    });
-    
-    // Previous step button click handler
-    document.querySelectorAll('.prev-step').forEach(button => {
-        button.addEventListener('click', function() {
-            currentStep--;
-            showStep(currentStep);
-            updateProgress();
-        });
-    });
-    
-    // Show specific step
+
+    let current = 0;
+
+    /* ==============================
+       SHOW STEP
+    ============================== */
     function showStep(index) {
         steps.forEach((step, i) => {
             step.style.display = i === index ? 'block' : 'none';
         });
+
+        stepNum.textContent = index + 1;
+        progress.style.width = ((index + 1) / steps.length * 100) + '%';
     }
-    
-    // Validate current step before proceeding
-    function validateStep(stepIndex) {
-        const currentStepElement = steps[stepIndex];
-        const inputs = currentStepElement.querySelectorAll('input, select, textarea');
-        let isValid = true;
-        
-        inputs.forEach(input => {
-            // Skip validation for hidden conditional fields
-            if (input.closest('.conditional-field') && input.closest('.conditional-field').style.display === 'none') {
+
+    showStep(current);
+
+    /* ==============================
+       VALIDATE A STEP
+    ============================== */
+    function validateStep(index) {
+        let valid = true;
+
+        const requiredFields = steps[index]
+            .querySelectorAll('input[required], select[required], textarea[required]');
+
+        requiredFields.forEach(field => {
+
+            // Skip hidden conditional fields
+            const conditionalWrapper = field.closest('.conditional-field');
+            if (conditionalWrapper && conditionalWrapper.style.display === 'none') {
+                field.classList.remove('is-invalid');
                 return;
             }
-            
-            // Skip validation for readonly age fields
-            if (input.hasAttribute('readonly')) {
-                return;
-            }
-            
-            if (input.hasAttribute('required') && !input.value.trim()) {
-                input.classList.add('is-invalid');
-                isValid = false;
-            } else if (input.type === 'tel' && input.value && !input.checkValidity()) {
-                input.classList.add('is-invalid');
-                isValid = false;
-            } else if (input.type === 'file' && input.required && !input.files.length) {
-                input.classList.add('is-invalid');
-                isValid = false;
-            } else if (input.type === 'date' && input.required) {
-                // Validate age requirements
-                if (input.name === 'groom_dob' && !isGroomAgeValid(input.value)) {
-                    input.classList.add('is-invalid');
-                    isValid = false;
-                } else if (input.name === 'bride_dob' && !isBrideAgeValid(input.value)) {
-                    input.classList.add('is-invalid');
-                    isValid = false;
-                } else {
-                    input.classList.remove('is-invalid');
-                }
+
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                valid = false;
             } else {
-                input.classList.remove('is-invalid');
+                field.classList.remove('is-invalid');
             }
         });
-        
-        if (!isValid) {
-            // Scroll to first invalid field
-            const firstInvalid = currentStepElement.querySelector('.is-invalid');
-            if (firstInvalid) {
-                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        return valid;
+    }
+
+    /* ==============================
+       NEXT BUTTON
+    ============================== */
+    document.querySelectorAll('.next-step').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (validateStep(current)) {
+                current++;
+                showStep(current);
+            } else {
+                alert('Please fill all required fields.');
             }
-            alert('Please fill in all required fields correctly before proceeding.');
-        }
-        
-        return isValid;
-    }
-    
-    // Update progress bar with animation
-    function updateProgress() {
-        const progressPercentage = ((currentStep + 1) / steps.length) * 100;
-        
-        // Remove animation classes temporarily
-        progressBar.classList.remove('progress-bar-striped', 'progress-bar-animated');
-        
-        // Force reflow to restart animation
-        void progressBar.offsetWidth;
-        
-        // Update width
-        progressBar.style.width = progressPercentage + '%';
-        
-        // Add animation classes back
-        progressBar.classList.add('progress-bar-striped', 'progress-bar-animated');
-    }
-    
-    // Update conditional fields based on selections
-    function updateConditionalFields() {
-        document.querySelectorAll('select').forEach(select => {
-            select.addEventListener('change', function() {
-                const condition = this.getAttribute('name');
-                const value = this.value;
-                
-                document.querySelectorAll(`.conditional-field[data-condition="${condition}"]`).forEach(field => {
-                    if (field.getAttribute('data-value') === value) {
-                        field.style.display = 'block';
-                        field.querySelectorAll('input, select, textarea').forEach(input => {
-                            input.required = true;
-                        });
-                    } else {
-                        field.style.display = 'none';
-                        field.querySelectorAll('input, select, textarea').forEach(input => {
-                            input.required = false;
-                        });
-                    }
-                });
+        });
+    });
+
+    /* ==============================
+       PREVIOUS BUTTON
+    ============================== */
+    document.querySelectorAll('.prev-step').forEach(btn => {
+        btn.addEventListener('click', () => {
+            current--;
+            showStep(current);
+        });
+    });
+
+    /* ==============================
+       CONDITIONAL FIELDS
+    ============================== */
+    document.querySelectorAll('select[name$="_married_before"]').forEach(select => {
+        const fieldName = select.name;
+        const conditionalFields = document.querySelectorAll(
+            `.conditional-field[data-condition="${fieldName}"]`
+        );
+
+        function toggleConditional() {
+            conditionalFields.forEach(field => {
+                field.style.display = select.value === '1' ? 'block' : 'none';
             });
-        });
-    }
-    
-    // Initialize age calculation for date of birth fields
-    function initializeAgeCalculation() {
-        // Groom age calculation
-        const groomDob = document.querySelector('input[name="groom_dob"]');
-        const groomAge = document.querySelector('input[name="groom_age"]');
-        
-        groomDob.addEventListener('change', function() {
-            if (this.value) {
-                const age = calculateAge(this.value);
-                groomAge.value = age;
-                
-                if (!isGroomAgeValid(this.value)) {
-                    this.classList.add('is-invalid');
-                    alert('Groom must be at least 21 years old.');
-                } else {
-                    this.classList.remove('is-invalid');
-                }
-            }
-        });
-        
-        // Bride age calculation
-        const brideDob = document.querySelector('input[name="bride_dob"]');
-        const brideAge = document.querySelector('input[name="bride_age"]');
-        
-        brideDob.addEventListener('change', function() {
-            if (this.value) {
-                const age = calculateAge(this.value);
-                brideAge.value = age;
-                
-                if (!isBrideAgeValid(this.value)) {
-                    this.classList.add('is-invalid');
-                    alert('Bride must be at least 18 years old.');
-                } else {
-                    this.classList.remove('is-invalid');
-                }
-            }
-        });
-    }
-    
-    // Calculate age from date of birth
-    function calculateAge(birthDate) {
+        }
+
+        select.addEventListener('change', toggleConditional);
+        toggleConditional();
+    });
+
+    /* ==============================
+       AUTO CALCULATE AGE
+    ============================== */
+    function calculateAge(dob) {
         const today = new Date();
-        const birth = new Date(birthDate);
-        let age = today.getFullYear() - birth.getFullYear();
-        const monthDiff = today.getMonth() - birth.getMonth();
-        
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
             age--;
         }
-        
         return age;
     }
-    
-    // Validate groom age (21+)
-    function isGroomAgeValid(birthDate) {
-        const age = calculateAge(birthDate);
-        return age >= 21;
-    }
-    
-    // Validate bride age (18+)
-    function isBrideAgeValid(birthDate) {
-        const age = calculateAge(birthDate);
-        return age >= 18;
-    }
-    
-    // Form submission handler
-    form.addEventListener('submit', function(e) {
-        // Final validation before submission
-        let isFormValid = true;
-        
-        for (let i = 0; i < steps.length; i++) {
+
+    document.querySelectorAll('input[name="groom_dob"], input[name="bride_dob"]')
+        .forEach(input => {
+            input.addEventListener('change', () => {
+                const dob = new Date(input.value);
+                if (isNaN(dob)) return;
+
+                const target =
+                    input.name === 'groom_dob' ? 'groom_age' : 'bride_age';
+
+                form.querySelector(`input[name="${target}"]`).value = calculateAge(dob);
+            });
+        });
+
+    /* ==============================
+       FINAL FORM SUBMIT VALIDATION
+    ============================== */
+    form.addEventListener('submit', e => {
+        let allValid = true;
+
+        steps.some((_, i) => {
             if (!validateStep(i)) {
-                isFormValid = false;
-                break;
+                current = i;
+                showStep(i);
+                allValid = false;
+                return true; // stop loop
             }
-        }
-        
-        if (!isFormValid) {
+            return false;
+        });
+
+        if (!allValid) {
             e.preventDefault();
-            alert('Please fix the errors in the form before submitting.');
-            // Show the first step with errors
-            for (let i = 0; i < steps.length; i++) {
-                if (!validateStep(i)) {
-                    currentStep = i;
-                    showStep(currentStep);
-                    updateProgress();
-                    break;
-                }
-            }
+            alert('Please correct the errors before submitting.');
         }
     });
-    
-    // Initialize any conditional fields on page load
-    document.querySelectorAll('select').forEach(select => {
-        const event = new Event('change');
-        select.dispatchEvent(event);
-    });
+
 });
 </script>

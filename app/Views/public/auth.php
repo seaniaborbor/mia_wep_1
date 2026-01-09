@@ -165,6 +165,11 @@
 
 <div class="login-container">
     <div class="container">
+        <?php  
+        $password = 'Liberia231';
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        //echo $hashedPassword;
+        ?>
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
                 <div class="login-card">
@@ -176,13 +181,6 @@
                     
                     <form action="/auth" method="post" novalidate>
                         <?= csrf_field() ?>
-
-                        <?php if (null !== session()->getFlashdata('error')): ?>
-                            <?php $errors = session()->getFlashdata('error'); ?>
-                            <div class="alert alert-danger">
-                                <?= is_array($errors) ? implode('<br>', $errors) : $errors ?>
-                            </div>
-                        <?php endif; ?>
 
                         <?php if (isset($validation)): ?>
                             <div class="alert alert-danger">
@@ -232,5 +230,7 @@
         </div>
     </div>
 </div>
+
+
 
 <?=$this->endSection()?>

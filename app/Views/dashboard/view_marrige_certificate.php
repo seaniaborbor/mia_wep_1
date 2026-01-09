@@ -1,710 +1,509 @@
 <?php $this->extend('dashboard/partials/layout') ?>
 <?= $this->section('main') ?>
-<div class="row mt-3">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between border-bottom-primary py-3">
-                <div>
-                    <h1 class="h3 mb-0 text-primary font-weight-bold">
-                        <i class="fas fa-heart text-danger mr-2"></i>
-                        Marriage Certificate Details
-                        <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
-                            <?php if(isset($certificate['branchName']) && !empty($certificate['branchName'])): ?>
-                                <?= htmlspecialchars($certificate['branchName']) ?>
-                            <?php else: ?> 
-                                <?= htmlspecialchars(session()->get('userData')['branchName'] ?? 'Unknown Branch') ?>
-                            <?php endif; ?>
-                        </p>
-                    </h1>
-                </div>
-                <div class="d-flex align-items-center">
-                    <!-- Print Button -->
-                    <a href="/dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>" 
-                       class="btn btn-sm btn-primary btn-icon-split mr-2">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-print"></i>
-                        </span>
-                        <span class="text">Print</span>
-                    </a>
-                    
-                    <!-- Sign Button (for non-ENTRY users when not completed) -->
-                    <?php
-                        $signA = !empty($certificate['SIGNA']);
-                        $signB = !empty($certificate['SIGNB']);
-                        $signC = !empty($certificate['SIGNC']);
-                        $isCompleted = $signA && $signB && $signC;
-                        $userAccountType = session()->get('userData')['userAccountType'] ?? '';
-                        $userBranch = session()->get('userData')['userBreanch'] ?? '';
-                        $certBranch = $certificate['cert_branch'] ?? '';
-                        $sameBranch = ($userBranch == $certBranch);
-                        $allMissing = !$signA && !$signB && !$signC;
-                    ?>
-                    
-                    <?php if ($sameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
-                    <a href="/dashboard/wedcert/sign/<?= $certificate['marriage_cert_id'] ?>" 
-                       class="btn btn-sm btn-success btn-icon-split mr-2">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-signature"></i>
-                        </span>
-                        <span class="text">Sign</span>
-                    </a>
-                    <?php endif; ?>
 
-                    <!-- Edit Button (for ENTRY users when no signatures) -->
-                    <?php if ($sameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
-                    <a href="/dashboard/wedcert/edit/<?= $certificate['marriage_cert_id'] ?>" 
-                       class="btn btn-sm btn-warning btn-icon-split mr-2">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-edit"></i>
-                        </span>
-                        <span class="text">Edit</span>
-                    </a>
-                    <?php endif; ?>
+<div class="container-fluid">
 
-                    <!-- Allow Edit Button (for SIGNC users when complete) -->
-                    <?php if ($sameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
-                    <a href="/dashboard/wedcert/allow_edit/<?= $certificate['marriage_cert_id'] ?>" 
-                       class="btn btn-sm btn-info btn-icon-split mr-2">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-unlock"></i>
-                        </span>
-                        <span class="text">Allow Edit</span>
-                    </a>
-                    <?php endif; ?>
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-heart text-danger mr-2"></i>Marriage Certificate Details
+        </h1>
 
-                    <!-- Back Button -->
-                    <a href="//dashboard/wedcert" class="btn btn-sm btn-secondary btn-icon-split">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-arrow-left"></i>
-                        </span>
-                        <span class="text">Back</span>
-                    </a>
+        <div class="d-flex flex-wrap gap-2">
+            <!-- Print Button -->
+            <a href="/matrimonial_dashboard/wedcert/print/<?= esc($certificate['marriage_cert_id']) ?>"
+               class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50"><i class="fas fa-print"></i></span>
+                <span class="text">Print</span>
+            </a>
+
+            <?php
+                $signA = !empty($certificate['SIGNA']);
+                $signB = !empty($certificate['SIGNB'] ?? null);
+                $signC = !empty($certificate['SIGNC']);
+                $isCompleted = $signA && $signB && $signC;
+                $userAccountType = session()->get('userData')['userAccountType'] ?? '';
+                $userBranch = session()->get('userData')['userBreanch'] ?? '';
+                $certBranch = $certificate['cert_branch'] ?? '';
+                $sameBranch = ($userBranch == $certBranch);
+                $allMissing = !$signA && !$signB && !$signC;
+            ?>
+
+            <!-- Sign Button -->
+            <?php if ($sameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
+                <a href="/matrimonial_dashboard/wedcert/sign/<?= esc($certificate['marriage_cert_id']) ?>"
+                   class="btn btn-success btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-signature"></i></span>
+                    <span class="text">Sign</span>
+                </a>
+            <?php endif; ?>
+
+            <!-- Edit Button (ENTRY only, no signatures) -->
+            <?php if ($sameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
+                <a href="/matrimonial_dashboard/wedcert/edit/<?= esc($certificate['marriage_cert_id']) ?>"
+                   class="btn btn-warning btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-edit"></i></span>
+                    <span class="text">Edit</span>
+                </a>
+            <?php endif; ?>
+
+            <!-- Allow Edit (SIGNC only, when complete) -->
+            <?php if ($sameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
+                <a href="/matrimonial_dashboard/wedcert/allow_edit/<?= esc($certificate['marriage_cert_id']) ?>"
+                   class="btn btn-info btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-unlock"></i></span>
+                    <span class="text">Allow Edit</span>
+                </a>
+            <?php endif; ?>
+
+            <!-- Back Button -->
+            <a href="/matrimonial_dashboard/wedcert" class="btn btn-secondary btn-icon-split">
+                <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+                <span class="text">Back</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <?php if (session()->has('success')): ?>
+        <div class="alert alert-success alert-dismissible fade show">
+            <?= session('success') ?>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+    <?php endif; ?>
+
+    <div class="row">
+
+        <!-- Main Content -->
+        <div class="col-lg-8">
+
+            <!-- Certificate Summary -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="font-weight-bold text-primary">Traditional Marriage Certificate</h5>
+                            <h4 class="mb-0"><?= esc($certificate['marriage_code']) ?></h4>
+                        </div>
+                        <div class="col-md-4 text-md-right">
+                            <div class="h5 mb-0 text-gray-800"><?= esc($certificate['reference_no']) ?></div>
+                            <small class="text-muted">Reference No</small>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card-body p-4">
-                <?php if (session()->has('success')): ?>
-                    <div class="alert alert-success alert-dismissible fade show border-0 liberia-alert" role="alert">
-                        <?= session('success') ?>
-                        <button type="button" class="close" data-dismiss="alert"><span>×</span></button>
-                    </div>
-                <?php endif; ?>
+            <div class="row">
 
-                <div class="row">
-                    <!-- ==================== MAIN CONTENT ==================== -->
-                    <div class="col-lg-8">
-
-                        <!-- Certificate Summary -->
-                        <div class="card border-0 bg-light mb-4 liberia-card-accent">
-                            <div class="card-body py-3">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <h3 class="mb-1 liberia-red">Traditional Marriage Certificate</h3>
-                                        <p class="text-muted mb-0">
-                                            <strong><?= esc($certificate['marriage_code']) ?></strong>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-4 text-md-right">
-                                        <div class="h5 mb-0 liberia-blue font-weight-bold">
-                                            <?= esc($certificate['reference_no']) ?>
-                                        </div>
-                                        <small class="text-muted">Reference No</small>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Groom Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">
+                                <i class="fas fa-male mr-2"></i>Groom's Particulars
+                            </h6>
                         </div>
-
-                        <!-- Groom & Bride -->
-                        <div class="row mb-4">
-                            <!-- Groom -->
-                            <div class="col-md-6">
-                                <div class="card h-100 border-0 shadow-sm liberia-card-red">
-                                    <div class="card-header bg-white py-2 border-bottom">
-                                        <h6 class="m-0 liberia-red">
-                                            <i class="fas fa-male liberia-blue mr-2"></i>Groom's Particulars
-                                        </h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <p><span class="govt-label">Full Name:</span><br><?= esc($certificate['groom_name']) ?></p>
-                                                <p><span class="govt-label">Date of Birth:</span> <?= esc($certificate['groom_dob']) ?> (<?= esc($certificate['groom_age']) ?> yrs)</p>
-                                                <p><span class="govt-label">Origin:</span> <?= esc($certificate['groom_county_of_origin']) ?></p>
-                                                <p><span class="govt-label">Birth Place:</span> <?= esc($certificate['groom_birth_city']) ?>, <?= esc($certificate['groom_birth_county']) ?></p>
-                                                <p><span class="govt-label">Nationality:</span> <?= esc($certificate['groom_nationality']) ?></p>
-                                                <p><span class="govt-label">Contact:</span> <?= esc($certificate['groom_cell']) ?></p>
-                                                <p><span class="govt-label">Address:</span><br><?= esc($certificate['groom_address']) ?></p>
-                                                <p><span class="govt-label">Parents:</span><br>
-                                                    Father: <?= esc($certificate['groom_father_name']) ?><br>
-                                                    Mother: <?= esc($certificate['groom_mother_name']) ?>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-4 text-center">
-                                                <?php
-                                                    $photoPath = FCPATH . 'uploads/marriage/' . $certificate['groom_passport_photo'];
-                                                    $photoUrl  = base_url('uploads/marriage/' . $certificate['groom_passport_photo']);
-                                                    $hasPhoto  = file_exists($photoPath);
-                                                ?>
-                                                <?php if ($hasPhoto): ?>
-                                                    <img src="<?= $photoUrl ?>" alt="Groom Photo"
-                                                         class="img-fluid rounded shadow-sm liberia-photo-border"
-                                                         style="width:120px;height:120px;object-fit:cover;">
-                                                <?php else: ?>
-                                                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center shadow-sm liberia-photo-border"
-                                                         style="width:120px;height:120px;">
-                                                        <i class="fas fa-male fa-3x liberia-red"></i>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Bride -->
-                            <div class="col-md-6">
-                                <div class="card h-100 border-0 shadow-sm liberia-card-blue">
-                                    <div class="card-header bg-white py-2 border-bottom">
-                                        <h6 class="m-0 liberia-blue">
-                                            <i class="fas fa-female liberia-red mr-2"></i>Bride's Particulars
-                                        </h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <p><span class="govt-label">Full Name:</span><br><?= esc($certificate['bride_name']) ?></p>
-                                                <p><span class="govt-label">Date of Birth:</span> <?= esc($certificate['bride_dob']) ?> (<?= esc($certificate['bride_age']) ?> yrs)</p>
-                                                <p><span class="govt-label">Origin:</span> <?= esc($certificate['bride_county_of_origin']) ?></p>
-                                                <p><span class="govt-label">Birth Place:</span> <?= esc($certificate['bride_birth_city']) ?>, <?= esc($certificate['bride_birth_county']) ?></p>
-                                                <p><span class="govt-label">Nationality:</span> <?= esc($certificate['bride_nationality']) ?></p>
-                                                <p><span class="govt-label">Contact:</span> <?= esc($certificate['bride_cell']) ?></p>
-                                                <p><span class="govt-label">Address:</span><br><?= esc($certificate['bride_address']) ?></p>
-                                                <p><span class="govt-label">Parents:</span><br>
-                                                    Father: <?= esc($certificate['bride_father_name']) ?><br>
-                                                    Mother: <?= esc($certificate['bride_mother_name']) ?>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-4 text-center">
-                                                <?php
-                                                    $photoPath = FCPATH . 'uploads/marriage/' . $certificate['bride_passport_photo'];
-                                                    $photoUrl  = base_url('uploads/marriage/' . $certificate['bride_passport_photo']);
-                                                    $hasPhoto  = file_exists($photoPath);
-                                                ?>
-                                                <?php if ($hasPhoto): ?>
-                                                    <img src="<?= $photoUrl ?>" alt="Bride Photo"
-                                                         class="img-fluid rounded liberia-photo-border"
-                                                         style="width:120px;height:120px;object-fit:cover;">
-                                                <?php else: ?>
-                                                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center liberia-photo-border"
-                                                         style="width:120px;height:120px;">
-                                                        <i class="fas fa-female fa-3x liberia-red"></i>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Marriage Details -->
-                        <div class="card border-0 shadow-sm mb-4 liberia-card-red">
-                            <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-red">
-                                    <i class="fas fa-heart liberia-blue mr-2"></i>Marriage Details
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Place of Marriage</small>
-                                        <p class="mb-1 font-weight-bold liberia-blue"><?= esc($certificate['place_of_marriage']) ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Date of Marriage</small>
-                                        <p class="mb-1 font-weight-bold liberia-red"><?= esc($certificate['date_of_marriage']) ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Bride's Proposed Name</small>
-                                        <p class="mb-1"><?= esc($certificate['bride_proposed_name']) ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Certificate Cost</small>
-                                        <p class="mb-1"><?= esc($certificate['certificate_cost']) ?> (<?= esc($certificate['certificate_cost_words']) ?>)</p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Witness</small>
-                                        <p class="mb-1"><?= esc($certificate['witness_name']) ?> - <?= esc($certificate['witness_contact']) ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Officiator</small>
-                                        <p class="mb-1"><?= esc($certificate['officiator_name']) ?> - <?= esc($certificate['officiator_contact']) ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Declarant</small>
-                                        <p class="mb-1"><?= esc($certificate['declarant_name']) ?> - <?= esc($certificate['declaration_date']) ?></p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <small class="text-muted">Revenue No</small>
-                                        <p class="mb-1"><?= esc($certificate['revenue_no']) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Attached Files -->
-                        <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
-                            <div class="card-header bg-white py-2 border-bottom d-flex justify-content-between align-items-center">
-                                <h6 class="m-0 liberia-blue">
-                                    <i class="fas fa-paperclip liberia-red mr-2"></i>Attached Files
-                                </h6>
-                                <button type="button" class="btn btn-sm liberia-btn-blue" data-toggle="modal" data-target="#uploadFileModal">
-                                    Upload File
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <?php if (!empty($attachedFiles)): ?>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover">
-                                            <thead class="bg-light">
-                                                <tr>
-                                                    <th>File Title</th>
-                                                    <th>Upload Date</th>
-                                                    <th>Uploaded By</th>
-                                                    <th width="80">Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($attachedFiles as $file): ?>
-                                                    <?php
-                                                        $filePath = 'uploads/certificates/' . $file['certificateFile'];
-                                                        $fileUrl  = base_url($filePath);
-                                                        $fileExt  = strtolower(pathinfo($file['certificateFile'], PATHINFO_EXTENSION));
-                                                    ?>
-                                                    <tr>
-                                                        <td>
-                                                            <a href="#" class="text-decoration-none file-preview-link"
-                                                               data-toggle="modal" data-target="#filePreviewModal"
-                                                               data-title="<?= esc($file['fileTitle']) ?>"
-                                                               data-url="<?= $fileUrl ?>"
-                                                               data-type="<?= $fileExt ?>">
-                                                                <?= esc($file['fileTitle']) ?>
-                                                            </a>
-                                                        </td>
-                                                        <td><?= date('M j, Y', strtotime($file['fileCreatedAt'])) ?></td>
-                                                        <td><?= esc($file['userFullName']) ?></td>
-                                                        <td>
-                                                            <a href="/dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate['marriage_cert_id'] ?>"
-                                                               class="btn btn-sm btn-outline-danger"
-                                                               onclick="return confirm('Delete this file?');">
-                                                                Delete
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                <?php else: ?>
-                                    <div class="text-center py-4">
-                                        <p class="text-muted mb-0">No files attached yet.</p>
-                                        <small class="text-muted">Click the upload button to add files.</small>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <!-- Signatories Grid -->
-                        <div class="card border-0 shadow-sm liberia-card-blue">
-                            <div class="card-header bg-white py-2 border-bottom d-flex justify-content-between align-items-center">
-                                <h6 class="m-0 <?= $isCompleted ? 'liberia-blue' : 'liberia-red' ?>">
-                                    <i class="fas fa-signature liberia-red mr-2"></i>Signatories
-                                </h6>
-                                <?php if (!$isCompleted): ?>
-                                    <span class="badge badge-danger px-3 py-2 animate__animated animate__flash animate__infinite">
-                                        Incomplete
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                            <div class="card-body">
-                                <div class="row text-center">
-                                    <?php foreach (['A', 'B', 'C'] as $sig): ?>
-                                        <?php
-                                            $sigKey      = "SIGN{$sig}";
-                                            $sigDateKey  = "SIGN{$sig}_signedDate";
-                                            $sigName     = $certificate[$sigKey] ?? '';
-                                            $sigDate     = $certificate[$sigDateKey] ?? '';
-                                            $sigPath     = FCPATH . "uploads/users/signatures/{$sigName}";
-                                            $sigUrl      = base_url("uploads/users/signatures/{$sigName}");
-                                            $hasSig      = !empty($sigName) && file_exists($sigPath);
-                                        ?>
-                                        <div class="col-md-4 mb-3">
-                                            <div class="p-3 border rounded <?= $hasSig ? 'border-success liberia-signed' : 'border-light' ?>">
-                                                <?php if ($hasSig): ?>
-                                                    <img src="<?= $sigUrl ?>" alt="Signature <?= $sig ?>"
-                                                         class="img-fluid mb-2" style="max-height:50px;">
-                                                    <p class="mb-0 small liberia-blue">Signed</p>
-                                                    <?php if ($sigDate): ?>
-                                                        <small class="d-block text-success font-weight-bold">
-                                                            <?= date('M j, Y', strtotime($sigDate)) ?>
-                                                        </small>
-                                                    <?php endif; ?>
-                                                <?php else: ?>
-                                                    <p class="mb-0 small text-muted">Not Signed</p>
-                                                    <small class="d-block text-muted">—</small>
-                                                <?php endif; ?>
-                                                <small class="d-block text-muted mt-1">Signatory <?= $sig ?></small>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        </div>
-                        <?php if($isCompleted && $certificate['isWedCertIssued'] == 0) : ?>
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <p>The certificate is completed, please click <a href="/dashboard/wedcert/issue/<?= $certificate['marriage_cert_id'] ?>">here </a> to mark it as Issued. </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- ==================== SIDEBAR ==================== -->
-                    <div class="col-lg-4">
-
-                        <!-- Actions -->
-                        <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
-                            <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-blue">
-                                    <i class="fas fa-cogs liberia-red mr-2"></i>Actions
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-grid gap-2">
-                                    <?php if ($sameBranch): ?>
-                                        <!-- ENTRY user: Edit & Delete only if NO signatures -->
-                                        <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
-                                            <a href="/dashboard/wedcert/edit/<?= $certificate['marriage_cert_id'] ?>"
-                                               class="btn btn-sm liberia-btn-red">Edit</a>
-                                            <a href="/dashboard/wedcert/delete/<?= $certificate['marriage_cert_id'] ?>"
-                                               class="btn btn-sm btn-outline-danger"
-                                               onclick="return confirm('Delete this certificate?');">Delete</a>
-                                        <?php endif; ?>
-
-                                        <!-- Non-ENTRY: Sign if not complete -->
-                                        <?php if ($userAccountType !== 'ENTRY' && !$isCompleted): ?>
-                                            <a href="/dashboard/wedcert/sign/<?= $certificate['marriage_cert_id'] ?>"
-                                               class="btn btn-sm liberia-btn-blue">Sign</a>
-                                        <?php endif; ?>
-
-                                        <!-- Allow Edit: ONLY for SIGNC when complete -->
-                                        <?php if ($userAccountType === 'SIGNC'): ?>
-                                            <a href="/dashboard/wedcert/allow_edit/<?= $certificate['marriage_cert_id'] ?>"
-                                               class="btn btn-sm liberia-btn-red">Allow Edit</a>
-                                        <?php endif; ?>
-
-                                        <!-- Always available -->
-                                        <a href="/dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>"
-                                           class="btn btn-sm liberia-btn-blue">Print</a>
-                                    <?php endif; ?>
-                                    <a href="/wedcert" class="btn btn-sm btn-outline-secondary">Back</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Editing Guidelines (only for ENTRY when no signatures) -->
-                        <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
-                        <div class="card shadow-sm border-0 mb-4">
-                            <div class="card-header bg-primary text-white py-3">
-                                <h5 class="mb-0">Editing Guidelines</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="text-muted mb-3">Please review all information carefully before saving changes.</p>
-                                <ul class="list-unstyled">
-                                    <li class="mb-2">Ensure names and dates are accurate.</li>
-                                    <li class="mb-2">Verify places and contacts.</li>
-                                    <li class="mb-2">Replace photos only if necessary.</li>
-                                    <li class="mb-2">Check marriage details and costs.</li>
-                                    <li class="mb-2">Confirm witness and officiator info.</li>
-                                </ul>
-                                <hr>
-                                <h6 class="text-secondary font-weight-bold">Important Note:</h6>
-                                <p class="text-muted mb-0">Updating a certificate will <strong>replace the existing record</strong>.</p>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-
-                        <!-- Dynamic Status Card -->
-                        <?php if ($isCompleted): ?>
-                            <div class="card border-0 shadow-sm mb-4 bg-success text-white">
-                                <div class="card-body text-center py-4">
-                                    <i class="fas fa-check-circle fa-2x mb-3"></i>
-                                    <h5 class="mb-2">Processing Complete and Closed</h5>
-                                    <p class="mb-0 small">
-                                        All three signatories have signed.<br>
-                                        This document is now <strong>finalized and locked</strong>.
-                                    </p>
-                                </div>
-                            </div>
-                        <?php elseif ($allMissing): ?>
-                            <div class="card border-0 shadow-sm mb-4 bg-info text-white">
-                                <div class="card-body text-center py-4">
-                                    <i class="fas fa-pen fa-2x mb-3"></i>
-                                    <h5 class="mb-2">Ready to Sign</h5>
-                                    <p class="mb-0 small">
-                                        No signatures have been added yet.<br>
-                                        You may now <strong>start signing</strong> this document.
-                                    </p>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <!-- Signatory Profiles (if any) -->
-                        <?php
-                        $signers = [];
-                        foreach (['SIGNA_profile', 'SIGNB_profile', 'SIGNC_profile'] as $key) {
-                            if (!empty($signerProfiles[$key])) {
-                                $signers[] = array_merge($signerProfiles[$key], ['signatoryLabel' => substr($key, 4, 1)]);
-                            }
-                        }
-                        ?>
-                        <?php if (!empty($signers)): ?>
-                        <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-blue">Signatory Profiles</h6>
-                            </div>
-                            <div class="card-body p-0">
-                                <?php foreach ($signers as $signer): ?>
-                                    <?php
-                                        $photoPath = FCPATH . '/uploads/users/pictures/' . ($signer['userPicture'] ?? '');
-                                        $photoUrl  = base_url('/uploads/users/pictures/' . ($signer['userPicture'] ?? ''));
-                                        $hasPhoto  = !empty($signer['userPicture']) && file_exists($photoPath);
-                                        $sigKey    = "SIGN" . $signer['signatoryLabel'];
-                                        $hasSigned = !empty($certificate[$sigKey]);
-                                    ?>
-                                    <div class="p-3 border-bottom signer-card">
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0">
-                                                <?php if ($hasPhoto): ?>
-                                                    <img src="<?= $photoUrl ?>" alt="<?= esc($signer['userFullName']) ?>"
-                                                         class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
-                                                <?php else: ?>
-                                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
-                                                         style="width:50px;height:50px;">
-                                                        <i class="fas fa-user text-muted"></i>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="flex-grow-1 ml-3">
-                                                <h6 class="mb-0"><?= esc($signer['userFullName']) ?></h6>
-                                                <small class="text-muted">
-                                                    Signatory <?= $signer['signatoryLabel'] ?> – <?= esc($signer['userPosition']) ?>
-                                                </small>
-                                            </div>
-                                            <div>
-                                                <span class="badge <?= $hasSigned ? 'badge-success' : 'badge-secondary' ?> badge-pill">
-                                                    <?= $hasSigned ? 'Signed' : 'Pending' ?>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-
-                        <!-- Certificate Metadata -->
-                        <div class="card border-0 shadow-sm mb-4">
-                            <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-blue">Certificate Metadata</h6>
-                            </div>
-                            <div class="card-body p-0">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
                                 <?php
-                                // Prepare metadata profiles for Created By and Last Edited By
-                                $metadataProfiles = [];
-                                
-                                // Creator profile
-                                if (!empty($createdBy)) {
-                                    $metadataProfiles[] = [
-                                        'userFullName' => $createdBy['userFullName'] ?? 'Unknown',
-                                        'userPosition' => $createdBy['userPosition'] ?? 'Unknown',
-                                        'userPicture' => $createdBy['userPicture'] ?? '',
-                                        'label' => 'Creator',
-                                        'date' => date('M j, Y, g:i A', strtotime($certificate['created_at'])),
-                                        'badgeClass' => 'badge-primary'
-                                    ];
-                                }
-                                
-                                // Editor profile - handle the array structure
-                                if (!empty($lastEditedByProfile) && is_array($lastEditedByProfile)) {
-                                    // Check if it's a multi-dimensional array and get the first element
-                                    $editorProfile = is_array($lastEditedByProfile[0] ?? null) ? $lastEditedByProfile[0] : $lastEditedByProfile;
-                                    
-                                    if (!empty($editorProfile['userFullName'])) {
-                                        $metadataProfiles[] = [
-                                            'userFullName' => $editorProfile['userFullName'],
-                                            'userPosition' => $editorProfile['userPosition'] ?? 'Unknown',
-                                            'userPicture' => $editorProfile['userPicture'] ?? '',
-                                            'label' => 'Last Editor',
-                                            'date' => date('M j, Y, g:i A', strtotime($last_edited_at)),
-                                            'badgeClass' => 'badge-info'
-                                        ];
-                                    }
-                                }
+                                    $groomPhoto = $certificate['groom_passport_photo'] ? base_url('uploads/marriage/' . $certificate['groom_passport_photo']) : null;
+                                    $groomPhotoExists = $groomPhoto && file_exists(FCPATH . 'uploads/marriage/' . $certificate['groom_passport_photo']);
                                 ?>
-                                <?php if (!empty($metadataProfiles)): ?>
-                                    <?php foreach ($metadataProfiles as $profile): ?>
-                                        <?php
-                                            $photoPath = FCPATH . 'uploads/users/pictures/' . ($profile['userPicture'] ?? '');
-                                            $photoUrl = base_url('uploads/users/pictures/' . ($profile['userPicture'] ?? ''));
-                                            $hasPhoto = !empty($profile['userPicture']) && file_exists($photoPath);
-                                        ?>
-                                        <div class="p-3 border-bottom signer-card">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0">
-                                                    <?php if ($hasPhoto): ?>
-                                                        <img src="<?= $photoUrl ?>" alt="<?= esc($profile['userFullName']) ?>"
-                                                             class="rounded-circle shadow-sm" style="width:50px;height:50px;object-fit:cover;">
-                                                    <?php else: ?>
-                                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center"
-                                                             style="width:50px;height:50px;">
-                                                            <i class="fas fa-user text-muted"></i>
-                                                        </div>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <div class="flex-grow-1 ml-3">
-                                                    <h6 class="mb-0"><?= esc($profile['userFullName']) ?></h6>
-                                                    <small class="text-muted">
-                                                        <?= esc($profile['label']) ?> – <?= esc($profile['userPosition']) ?>
-                                                    </small><br>
-                                                    <small class="text-muted"><?= esc($profile['date']) ?></small>
-                                                </div>
-                                                <div>
-                                                    <span class="badge <?= esc($profile['badgeClass']) ?> badge-pill">
-                                                        <?= esc($profile['label']) ?>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
+                                <?php if ($groomPhotoExists): ?>
+                                    <img src="<?= $groomPhoto ?>" alt="Groom" class="img-profile rounded-circle" width="100" height="100">
                                 <?php else: ?>
-                                    <div class="p-3 text-center text-muted">
-                                        <i class="fas fa-info-circle mb-2"></i>
-                                        <p class="mb-0">No metadata available</p>
+                                    <div class="img-profile rounded-circle bg-light d-flex align-items-center justify-content-center text-primary" style="width:100px;height:100px;">
+                                        <i class="fas fa-male fa-3x"></i>
                                     </div>
                                 <?php endif; ?>
                             </div>
+                            <p><strong>Full Name:</strong> <?= esc($certificate['groom_name']) ?></p>
+                            <p><strong>Date of Birth:</strong> <?= esc($certificate['groom_dob']) ?> (<?= esc($certificate['groom_age']) ?> yrs)</p>
+                            <p><strong>Origin:</strong> <?= esc($certificate['groom_county_of_origin']) ?></p>
+                            <p><strong>Birth Place:</strong> <?= esc($certificate['groom_birth_city']) ?>, <?= esc($certificate['groom_birth_county']) ?></p>
+                            <p><strong>Nationality:</strong> <?= esc($certificate['groom_nationality']) ?></p>
+                            <p><strong>Contact:</strong> <?= esc($certificate['groom_cell']) ?></p>
+                            <p><strong>Address:</strong><br><?= esc($certificate['groom_address']) ?></p>
+                            <p><strong>Parents:</strong><br>
+                                Father: <?= esc($certificate['groom_father_name']) ?><br>
+                                Mother: <?= esc($certificate['groom_mother_name']) ?>
+                            </p>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Bride Card -->
+                <div class="col-md-6 mb-4">
+                    <div class="card border-left-danger shadow h-100">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-danger">
+                                <i class="fas fa-female mr-2"></i>Bride's Particulars
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <?php
+                                    $bridePhoto = $certificate['bride_passport_photo'] ? base_url('uploads/marriage/' . $certificate['bride_passport_photo']) : null;
+                                    $bridePhotoExists = $bridePhoto && file_exists(FCPATH . 'uploads/marriage/' . $certificate['bride_passport_photo']);
+                                ?>
+                                <?php if ($bridePhotoExists): ?>
+                                    <img src="<?= $bridePhoto ?>" alt="Bride" class="img-profile rounded-circle" width="100" height="100">
+                                <?php else: ?>
+                                    <div class="img-profile rounded-circle bg-light d-flex align-items-center justify-content-center text-danger" style="width:100px;height:100px;">
+                                        <i class="fas fa-female fa-3x"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <p><strong>Full Name:</strong> <?= esc($certificate['bride_name']) ?></p>
+                            <p><strong>Date of Birth:</strong> <?= esc($certificate['bride_dob']) ?> (<?= esc($certificate['bride_age']) ?> yrs)</p>
+                            <p><strong>Origin:</strong> <?= esc($certificate['bride_county_of_origin']) ?></p>
+                            <p><strong>Birth Place:</strong> <?= esc($certificate['bride_birth_city']) ?>, <?= esc($certificate['bride_birth_county']) ?></p>
+                            <p><strong>Nationality:</strong> <?= esc($certificate['bride_nationality']) ?></p>
+                            <p><strong>Contact:</strong> <?= esc($certificate['bride_cell']) ?></p>
+                            <p><strong>Address:</strong><br><?= esc($certificate['bride_address']) ?></p>
+                            <p><strong>Parents:</strong><br>
+                                Father: <?= esc($certificate['bride_father_name']) ?><br>
+                                Mother: <?= esc($certificate['bride_mother_name']) ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Marriage Details -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-ring mr-2"></i>Marriage Details
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Place of Marriage</small>
+                            <p class="mb-0 font-weight-bold"><?= esc($certificate['place_of_marriage']) ?></p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Date of Marriage</small>
+                            <p class="mb-0 font-weight-bold text-danger"><?= esc($certificate['date_of_marriage']) ?></p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Bride's Proposed Name</small>
+                            <p class="mb-0"><?= esc($certificate['bride_proposed_name']) ?></p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Certificate Cost</small>
+                            <p class="mb-0"><?= esc($certificate['certificate_cost']) ?> (<?= esc($certificate['certificate_cost_words']) ?>)</p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Witness</small>
+                            <p class="mb-0"><?= esc($certificate['witness_name']) ?> - <?= esc($certificate['witness_contact']) ?></p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Officiator</small>
+                            <p class="mb-0"><?= esc($certificate['officiator_name']) ?> - <?= esc($certificate['officiator_contact']) ?></p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Declarant</small>
+                            <p class="mb-0"><?= esc($certificate['declarant_name']) ?> - <?= esc($certificate['declaration_date']) ?></p>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                            <small class="text-muted">Revenue No</small>
+                            <p class="mb-0"><?= esc($certificate['revenue_no']) ?></p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Attached Files -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-paperclip mr-2"></i>Attached Files
+                    </h6>
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#uploadFileModal">
+                        <i class="fas fa-upload mr-1"></i>Upload File
+                    </button>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($attachedFiles)): ?>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>File Title</th>
+                                        <th>Upload Date</th>
+                                        <th>Uploaded By</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($attachedFiles as $file): ?>
+                                        <?php
+                                            $fileUrl = base_url('uploads/certificates/' . $file['certificateFile']);
+                                            $fileExt = strtolower(pathinfo($file['certificateFile'], PATHINFO_EXTENSION));
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <a href="#" class="text-primary file-preview-link"
+                                                   data-toggle="modal" data-target="#filePreviewModal"
+                                                   data-title="<?= esc($file['fileTitle']) ?>"
+                                                   data-url="<?= $fileUrl ?>"
+                                                   data-type="<?= $fileExt ?>">
+                                                    <?= esc($file['fileTitle']) ?>
+                                                </a>
+                                            </td>
+                                            <td><?= date('M j, Y', strtotime($file['fileCreatedAt'])) ?></td>
+                                            <td><?= esc($file['userFullName']) ?></td>
+                                            <td>
+                                                <a href="/matrimonial_dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate['marriage_cert_id'] ?>"
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Delete this file?');">Delete</a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted text-center mb-0">No files attached yet.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Signatories -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-signature mr-2"></i>Signatories
+                    </h6>
+                    <?php if (!$isCompleted): ?>
+                        <span class="badge badge-danger">Incomplete</span>
+                    <?php endif; ?>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <?php foreach (['A', 'B', 'C'] as $sig): ?>
+                            <?php
+                                $sigKey = "SIGN{$sig}";
+                                $sigDateKey = "SIGN{$sig}_signedDate";
+                                $sigName = $certificate[$sigKey] ?? '';
+                                $sigDate = $certificate[$sigDateKey] ?? '';
+                                $sigUrl = $sigName ? base_url("uploads/users/signatures/{$sigName}") : '';
+                                $hasSig = $sigName && file_exists(FCPATH . "uploads/users/signatures/{$sigName}");
+                            ?>
+                            <div class="col-md-4 mb-4">
+                                <div class="border rounded p-3 <?= $hasSig ? 'border-success' : 'border-light' ?>">
+                                    <?php if ($hasSig): ?>
+                                        <img src="<?= $sigUrl ?>" alt="Signature <?= $sig ?>" class="img-fluid mb-2" style="max-height:60px;">
+                                        <p class="mb-0 text-success font-weight-bold">Signed</p>
+                                        <?php if ($sigDate): ?>
+                                            <small class="text-success"><?= date('M j, Y', strtotime($sigDate)) ?></small>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <p class="mb-0 text-muted">Not Signed</p>
+                                        <small class="text-muted">—</small>
+                                    <?php endif; ?>
+                                    <hr class="my-2">
+                                    <small class="text-muted">Signatory <?= $sig ?></small>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Issue Certificate Alert -->
+            <?php if($isCompleted && $certificate['isWedCertIssued'] == 0): ?>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    The certificate is fully signed. 
+                    <a href="/matrimonial_dashboard/wedcert/issue/<?= esc($certificate['marriage_cert_id']) ?>">Click here to mark as Issued</a>.
+                </div>
+            <?php endif; ?>
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+
+            <!-- Quick Actions -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <?php if ($sameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
+                            <a href="/matrimonial_dashboard/wedcert/edit/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-warning">Edit Certificate</a>
+                            <a href="/matrimonial_dashboard/wedcert/delete/<?= esc($certificate['marriage_cert_id']) ?>" 
+                               class="btn btn-outline-danger" onclick="return confirm('Permanently delete this certificate?');">Delete</a>
+                        <?php endif; ?>
+
+                        <?php if ($sameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
+                            <a href="/matrimonial_dashboard/wedcert/sign/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-success">Sign Certificate</a>
+                        <?php endif; ?>
+
+                        <?php if ($sameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
+                            <a href="/matrimonial_dashboard/wedcert/allow_edit/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-info">Allow Editing</a>
+                        <?php endif; ?>
+
+                        <a href="/matrimonial_dashboard/wedcert/print/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-primary">Print Certificate</a>
+                        <a href="/matrimonial_dashboard/wedcert" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Card -->
+            <?php if ($isCompleted): ?>
+                <div class="card bg-success text-white shadow mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                        <h5>Certificate Complete</h5>
+                        <p class="mb-0">All signatures applied. Document is finalized.</p>
+                    </div>
+                </div>
+            <?php elseif ($allMissing): ?>
+                <div class="card bg-info text-white shadow mb-4">
+                    <div class="card-body text-center">
+                        <i class="fas fa-pen fa-3x mb-3"></i>
+                        <h5>Ready for Signing</h5>
+                        <p class="mb-0">No signatures yet. You can start the signing process.</p>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- Metadata -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Certificate Metadata</h6>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($createdBy)): ?>
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="mr-3">
+                                <?php if (!empty($createdBy['userPicture']) && file_exists(FCPATH . 'uploads/users/pictures/' . $createdBy['userPicture'])): ?>
+                                    <img src="<?= base_url('uploads/users/pictures/' . $createdBy['userPicture']) ?>" class="rounded-circle" width="50">
+                                <?php else: ?>
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div>
+                                <strong><?= esc($createdBy['userFullName']) ?></strong><br>
+                                <small class="text-muted">Created on <?= date('M j, Y, g:i A', strtotime($certificate['created_at'])) ?></small>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($lastEditedByProfile)): ?>
+                        <?php $editor = is_array($lastEditedByProfile[0] ?? null) ? $lastEditedByProfile[0] : $lastEditedByProfile; ?>
+                        <hr>
+                        <div class="d-flex align-items-center">
+                            <div class="mr-3">
+                                <?php if (!empty($editor['userPicture']) && file_exists(FCPATH . 'uploads/users/pictures/' . $editor['userPicture'])): ?>
+                                    <img src="<?= base_url('uploads/users/pictures/' . $editor['userPicture']) ?>" class="rounded-circle" width="50">
+                                <?php else: ?>
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div>
+                                <strong><?= esc($editor['userFullName']) ?></strong><br>
+                                <small class="text-muted">Last edited on <?= date('M j, Y, g:i A', strtotime($last_edited_at)) ?></small>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
-<!-- ==================== FILE PREVIEW MODAL ==================== -->
-<div class="modal fade" id="filePreviewModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+<!-- File Preview Modal -->
+<div class="modal fade" id="filePreviewModal">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="filePreviewTitle">File Preview</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body p-0">
                 <div id="filePreviewContainer" style="height:70vh;"></div>
             </div>
             <div class="modal-footer">
-                <a href="#" id="fileDownloadLink" class="btn btn-sm btn-primary" download>Download</a>
-                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                <a href="#" id="fileDownloadLink" class="btn btn-primary btn-sm" download>Download</a>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ==================== UPLOAD FILE MODAL ==================== -->
-<div class="modal fade" id="uploadFileModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+<!-- Upload File Modal -->
+<div class="modal fade" id="uploadFileModal">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header liberia-card-blue">
-                <h5 class="modal-title liberia-blue">Upload File</h5>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span></button>
-            </div>
-            <form action="/dashboard/certificate_files/upload_file/<?= $certificate['marriage_cert_id'] ?>"
-                  method="post" enctype="multipart/form-data">
+            <form action="/matrimonial_dashboard/certificate_files/upload_file/<?= esc($certificate['marriage_cert_id']) ?>" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Supporting File</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="fileTitle" class="font-weight-bold">File Title</label>
-                        <input type="text" class="form-control" id="fileTitle" name="fileTitle" required
-                               placeholder="Enter a descriptive title">
+                        <label>File Title</label>
+                        <input type="text" class="form-control" name="fileTitle" required>
                     </div>
                     <div class="form-group">
-                        <label for="fileUpload" class="font-weight-bold">Select File</label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="fileUpload" name="certificateFile"
-                                   required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            <label class="custom-file-label" for="fileUpload">Choose file...</label>
-                        </div>
-                        <small class="form-text text-muted">Max 5 MB. Supported: PDF, DOC, JPG, PNG</small>
+                        <label>Select File</label>
+                        <input type="file" class="form-control" name="certificateFile" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        <small class="form-text text-muted">Max 5MB • PDF, Word, Images</small>
                     </div>
                     <input type="hidden" name="certificateFile_category" value="marriage">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn liberia-btn-blue">Upload File</button>
+                    <button type="submit" class="btn btn-primary">Upload File</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Animate.css -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
-<style>
-    .signer-card { transition: background .2s; }
-    .signer-card:hover { background: #f8f9fa; }
-    .liberia-status-badge { font-size: .9rem; font-weight: 600; }
-    .animate__pulse { animation-duration: 2s; }
-</style>
-
 <script>
-    // File upload label
-    document.getElementById('fileUpload')?.addEventListener('change', function (e) {
-        const label = e.target.nextElementSibling;
-        label.innerText = e.target.files[0]?.name || 'Choose file...';
-    });
+$(function() {
+    // File preview
+    $('.file-preview-link').on('click', function(e) {
+        e.preventDefault();
+        const title = $(this).data('title');
+        const url = $(this).data('url');
+        const type = $(this).data('type');
 
-    // File preview modal
-    document.querySelectorAll('.file-preview-link').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            const title = this.dataset.title;
-            const url   = this.dataset.url;
-            const type  = this.dataset.type;
-            document.getElementById('filePreviewTitle').textContent = title;
-            document.getElementById('fileDownloadLink').href = url;
-            const container = document.getElementById('filePreviewContainer');
-            container.innerHTML = '';
-            if (type === 'pdf') {
-                container.innerHTML = `<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`;
-            } else if (['jpg','jpeg','png','gif'].includes(type)) {
-                container.innerHTML = `<img src="${url}" class="img-fluid h-100 w-100" style="object-fit:contain;">`;
-            } else {
-                container.innerHTML = `
-                    <div class="p-5 text-center text-muted">
-                        <i class="fas fa-file-alt fa-3x mb-3"></i>
-                        <p>Preview not available for .${type} files</p>
-                        <a href="${url}" class="btn btn-primary btn-sm" download>Download to View</a>
-                    </div>`;
-            }
-            $('#filePreviewModal').modal('show');
-        });
+        $('#filePreviewTitle').text(title);
+        $('#fileDownloadLink').attr('href', url);
+
+        const container = $('#filePreviewContainer').empty();
+
+        if (['jpg','jpeg','png','gif'].includes(type)) {
+            container.html(`<img src="${url}" class="img-fluid">`);
+        } else if (type === 'pdf') {
+            container.html(`<iframe src="${url}" class="w-100 h-100" style="border:none;"></iframe>`);
+        } else {
+            container.html(`
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-file-alt fa-4x mb-3"></i>
+                    <p>Preview not available</p>
+                    <a href="${url}" class="btn btn-primary btn-sm" download>Download File</a>
+                </div>
+            `);
+        }
+
+        $('#filePreviewModal').modal('show');
     });
+});
 </script>
 
 <?= $this->endSection() ?>

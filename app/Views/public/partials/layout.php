@@ -1630,6 +1630,100 @@ h1, h2, h3, h4, h5, h6 {
     }
 
 
+/* === GOVERNMENT PATRIOTIC ALERTS — UNSTOPPABLE OVERRIDE === */
+.gov-patriotic-alert {
+    all: unset !important;
+    display: block !important;
+    margin: 1.5rem 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 12px 35px rgba(0, 40, 104, 0.22) !important;
+    overflow: hidden !important;
+    animation: govSlideDown 0.6s ease-out !important;
+    font-family: inherit !important;
+    position: relative !important;
+}
+
+.gov-patriotic-alert::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
+    height: 7px !important;
+    background: linear-gradient(to right, #BF0A30, #002868, #BF0A30) !important;
+}
+
+.gov-alert-inner {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.2rem !important;
+    padding: 1.5rem 1.8rem !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.gov-success-alert .gov-alert-inner {
+    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08)) !important;
+    border-left: 7px solid #10b981 !important;
+    color: #065f46 !important;
+}
+
+.gov-danger-alert .gov-alert-inner {
+    background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(220,38,38,0.08)) !important;
+    border-left: 7px solid #ef4444 !important;
+    color: #991b1b !important;
+}
+
+.gov-alert-icon {
+    font-size: 2rem !important;
+    opacity: 0.9 !important;
+    flex-shrink: 0 !important;
+}
+
+.gov-alert-message {
+    flex: 1 !important;
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+}
+
+.gov-alert-message strong {
+    font-weight: 900 !important;
+    letter-spacing: 0.5px !important;
+    color: inherit !important;
+}
+
+.gov-alert-close {
+    all: unset !important;
+    background: none !important;
+    border: none !important;
+    font-size: 1.4rem !important;
+    cursor: pointer !important;
+    opacity: 0.7 !important;
+    transition: all 0.3s ease !important;
+    padding: 0.5rem !important;
+}
+
+.gov-alert-close:hover {
+    opacity: 1 !important;
+    transform: scale(1.3) !important;
+}
+
+/* Force animation */
+@keyframes govSlideDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Kill any conflicting Bootstrap/AdminLTE alert styles */
+.alert,
+.alert-success,
+.alert-danger,
+.alert-dismissible {
+    all: initial !important;
+    display: block !important;
+}
+
        
     </style>
 </head>
@@ -1651,6 +1745,63 @@ h1, h2, h3, h4, h5, h6 {
             </div>
         </div>
     </div>
+   
+<div class="container">
+
+    <!-- SUCCESS MESSAGE -->
+    <?php if ($msg = session()->getFlashdata('success')): ?>
+        <div class="gov-patriotic-alert gov-success-alert" role="alert">
+            <div class="gov-alert-inner">
+                <i class="fas fa-check-circle gov-alert-icon"></i>
+                <div class="gov-alert-message">
+                    <strong>Success!</strong>
+
+                    <?php 
+                        if (is_array($msg)) {
+                            foreach ($msg as $m) {
+                                echo "<div>$m</div>";
+                            }
+                        } else {
+                            echo $msg;
+                        }
+                    ?>
+                </div>
+                <button type="button" class="gov-alert-close" data-bs-dismiss="alert" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+
+    <!-- ERROR MESSAGE -->
+    <?php if ($err = session()->getFlashdata('error')): ?>
+        <div class="gov-patriotic-alert gov-danger-alert" role="alert">
+            <div class="gov-alert-inner">
+                <i class="fas fa-exclamation-triangle gov-alert-icon"></i>
+                <div class="gov-alert-message">
+                    <strong>Error!</strong>
+
+                    <?php 
+                        if (is_array($err)) {
+                            foreach ($err as $e) {
+                                echo "<div>$e</div>";
+                            }
+                        } else {
+                            echo $err;
+                        }
+                    ?>
+                </div>
+                <button type="button" class="gov-alert-close" data-bs-dismiss="alert" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+</div>
+
+</div>
     
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
@@ -1998,5 +2149,28 @@ h1, h2, h3, h4, h5, h6 {
         });
     });
     </script>
+
+    <script>
+// GOVERNMENT PATRIOTIC ALERTS — PURE JS DISMISS (NO BOOTSTRAP NEEDED)
+document.addEventListener('DOMContentLoaded', function () {
+    // Find all close buttons inside our custom alerts
+    document.querySelectorAll('.gov-alert-close').forEach(function (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            const alert = this.closest('.gov-patriotic-alert');
+            if (alert) {
+                // Add fade-out animation
+                alert.style.transition = 'all 0.4s ease';
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(-20px)';
+
+                // Remove from DOM after animation
+                setTimeout(function () {
+                    alert.remove();
+                }, 400);
+            }
+        });
+    });
+});
+</script>
 </body>
 </html>

@@ -14,13 +14,13 @@
                             </span>
                             <span class="text">Download</span>
                         </a>
-                        <a href="/dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>?frame=blank" class="btn btn-sm btn-dark btn-icon-split ">
+                        <a href="/matrimonial_dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>?frame=blank" class="btn btn-sm btn-dark btn-icon-split ">
                             <span class="icon text-white-50">
                                 <i class="fas fa-pen"></i>
                             </span>
                             <span class="text">No Frame</span>
                         </a>
-                        <a href="/dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>" class="btn btn-secondary btn-sm btn-icon-split ">
+                        <a href="/matrimonial_dashboard/wedcert/print/<?= $certificate['marriage_cert_id'] ?>" class="btn btn-secondary btn-sm btn-icon-split ">
                             <span class="icon text-white-50">
                                 <i class="fas fa-eye"></i>
                             </span>

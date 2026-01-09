@@ -6,8 +6,8 @@
     <div class="col-12">
         <div class="card shadow-sm">
             <div class="card-header bg-white border-bottom-primary py-3">
-                <h4 class="text-primary mb-0 font-weight-bold">
-                    <i class="fas fa-chart-bar text-primary mr-2"></i>General Herbal Certificate Dashboard - All Branches
+                <h4 class="text-primary mb-0 fw-bold">
+                    <i class="fas fa-chart-bar text-primary me-2"></i>General Herbal Certificate Dashboard - All Branches
                 </h4>
                 <p class="mb-0 text-muted">Overview of all traditional certificates across all branches</p>
             </div>
@@ -16,19 +16,19 @@
                 <!-- Overall Stats Summary -->
                 <div class="row mb-4">
                     <div class="col-md-3 mb-3 mb-md-0">
-                        <div class="card border-left-primary shadow-sm h-100">
+                        <div class="card border-start-primary shadow-sm h-100">
                             <div class="card-body py-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary text-white">
+                                    <div class="me-3">
+                                        <div class="bg-primary rounded-circle p-3 text-white">
                                             <i class="fas fa-certificate"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        <div class="text-xs fw-bold text-primary text-uppercase mb-1">
                                             Total Certificates
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <div class="h5 mb-0 fw-bold text-gray-800">
                                            <?= $dashboardStats['total'] ?? 0 ?>
                                         </div>
                                     </div>
@@ -38,19 +38,19 @@
                     </div>
 
                     <div class="col-md-3 mb-3 mb-md-0">
-                        <div class="card border-left-success shadow-sm h-100">
+                        <div class="card border-start-success shadow-sm h-100">
                             <div class="card-body py-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success text-white">
+                                    <div class="me-3">
+                                        <div class="bg-success rounded-circle p-3 text-white">
                                             <i class="fas fa-check-circle"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        <div class="text-xs fw-bold text-success text-uppercase mb-1">
                                             Completed Certificates
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <div class="h5 mb-0 fw-bold text-gray-800">
                                             <?= $dashboardStats['completed'] ?? 0 ?>
                                         </div>
                                     </div>
@@ -60,19 +60,19 @@
                     </div>
 
                     <div class="col-md-3 mb-3 mb-md-0">
-                        <div class="card border-left-warning shadow-sm h-100">
+                        <div class="card border-start-warning shadow-sm h-100">
                             <div class="card-body py-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning text-white">
+                                    <div class="me-3">
+                                        <div class="bg-warning rounded-circle p-3 text-white">
                                             <i class="fas fa-hourglass-half"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        <div class="text-xs fw-bold text-warning text-uppercase mb-1">
                                             Pending Signatures
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <div class="h5 mb-0 fw-bold text-gray-800">
                                             <?= $dashboardStats['pending'] ?? 0 ?>
                                         </div>
                                     </div>
@@ -82,19 +82,19 @@
                     </div>
 
                     <div class="col-md-3">
-                        <div class="card border-left-info shadow-sm h-100">
+                        <div class="card border-start-info shadow-sm h-100">
                             <div class="card-body py-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-info text-white">
+                                    <div class="me-3">
+                                        <div class="bg-info rounded-circle p-3 text-white">
                                             <i class="fas fa-code-branch"></i>
                                         </div>
                                     </div>
                                     <div>
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        <div class="text-xs fw-bold text-info text-uppercase mb-1">
                                             Total Branches
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <div class="h5 mb-0 fw-bold text-gray-800">
                                             <?= $dashboardStats['totalBranches'] ?? 0 ?>
                                         </div>
                                     </div>
@@ -109,14 +109,14 @@
                     <div class="col-12">
                         <div class="card shadow-sm">
                             <div class="card-header bg-light">
-                                <h6 class="mb-0 font-weight-bold">
-                                    <i class="fas fa-building mr-2"></i>Branch Performance
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="fas fa-building me-2"></i>Branch Performance
                                 </h6>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover">
-                                        <thead class="bg-light">
+                                        <thead class="table-light">
                                             <tr>
                                                 <th>Branch Name</th>
                                                 <th>Total Certificates</th>
@@ -130,13 +130,13 @@
                                             <?php if(!empty($branchStats)): ?>
                                                 <?php foreach($branchStats as $branchName => $stats): ?>
                                                 <tr>
-                                                    <td class="font-weight-bold"><?= $branchName ?></td>
+                                                    <td class="fw-bold"><?= $branchName ?></td>
                                                     <td><?= $stats['total'] ?></td>
                                                     <td>
-                                                        <span class="badge badge-success"><?= $stats['completed'] ?></span>
+                                                        <span class="badge bg-success"><?= $stats['completed'] ?></span>
                                                     </td>
                                                     <td>
-                                                        <span class="badge badge-warning"><?= $stats['pending'] ?></span>
+                                                        <span class="badge bg-warning"><?= $stats['pending'] ?></span>
                                                     </td>
                                                     <td>
                                                         <div class="progress" style="height: 20px;">
@@ -153,7 +153,7 @@
                                                     <td>
                                                         <a href="/dashboard/nativecert?branch=<?= $stats['branch_id'] ?>" 
                                                            class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-eye mr-1"></i> View Branch
+                                                            <i class="fas fa-eye me-1"></i> View Branch
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -175,21 +175,21 @@
 
                 <!-- Tabs Navigation -->
                 <ul class="nav nav-pills mb-4" id="certificateTabs" role="tablist">
-                    <li class="nav-item mr-2">
-                        <a class="nav-link active py-2 px-3" id="uncompleted-tab" data-toggle="tab" href="#uncompleted" role="tab" aria-controls="uncompleted" aria-selected="true">
-                            <i class="fas fa-hourglass-half mr-2"></i> Pending Certificates (All Branches)
-                            <span class="badge badge-warning ml-2"><?= count($incompleteCertificates ?? []) ?></span>
+                    <li class="nav-item me-2">
+                        <a class="nav-link active py-2 px-3" id="uncompleted-tab" data-bs-toggle="tab" href="#uncompleted" role="tab">
+                            <i class="fas fa-hourglass-half me-2"></i> Pending Certificates (All Branches)
+                            <span class="badge bg-warning ms-2"><?= count($incompleteCertificates ?? []) ?></span>
                         </a>
                     </li>
-                    <li class="nav-item mr-2">
-                        <a class="nav-link py-2 px-3" id="completed-tab" data-toggle="tab" href="#completed" role="tab" aria-controls="completed" aria-selected="false">
-                            <i class="fas fa-check mr-2"></i> Completed Certificates
-                            <span class="badge badge-success ml-2"><?= $dashboardStats['completed'] ?? 0 ?></span>
+                    <li class="nav-item me-2">
+                        <a class="nav-link py-2 px-3" id="completed-tab" data-bs-toggle="tab" href="#completed" role="tab">
+                            <i class="fas fa-check me-2"></i> Completed Certificates
+                            <span class="badge bg-success ms-2"><?= $dashboardStats['completed'] ?? 0 ?></span>
                         </a>
                     </li>
-                    <li class="nav-item mr-2">
-                        <a class="nav-link py-2 px-3" id="county-tab" data-toggle="tab" href="#county" role="tab" aria-controls="county" aria-selected="false">
-                            <i class="fas fa-map-marker-alt mr-2"></i> County Distribution
+                    <li class="nav-item me-2">
+                        <a class="nav-link py-2 px-3" id="county-tab" data-bs-toggle="tab" href="#county" role="tab">
+                            <i class="fas fa-map-marker-alt me-2"></i> County Distribution
                         </a>
                     </li>
                 </ul>
@@ -197,10 +197,10 @@
                 <!-- Tab Content -->
                 <div class="tab-content" id="certificateTabsContent">
                     <!-- Pending Certificates Tab -->
-                    <div class="tab-pane fade show active" id="uncompleted" role="tabpanel" aria-labelledby="uncompleted-tab">
+                    <div class="tab-pane fade show active" id="uncompleted" role="tabpanel">
                         <div class="table-responsive">
-                            <table class="table table-bordered datatable2 table-hover">
-                                <thead class="bg-light">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
                                     <tr>
                                         <th>Serial No</th>
                                         <th>Holder Name</th>
@@ -216,11 +216,11 @@
                                         <?php foreach($incompleteCertificates as $cert): ?>
                                         <tr>
                                             <td>
-                                                <span class="font-weight-bold text-primary"><?= $cert['tradCertSn'] ?? 'N/A' ?></span>
+                                                <span class="fw-bold text-primary"><?= $cert['tradCertSn'] ?? 'N/A' ?></span>
                                             </td>
                                             <td><?= $cert['tradCertHolderName'] ?? 'N/A' ?></td>
                                             <td>
-                                                <span class="badge badge-secondary"><?= $cert['branchName'] ?? 'Unknown' ?></span>
+                                                <span class="badge bg-secondary"><?= $cert['branchName'] ?? 'Unknown' ?></span>
                                             </td>
                                             <td><?= $cert['tradCertHolderOperationType'] ?? 'N/A' ?></td>
                                             <td><?= !empty($cert['tradCertLastUpdatedAt']) ? date('M d, Y', strtotime($cert['tradCertLastUpdatedAt'])) : 'N/A' ?></td>
@@ -231,14 +231,11 @@
                                                 if(empty($cert['tradCertSignatoryB'])) $missing[] = 'B';
                                                 if(empty($cert['tradCertSignatoryC'])) $missing[] = 'C';
                                                 ?>
-                                                <span class="badge badge-danger"><?= implode(', ', $missing) ?></span>
+                                                <span class="badge bg-danger"><?= implode(', ', $missing) ?></span>
                                             </td>
                                             <td>
-                                                <a href="/dashboard/nativecert/view/<?= $cert['tradCertId'] ?>" class="btn btn-info btn-icon-split btn-sm">
-                                                    <span class="icon text-white-50">
-                                                        <i class="fas fa-eye"></i>
-                                                    </span>
-                                                    <span class="text">View</span>
+                                                <a href="/dashboard/nativecert/view/<?= $cert['tradCertId'] ?>" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-eye me-1"></i>View
                                                 </a>
                                             </td>
                                         </tr>
@@ -259,10 +256,10 @@
                     </div>
                     
                     <!-- Completed Certificates Tab -->
-                    <div class="tab-pane fade" id="completed" role="tabpanel" aria-labelledby="completed-tab">
+                    <div class="tab-pane fade" id="completed" role="tabpanel">
                         <div class="table-responsive">
-                            <table class="table datatable table-bordered table-hover">
-                                <thead class="bg-light">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
                                     <tr>
                                         <th>Serial No</th>
                                         <th>Holder Name</th>
@@ -279,23 +276,20 @@
                                             <?php if(!empty($cert['tradCertSignatoryA']) && !empty($cert['tradCertSignatoryB']) && !empty($cert['tradCertSignatoryC'])): ?>
                                             <tr>
                                                 <td>
-                                                    <span class="font-weight-bold text-success"><?= $cert['tradCertSn'] ?? 'N/A' ?></span>
+                                                    <span class="fw-bold text-success"><?= $cert['tradCertSn'] ?? 'N/A' ?></span>
                                                 </td>
                                                 <td><?= $cert['tradCertHolderName'] ?? 'N/A' ?></td>
                                                 <td>
-                                                    <span class="badge badge-light"><?= $cert['branchName'] ?? 'Unknown' ?></span>
+                                                    <span class="badge bg-light text-dark"><?= $cert['branchName'] ?? 'Unknown' ?></span>
                                                 </td>
                                                 <td>
-                                                    <span class="badge badge-info"><?= $cert['tradCertHoldercounty'] ?? 'N/A' ?></span>
+                                                    <span class="badge bg-info"><?= $cert['tradCertHoldercounty'] ?? 'N/A' ?></span>
                                                 </td>
                                                 <td><?= $cert['tradCertHolderOperationType'] ?? 'N/A' ?></td>
                                                 <td><?= !empty($cert['tradCertDateIssued']) ? date('M d, Y', strtotime($cert['tradCertDateIssued'])) : 'Not Issued' ?></td>
                                                 <td>
-                                                    <a href="/dashboard/nativecert/view/<?= $cert['tradCertId'] ?>" class="btn btn-info btn-icon-split btn-sm">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-eye"></i>
-                                                        </span>
-                                                        <span class="text">View</span>
+                                                    <a href="/dashboard/nativecert/view/<?= $cert['tradCertId'] ?>" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-eye me-1"></i>View
                                                     </a>
                                                 </td>
                                             </tr>
@@ -317,17 +311,17 @@
                     </div>
 
                     <!-- County Distribution Tab -->
-                    <div class="tab-pane fade" id="county" role="tabpanel" aria-labelledby="county-tab">
+                    <div class="tab-pane fade" id="county" role="tabpanel">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card shadow-sm">
                                     <div class="card-header bg-light">
-                                        <h6 class="mb-0 font-weight-bold">Certificates by County</h6>
+                                        <h6 class="mb-0 fw-bold">Certificates by County</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table table-bordered">
-                                                <thead class="bg-light">
+                                                <thead class="table-light">
                                                     <tr>
                                                         <th>County</th>
                                                         <th>Number of Certificates</th>
@@ -339,7 +333,7 @@
                                                         <?php $total = $dashboardStats['total']; ?>
                                                         <?php foreach($countyStats as $county => $count): ?>
                                                         <tr>
-                                                            <td class="font-weight-bold"><?= $county ?></td>
+                                                            <td class="fw-bold"><?= $county ?></td>
                                                             <td><?= $count ?></td>
                                                             <td>
                                                                 <?= $total > 0 ? round(($count / $total) * 100, 2) : 0 ?>%
@@ -362,12 +356,12 @@
                             <div class="col-md-6">
                                 <div class="card shadow-sm">
                                     <div class="card-header bg-light">
-                                        <h6 class="mb-0 font-weight-bold">Certificates by Branch</h6>
+                                        <h6 class="mb-0 fw-bold">Certificates by Branch</h6>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table class="table table-bordered">
-                                                <thead class="bg-light">
+                                                <thead class="table-light">
                                                     <tr>
                                                         <th>Branch</th>
                                                         <th>Number of Certificates</th>
@@ -379,7 +373,7 @@
                                                         <?php $total = $dashboardStats['total']; ?>
                                                         <?php foreach($branchWiseStats as $branch => $count): ?>
                                                         <tr>
-                                                            <td class="font-weight-bold"><?= $branch ?></td>
+                                                            <td class="fw-bold"><?= $branch ?></td>
                                                             <td><?= $count ?></td>
                                                             <td>
                                                                 <?= $total > 0 ? round(($count / $total) * 100, 2) : 0 ?>%
@@ -406,32 +400,5 @@
         </div>
     </div>
 </div>
-
-
-<style>
-.icon-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-.btn-icon-split .icon {
-    padding: 0.375rem 0.75rem;
-    display: inline-block;
-}
-
-.badge-pill {
-    padding-right: 0.6em;
-    padding-left: 0.6em;
-    border-radius: 10rem;
-}
-
-.progress {
-    border-radius: 10px;
-}
-</style>
 
 <?=$this->endSection()?>

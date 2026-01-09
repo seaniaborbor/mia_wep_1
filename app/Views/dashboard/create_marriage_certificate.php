@@ -1,97 +1,158 @@
-<?php $this->extend('dashboard/partials/layout')?>
+<?php $this->extend('dashboard/partials/layout') ?>
+<?= $this->section('main') ?>
 
-<?=$this->section('main')?>
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header"><h4 class="text-primary">Create a Wedding Certificate</h4></div>
-            <div class="card-body">
-                <?php include('partials/forms/create_marriage_certificate.php')?>
-            </div>
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Create Marriage Certificate</h1>
+            <p class="mb-0 text-gray-600">Register a new traditional marriage certificate</p>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card shadow-sm border-bottom-danger mb-4">
-    <div class="card-header bg-danger text-white">
-        <h5 class="mb-0"><i class="fas fa-info-circle"></i> Data Entry Clerk – Guidelines & Procedures</h5>
-    </div>
-    <div class="card-body p-0">
-       <ul class="list-group list-group-flush">
-    <!-- Step-by-step process -->
-    <li class="list-group-item">
-        <i class="fas fa-file-alt text-primary mr-2"></i>
-        <strong>Verify Source Documents:</strong> Ensure all physical forms are signed and complete before beginning data entry.
-    </li>
-    <li class="list-group-item">
-        <i class="fas fa-folder-open text-success mr-2"></i>
-        <strong>Organize Files:</strong> Arrange all scanned passport photos and certificates in clearly named folders (e.g. <code>Groom_Photo1.jpg</code>, <code>Bride_Photo2.jpg</code>).
-    </li>
-    <li class="list-group-item">
-        <i class="fas fa-list-ol text-info mr-2"></i>
-        <strong>Start Entry by Section:</strong> Follow the form step-by-step: Groom Info → Bride Info → Photos → Marriage Details → Certification.
-    </li>
-    <li class="list-group-item">
-        <i class="fas fa-check-double text-warning mr-2"></i>
-        <strong>Match Documents:</strong> Carefully match passport photos to the correct individuals before uploading.
-    </li>
-    <li class="list-group-item">
-        <i class="fas fa-font text-secondary mr-2"></i>
-        <strong>Use Official Format:</strong> Capitalize names properly and use YYYY-MM-DD date format.
 
-    </li>
+    <div class="row">
 
-    <!-- Policy & procedures -->
-    <li class="list-group-item bg-light text-primary font-weight-bold">
-        <i class="fas fa-gavel mr-2"></i> Policies & Procedures
-    </li>
-    <li class="list-group-item">
-        <i class="fas fa-user-secret text-danger mr-2"></i>
-        <strong>Confidentiality:</strong> Do not share or expose certificate data, photos, or identifying info to unauthorized persons.
-    </li>
-    <li class="list-group-item">
-        <i class="fas fa-search text-dark mr-2"></i>
-        <strong>Final Review:</strong> Double-check spelling, numbers, and uploaded files before final submission.
-    </li>
-</ul>
+        <!-- Main Form -->
+        <div class="col-lg-8 mb-4">
+            <div class="card-body ">
+                <?php include('partials/forms/create_marriage_certificate.php') ?>
+            </div>
+        </div>
+
+        <!-- Guidelines Sidebar -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header py-3 bg-danger">
+                    <h6 class="m-0 font-weight-bold text-white">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Data Entry Guidelines
+                    </h6>
+                </div>
+                <div class="card-body">
+
+                    <!-- Guideline Items -->
+                    <div class="mb-4">
+
+                        <div class="d-flex align-items-start mb-3 p-3 bg-light rounded">
+                            <div class="mr-3 text-primary">
+                                <i class="fas fa-file-alt fa-lg"></i>
+                            </div>
+                            <div>
+                                <strong class="text-gray-800">Verify Source Documents</strong>
+                                <p class="mb-0 small text-muted">Ensure all physical forms are signed and complete before entry.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start mb-3 p-3 bg-light rounded">
+                            <div class="mr-3 text-success">
+                                <i class="fas fa-folder-open fa-lg"></i>
+                            </div>
+                            <div>
+                                <strong class="text-gray-800">Organize Files</strong>
+                                <p class="mb-0 small text-muted">Name photos: <code>Groom_Name.jpg</code>, <code>Bride_Name.jpg</code></p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start mb-3 p-3 bg-light rounded">
+                            <div class="mr-3 text-info">
+                                <i class="fas fa-list-ol fa-lg"></i>
+                            </div>
+                            <div>
+                                <strong class="text-gray-800">Enter Data Step-by-Step</strong>
+                                <p class="mb-0 small text-muted">Groom → Bride → Photos → Details → Witnesses → Certification</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start mb-3 p-3 bg-light rounded">
+                            <div class="mr-3 text-warning">
+                                <i class="fas fa-portrait fa-lg"></i>
+                            </div>
+                            <div>
+                                <strong class="text-gray-800">Match Passport Photos Correctly</strong>
+                                <p class="mb-0 small text-muted">Double-check names before uploading groom/bride photos.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start mb-3 p-3 bg-light rounded">
+                            <div class="mr-3 text-secondary">
+                                <i class="fas fa-calendar-alt fa-lg"></i>
+                            </div>
+                            <div>
+                                <strong class="text-gray-800">Use Correct Format</strong>
+                                <p class="mb-0 small text-muted">Names: Title Case | Dates: YYYY-MM-DD | Currency: USD only</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <!-- Policies Section -->
+                    <h6 class="font-weight-bold text-primary mb-3">
+                        <i class="fas fa-gavel mr-2"></i>Policies & Procedures
+                    </h6>
+
+                    <div class="d-flex align-items-start mb-3 p-3 bg-light rounded">
+                        <div class="mr-3 text-danger">
+                            <i class="fas fa-user-secret fa-lg"></i>
+                        </div>
+                        <div>
+                            <strong class="text-gray-800">Confidentiality is Mandatory</strong>
+                            <p class="mb-0 small text-muted">Never share personal data, photos, or certificates with unauthorized persons.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start p-3 bg-light rounded">
+                        <div class="mr-3 text-dark">
+                            <i class="fas fa-search-plus fa-lg"></i>
+                        </div>
+                        <div>
+                            <strong class="text-gray-800">Final Review Before Submit</strong>
+                            <p class="mb-0 small text-muted">Check spelling, dates, photos, and cost fields twice.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
 
-    </div>
-</div>
+<!-- Error Modal (if validation fails) -->
 <?php if (isset($data['errors']) && !empty($data['errors'])): ?>
-<!-- Error Modal -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content border-danger">
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="errorModalLabel"><i class="fas fa-exclamation-triangle"></i> Form Errors</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Form Submission Errors
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <ul class="mb-0 pl-3">
+                <p>Please correct the following issues:</p>
+                <ul class="mb-0">
                     <?php foreach ($data['errors'] as $error): ?>
-                        <li><?= esc($error) ?></li>
+                        <li class="text-danger"><i class="fas fa-times-circle mr-1"></i> <?= esc($error) ?></li>
                     <?php endforeach; ?>
                 </ul>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var errorModal = document.getElementById('errorModal');
-        if (errorModal) {
-            var modal = new bootstrap.Modal(errorModal);
-            modal.show();
-        }
+    $(document).ready(function() {
+        $('#errorModal').modal('show');
     });
 </script>
 <?php endif; ?>
 
-<?=$this->endSection()?>
+<?= $this->endSection() ?>

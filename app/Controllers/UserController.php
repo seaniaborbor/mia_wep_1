@@ -7,7 +7,7 @@ use App\Models\BranchModel;
 use App\Models\UsersModel;
 use App\Models\MarriageCertificateModel;
 use App\Models\DivorceCertificateModel;
-
+use Config\Services;
 
 class UserController extends BaseController
 {
@@ -22,7 +22,6 @@ class UserController extends BaseController
 
     public function index()
     {
-
         $data['title'] = 'Users List';
         $data['passLink'] = 'users';
 
@@ -48,9 +47,6 @@ class UserController extends BaseController
 
          $data['breanchDetail'] = $this->branchModel->find($branchId);
          $data['allBranches'] = $this->branchModel->findAll();
-
-
-
 
         return view('dashboard/users_list', $data);
     }
@@ -138,13 +134,12 @@ class UserController extends BaseController
                 break;
         }
 
-
         // only the user whose profile is this can access
         // Otherwise, only any user from branch 1 can access
         if (session()->get('userData')['userBreanch'] == 1 || session()->get('userData')['userBreanch'] ==  $user['userBreanch']) {
             return view('dashboard/view_user', $data);
         } else {
-            return redirect()->back()->with('error', 'The request you made violates the policy of using this plartform. Please stop');
+            return redirect()->back()->with('error', 'The request you made violates the policy of using this platform. Please stop');
             exit();
         }
     }
@@ -157,15 +152,17 @@ class UserController extends BaseController
 
         $userData = session()->get('userData');
 
+        // Check permissions
         if ($userData['userBreanch'] != 1) {
             return redirect()->back()->with('error', 'Access denied: Only users from the head office can create users.');
-            exit();
         }
 
-        if (!session()->has('userData') || session()->get('userData')['userAccountType'] !== 'SIGNC') {
+        if ($userData['userAccountType'] !== 'SIGNC') {
             return redirect()->back()->with('error', 'Only the assistant minister for legal affair can create user accounts.');
-            exit();
         }
+
+        // Define signatory roles that require signature
+        $signatoryRoles = ['SIGNA', 'SIGNB', 'SIGNC', 'tradCertSignatoryA', 'tradCertSignatoryB', 'tradCertSignatoryC'];
 
         $validationRules = [
             'userFullName' => [
@@ -188,11 +185,12 @@ class UserController extends BaseController
             ],
             'userPhone' => [
                 'label' => 'Phone Number',
-                'rules' => 'required|min_length[10]|max_length[15]',
+                'rules' => 'required|min_length[10]|max_length[15]|is_unique[login_users.userPhone]',
                 'errors' => [
                     'required' => 'Phone number is required.',
                     'min_length' => 'Phone number must be at least 10 digits.',
-                    'max_length' => 'Phone number cannot exceed 15 digits.'
+                    'max_length' => 'Phone number cannot exceed 15 digits.',
+                    'is_unique' => 'Phone number already used by another staff.'
                 ]
             ],
             'userPosition' => [
@@ -202,6 +200,14 @@ class UserController extends BaseController
                     'required' => 'Position is required.',
                     'min_length' => 'Position must be at least 3 characters.',
                     'max_length' => 'Position cannot exceed 100 characters.'
+                ]
+            ],
+            'userDepartment' => [
+                'label' => 'Department',
+                'rules' => 'required|in_list[Registrar,Matrimonial,Cultural,System-Admin]',
+                'errors' => [
+                    'required' => 'Department selection is required.',
+                    'in_list' => 'Please select a valid department.'
                 ]
             ],
             'userPassword' => [
@@ -221,7 +227,7 @@ class UserController extends BaseController
             ],
             'userAccountType' => [
                 'label' => 'Account Type',
-                'rules' => 'required|in_list[SIGNA,SIGNB,SIGNC,ENTRY,tradCertSignatoryA,tradCertSignatoryB,tradCertSignatoryC,tradCertEntryClerk]',
+                'rules' => 'required|in_list[SIGNA,SIGNB,SIGNC,ENTRY,ADMIN,Registrar,tradCertSignatoryA,tradCertSignatoryB,tradCertSignatoryC,tradCertEntryClerk]',
                 'errors' => [
                     'required' => 'Account type is required.',
                     'in_list' => 'Choose a valid account type.'
@@ -236,22 +242,13 @@ class UserController extends BaseController
                     'max_size' => 'Profile picture cannot exceed 2MB.'
                 ]
             ],
-            'userSignature' => [
-                'label' => 'Signature',
-                'rules' => 'uploaded[userSignature]|is_image[userSignature]|max_size[userSignature,2048]',
-                'errors' => [
-                    'uploaded' => 'Signature image is required.',
-                    'is_image' => 'Signature must be an image.',
-                    'max_size' => 'Signature cannot exceed 2MB.'
-                ]
-            ],
             'userApplicationFile' => [
                 'label' => 'Application File',
-                'rules' => 'uploaded[userApplicationFile]|ext_in[userApplicationFile,pdf]|max_size[userApplicationFile,4096]',
+                'rules' => 'uploaded[userApplicationFile]|ext_in[userApplicationFile,pdf]|max_size[userApplicationFile,7096]',
                 'errors' => [
                     'uploaded' => 'Application file is required.',
                     'ext_in' => 'Application must be a PDF file.',
-                    'max_size' => 'Application file cannot exceed 4MB.'
+                    'max_size' => 'Application file cannot exceed 7MB.'
                 ]
             ],
             'userAccountActiveStatus' => [
@@ -264,70 +261,127 @@ class UserController extends BaseController
             ],
         ];
 
+        // Conditionally add signature validation for signatory roles
+        $userAccountType = $this->request->getPost('userAccountType');
+        if (in_array($userAccountType, $signatoryRoles)) {
+            $validationRules['userSignature'] = [
+                'label' => 'Signature',
+                'rules' => 'uploaded[userSignature]|is_image[userSignature]|max_size[userSignature,2048]',
+                'errors' => [
+                    'uploaded' => 'Signature is required for signatory roles.',
+                    'is_image' => 'Signature must be an image.',
+                    'max_size' => 'Signature cannot exceed 2MB.'
+                ]
+            ];
+        }
+
         if ($this->request->getMethod() === 'post') {
             if (!$this->validate($validationRules)) {
                 $data['validation'] = $this->validator;
             } else {
-                // Handle file uploads
+                $newUser = [
+                    'userFullName' => $this->request->getPost('userFullName'),
+                    'userEmail' => $this->request->getPost('userEmail'),
+                    'userPhone' => $this->request->getPost('userPhone'),
+                    'userPosition' => $this->request->getPost('userPosition'),
+                    'userDepartment' => $this->request->getPost('userDepartment'),
+                    'userPassword' => password_hash($this->request->getPost('userPassword'), PASSWORD_DEFAULT),
+                    'userBreanch' => $this->request->getPost('userBreanch'),
+                    'userAccountType' => $this->request->getPost('userAccountType'),
+                    'userAccountActiveStatus' => $this->request->getPost('userAccountActiveStatus'),
+                    'userDateCreated' => date('Y-m-d H:i:s'),
+                    'userCreatedBy' => session()->get('userData')['userId'] ?? 'System',
+                    'userAccountVerified' => 0,
+                ];
+
+                // Handle profile picture
                 $picture = $this->request->getFile('userPicture');
+                if ($picture->isValid()) {
+                    $pictureName = $picture->getRandomName();
+                    $picture->move('uploads/users/pictures/', $pictureName);
+                    $newUser['userPicture'] = $pictureName;
+                }
+
+                // Handle signature if uploaded
                 $signature = $this->request->getFile('userSignature');
+                if ($signature->isValid()) {
+                    $signatureName = $signature->getRandomName();
+                    $signature->move('uploads/users/signatures/', $signatureName);
+                    $newUser['userSignature'] = $signatureName;
+                }
+
+                // Handle application file
                 $application = $this->request->getFile('userApplicationFile');
-
-                $pictureName = $picture->getRandomName();
-                $signatureName = $signature->getRandomName();
-                $applicationName = $application->getRandomName();
-
-                $picture->move('uploads/users/pictures/', $pictureName);
-                $signature->move('uploads/users/signatures/', $signatureName);
-                $application->move('uploads/users/applications/', $applicationName);
+                if ($application->isValid()) {
+                    $applicationName = $application->getRandomName();
+                    $application->move('uploads/users/applications/', $applicationName);
+                    $newUser['userApplicationFile'] = $applicationName;
+                }
 
                 // Check if an active user with the same branch and account type exists
                 $existingUser = $this->userModel
-                    ->where('userBreanch', $this->request->getPost('userBreanch'))
-                    ->where('userAccountType', $this->request->getPost('userAccountType'))
                     ->where('userAccountActiveStatus', 1)
+                    ->where('userBreanch', $newUser['userBreanch'])
+                    ->where('userAccountType', $newUser['userAccountType'])
                     ->first();
 
                 if ($existingUser) {
                     return redirect()->back()->with('error', 'An active user with this account type already exists in the selected branch.');
                 }
 
-                $userData = session()->get('userData');
-                $postBranch = $this->request->getPost('userBreanch');
+                $userId = $this->userModel->insert($newUser);
 
-                if (
-                    !(
-                        ($userData['userBreanch'] == 1 && $userData['userAccountType'] == "SIGNC")
-                    )
-                ) {
-                    return redirect()->back()->with('error', 'You dont have the permission to create an account');
-                    exit();
-                }
+                if ($userId) {
+                    // Generate verification code and send email
+                    $verificationCode = $this->userModel->generateVerificationCode();
+                    $this->userModel->update($userId, ['userAccountVerificationCode' => $verificationCode]);
+                    $user = $this->userModel->find($userId);
+                    $emailSent = $this->sendVerificationEmail($user);
 
-                // Save user
-                if ($this->userModel->save([
-                    'userFullName' => $this->request->getPost('userFullName'),
-                    'userEmail' => $this->request->getPost('userEmail'),
-                    'userPhone' => $this->request->getPost('userPhone'),
-                    'userPosition' => $this->request->getPost('userPosition'),
-                    'userPassword' => password_hash($this->request->getPost('userPassword'), PASSWORD_DEFAULT),
-                    'userBreanch' => $this->request->getPost('userBreanch'),
-                    'userAccountType' => $this->request->getPost('userAccountType'),
-                    'userPicture' => $pictureName,
-                    'userSignature' => $signatureName,
-                    'userApplicationFile' => $applicationName,
-                    'userAccountActiveStatus' => $this->request->getPost('userAccountActiveStatus'),
-                    'userCreatedBy' => session()->get('userData')['userId'] ?? 'System',
-                    'userDateCreated' => date('Y-m-d H:i:s')
-                ])) {
-                    return redirect()->back()->with('success', 'User account created successfully.');
+                    if ($emailSent) {
+                        return redirect()->back()->with('success', 'User created successfully. Verification email sent.');
+                    } else {
+                        return redirect()->back()->with('warning', 'User created, but verification email failed to send.');
+                    }
                 } else {
-                    return redirect()->back()->with('error', 'User failed to create');
+                    return redirect()->back()->with('error', 'Failed to create user.');
                 }
             }
         }
 
         return view('dashboard/create_user', $data);
+    }
+
+    // Resend Verification Email
+    public function resendVerification()
+    {
+        $email = $this->request->getPost('email');
+        $user  = $this->userModel->where('userEmail', $email)->first();
+
+        if ($user && !$user['userAccountVerified']) {
+            // Generate new verification code
+            $newVerificationCode = $this->userModel->generateVerificationCode();
+
+            // Update user with new verification code
+            $this->userModel->update($user['userId'], [
+                'userAccountVerificationCode' => $newVerificationCode
+            ]);
+
+            // Send verification email
+            $emailSent = $this->sendVerificationEmail([
+                'userEmail' => $user['userEmail'],
+                'userFullName' => $user['userFullName'],
+                'userAccountVerificationCode' => $newVerificationCode
+            ]);
+
+            if ($emailSent) {
+                return redirect()->back()->with('success', 'Verification email has been resent successfully.');
+            } else {
+                return redirect()->back()->with('warning', 'Verification email failed to send. Please try again or contact support.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'User not found or already verified.');
     }
 
     public function edit($user_id)
@@ -359,6 +413,9 @@ class UserController extends BaseController
             return redirect()->back()->with('error', 'You do not have permission to edit this user.');
         }
 
+        // Define signatory roles that require signature
+        $signatoryRoles = ['SIGNA', 'SIGNB', 'SIGNC', 'tradCertSignatoryA', 'tradCertSignatoryB', 'tradCertSignatoryC'];
+
         $validationRules = [
             'userFullName' => [
                 'label' => 'Full Name',
@@ -387,6 +444,29 @@ class UserController extends BaseController
                     'max_length' => 'Position cannot exceed 100 characters.'
                 ]
             ],
+            'userDepartment' => [
+                'label' => 'Department',
+                'rules' => 'required|in_list[Registrar,Matrimonial,Cultural,System-Admin]',
+                'errors' => [
+                    'required' => 'Department selection is required.',
+                    'in_list' => 'Please select a valid department.'
+                ]
+            ],
+            'userBreanch' => [
+                'label' => 'Branch',
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Branch selection is required.'
+                ]
+            ],
+            'userAccountType' => [
+                'label' => 'Account Type',
+                'rules' => 'required|in_list[SIGNA,SIGNB,SIGNC,ENTRY,ADMIN,Registrar,tradCertSignatoryA,tradCertSignatoryB,tradCertSignatoryC,tradCertEntryClerk]',
+                'errors' => [
+                    'required' => 'Account type is required.',
+                    'in_list' => 'Choose a valid account type.'
+                ]
+            ],
         ];
 
         if ($this->request->getMethod() === 'post') {
@@ -412,16 +492,31 @@ class UserController extends BaseController
                     ]
                 ];
             }
+
+            // Handle signature validation based on account type
+            $userAccountType = $this->request->getPost('userAccountType');
             if ($this->request->getFile('userSignature')->isValid()) {
-                $validationRules['userSignature'] = [
-                    'label' => 'Signature',
-                    'rules' => 'is_image[userSignature]|max_size[userSignature,2048]',
-                    'errors' => [
-                        'is_image' => 'Signature must be an image.',
-                        'max_size' => 'Signature cannot exceed 2MB.'
-                    ]
-                ];
+                if (in_array($userAccountType, $signatoryRoles)) {
+                    $validationRules['userSignature'] = [
+                        'label' => 'Signature',
+                        'rules' => 'is_image[userSignature]|max_size[userSignature,2048]',
+                        'errors' => [
+                            'is_image' => 'Signature must be an image.',
+                            'max_size' => 'Signature cannot exceed 2MB.'
+                        ]
+                    ];
+                } else {
+                    $validationRules['userSignature'] = [
+                        'label' => 'Signature',
+                        'rules' => 'is_image[userSignature]|max_size[userSignature,2048]',
+                        'errors' => [
+                            'is_image' => 'Signature must be an image.',
+                            'max_size' => 'Signature cannot exceed 2MB.'
+                        ]
+                    ];
+                }
             }
+
             if ($this->request->getFile('userApplicationFile')->isValid()) {
                 $validationRules['userApplicationFile'] = [
                     'label' => 'Application File',
@@ -440,7 +535,11 @@ class UserController extends BaseController
                     'userFullName' => $this->request->getPost('userFullName'),
                     'userPhone' => $this->request->getPost('userPhone'),
                     'userPosition' => $this->request->getPost('userPosition'),
+                    'userDepartment' => $this->request->getPost('userDepartment'),
+                    'userBreanch' => $this->request->getPost('userBreanch'),
+                    'userAccountType' => $this->request->getPost('userAccountType'),
                     'userAccountLastModifiedBy' => session()->get('userData')['userId'] ?? 'System',
+                    'userAccountLastModifiedDate' => date('Y-m-d H:i:s'),
                 ];
 
                 if ($this->request->getPost('userPassword')) {
@@ -469,14 +568,16 @@ class UserController extends BaseController
                     $updateData['userApplicationFile'] = $applicationName;
                 }
 
-                // Check if an active user with the same branch and account type exists
+                // Check if an active user with the same branch and account type exists (excluding current user)
                 $existingUser = $this->userModel
                     ->where('userAccountActiveStatus', 1)
-                    ->where('login_users.userId', $user_id)
+                    ->where('userBreanch', $this->request->getPost('userBreanch'))
+                    ->where('userAccountType', $this->request->getPost('userAccountType'))
+                    ->where('login_users.userId !=', $user_id)
                     ->first();
 
-                if (!$existingUser) {
-                    return redirect()->back()->with('error', 'An account once blocked cannot be activated or modified');
+                if ($existingUser) {
+                    return redirect()->back()->with('error', 'An active user with this account type already exists in the selected branch.');
                 }
 
                 if ($this->userModel->update($user_id, $updateData)) {
@@ -529,5 +630,25 @@ class UserController extends BaseController
         } else {
             return redirect()->back()->with('error', 'Failed to update user account status.');
         }
+    }
+
+    // ===================== PRIVATE METHODS =====================
+
+    private function sendVerificationEmail($user)
+    {
+        $email = Services::email();
+        $link  = base_url("verify/{$user['userAccountVerificationCode']}");
+
+        $email->setTo($user['userEmail']);
+        $email->setSubject('Verify Your Account - Ministry of Internal Affairs');
+        $email->setMessage("
+            Dear {$user['userFullName']},<br><br>
+            Please verify your email by clicking the link below:<br><br>
+            <a href='{$link}'>{$link}</a><br><br>
+            This link expires in 24 hours.<br><br>
+            Best regards,<br>Ministry of Internal Affairs - Liberia
+        ");
+
+        return $email->send();
     }
 }

@@ -1,5 +1,5 @@
 <!-- marriage_edit_form.php -->
-<form action="/dashboard/wedcert/edit/<?=$certificate['marriage_cert_id']?>" method="post" enctype="multipart/form-data" id="marriageForm">
+<form action="/matrimonial_dashboard/wedcert/edit/<?=$certificate['marriage_cert_id']?>" method="post" enctype="multipart/form-data" id="marriageForm">
     <?= csrf_field() ?>
     <input type="hidden" name="_method" value="post">
 
