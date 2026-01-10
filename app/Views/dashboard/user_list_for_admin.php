@@ -17,7 +17,7 @@
         <div class="d-flex align-items-center gap-3">
 
             <!-- Create New User Button (Only HQ) -->
-                <a href="/dashboard/users/create" class="btn btn-success btn-sm">
+                <a href="/system_admin/users/create" class="btn btn-success btn-sm">
                     Create New User
                 </a>
 
@@ -30,12 +30,12 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="branchDropdown">
                     <?php foreach ($allBranches as $branch): ?>
                         <a class="dropdown-item  ?>"
-                           href="/dashboard/admin/user_list?branch=<?= $branch['branchId'] ?>">
+                           href="/system_admin/users?branch=<?= $branch['branchId'] ?>">
                             <?= esc($branch['branchName']) ?>
                         </a>
                     <?php endforeach; ?>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-info" href="/dashboard/admin/user_list">
+                    <a class="dropdown-item text-info" href="/system_admin/users">
                         View All Branches Users
                     </a>
                 </div>

@@ -129,11 +129,6 @@ class BranchController extends Controller
 
     public function create()
     {
-        // Strict access control
-        if (session()->get('userData')['userBreanch'] != 1 || 
-            session()->get('userData')['userAccountType'] != "SIGNC") {
-            return redirect()->back()->with("error", "You don't have permission to create branches. Only the head office can.");
-        }
 
         $data['title'] = 'Create Branch';
         $data['passLink'] = 'branches';

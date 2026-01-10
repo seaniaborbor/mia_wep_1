@@ -39,7 +39,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
-                    <form action="/dashboard/users/create" method="post" enctype="multipart/form-data" id="userCreateForm">
+                    <form action="/matrimonial_dashboard/users/create" method="post" enctype="multipart/form-data" id="userCreateForm">
                         <?= csrf_field() ?>
 
                         <div class="row">

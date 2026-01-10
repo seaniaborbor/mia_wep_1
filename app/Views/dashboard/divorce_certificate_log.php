@@ -18,7 +18,7 @@
 
         <div class="d-flex gap-2">
             <!-- Create New Button -->
-            <a href="/dashboard/divorce_cert/create" class="btn btn-danger btn-icon-split">
+            <a href="/matrimonial_dashboard/divorce_cert/create" class="btn btn-danger btn-icon-split">
                 <span class="icon text-white-50">
                     <i class="fas fa-plus"></i>
                 </span>
@@ -45,13 +45,13 @@
                 <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="branchDropdown">
                     <?php foreach ($allBranches as $branch): ?>
                         <a class="dropdown-item <?= ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : '' ?>"
-                           href="/dashboard/divorce_cert?branch=<?= esc($branch['branchId']) ?>">
+                           href="/matrimonial_dashboard/divorce_cert?branch=<?= esc($branch['branchId']) ?>">
                             <i class="fas fa-building fa-sm fa-fw mr-2 text-gray-400"></i>
                             <?= esc($branch['branchName']) ?>
                         </a>
                     <?php endforeach; ?>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/dashboard/general">
+                    <a class="dropdown-item" href="/matrimonial_dashboard/general">
                         <i class="fas fa-flag fa-sm fa-fw mr-2 text-gray-400"></i>
                         Nation's Dashboard
                     </a>
@@ -205,7 +205,7 @@
                                             <td><?= date('M d, Y', strtotime($cert['divorcedateOfDivorce'])) ?></td>
                                             <td><?= date('M d, Y', strtotime($cert['divorceissuanceDate'])) ?></td>
                                             <td class="text-center">
-                                                <a href="/dashboard/divorce_cert/view/<?= esc($cert['divorceCertId']) ?>"
+                                                <a href="/matrimonial_dashboard/divorce_cert/view/<?= esc($cert['divorceCertId']) ?>"
                                                    class="btn btn-warning btn-sm btn-icon-split">
                                                     <span class="icon text-white-50"><i class="fas fa-eye"></i></span>
                                                     <span class="text">View</span>
@@ -250,7 +250,7 @@
                                             <td><?= date('M d, Y', strtotime($cert['divorcedateOfDivorce'])) ?></td>
                                             <td><?= date('M d, Y', strtotime($cert['divorceissuanceDate'])) ?></td>
                                             <td class="text-center">
-                                                <a href="/dashboard/divorce_cert/view/<?= esc($cert['divorceCertId']) ?>"
+                                                <a href="/matrimonial_dashboard/divorce_cert/view/<?= esc($cert['divorceCertId']) ?>"
                                                    class="btn btn-success btn-sm btn-icon-split">
                                                     <span class="icon text-white-50"><i class="fas fa-eye"></i></span>
                                                     <span class="text">View</span>

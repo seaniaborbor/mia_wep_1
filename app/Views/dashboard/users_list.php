@@ -19,29 +19,6 @@
                 <?php endif; ?>
             </h6>
         </div>
-
-        <div>
-            <?php if(session()->get('userData')['userBreanch'] == 1): ?>
-            <a href="/dashboard/users/create" class="btn btn-secondary btn-sm">
-                <i class="fas fa-user-plus mr-2"></i>Create New User
-            </a>
-        <?php endif; ?>
-        <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="branchDropdown">
-                <?php foreach ($allBranches as $branch): ?>
-                    <a class="dropdown-item <?= ($branch['branchId'] == ($branchDetail['branchId'] ?? '')) ? 'active' : '' ?>"
-                       href="/dashboard?branch=<?= esc($branch['branchId']) ?>">
-                        <i class="fas fa-building fa-sm fa-fw mr-2 text-gray-400"></i>
-                        <?= esc($branch['branchName']) ?>
-                    </a>
-                <?php endforeach; ?>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/dashboard/general">
-                    <i class="fas fa-flag fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Nation's Dashboard
-                </a>
-            </div>
-        </div>
-        
     </div>
 
     <!-- Stats Cards -->

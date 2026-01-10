@@ -328,33 +328,6 @@
         <!-- Sidebar -->
         <div class="col-lg-4">
 
-            <!-- Quick Actions -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <?php if ($sameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
-                            <a href="/matrimonial_dashboard/wedcert/edit/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-warning">Edit Certificate</a>
-                            <a href="/matrimonial_dashboard/wedcert/delete/<?= esc($certificate['marriage_cert_id']) ?>" 
-                               class="btn btn-outline-danger" onclick="return confirm('Permanently delete this certificate?');">Delete</a>
-                        <?php endif; ?>
-
-                        <?php if ($sameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
-                            <a href="/matrimonial_dashboard/wedcert/sign/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-success">Sign Certificate</a>
-                        <?php endif; ?>
-
-                        <?php if ($sameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
-                            <a href="/matrimonial_dashboard/wedcert/allow_edit/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-info">Allow Editing</a>
-                        <?php endif; ?>
-
-                        <a href="/matrimonial_dashboard/wedcert/print/<?= esc($certificate['marriage_cert_id']) ?>" class="btn btn-primary">Print Certificate</a>
-                        <a href="/matrimonial_dashboard/wedcert" class="btn btn-secondary">Back to List</a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Status Card -->
             <?php if ($isCompleted): ?>
                 <div class="card bg-success text-white shadow mb-4">

@@ -1,5 +1,5 @@
 <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-start" href="/dashboard/admin">
+            <a class="sidebar-brand d-flex align-items-center justify-content-start" href="/system_admin_dashboard">
                <img src="/dashboard_asset/img/soft_logo.png" alt="" class="img-fluid">
             </a>
 
@@ -8,7 +8,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="/dashboard/admin">
+                <a class="nav-link" href="/system_admin/admin">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
             </li>
@@ -32,8 +32,8 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Actions</h6>
-                    <a class="collapse-item" href="/dashboard/admin/user_list">View Users</a>
-                    <a class="collapse-item" href="/dashboard/users">Create Users</a>
+                    <a class="collapse-item" href="/system_admin/users">View Users</a>
+                    <a class="collapse-item" href="/system_admin/users/create">Create Users</a>
                 </div>
             </div>
         </li>
@@ -57,8 +57,8 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Actions</h6>
-                    <a class="collapse-item" href="/dashboard/branches">View Branches</a>
-                    <a class="collapse-item" href="/dashboard/branches/create">Create Branche</a>
+                    <a class="collapse-item" href="/system_admin/branches">View Branches</a>
+                    <a class="collapse-item" href="/system_admin/branches/create">Create Branche</a>
                 </div>
             </div>
         </li>
@@ -74,8 +74,8 @@
                 data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Actions</h6>
-                    <a class="collapse-item" href="/dashboard/branches">API Clients</a>
-                    <a class="collapse-item" href="/dashboard/branches/create">API Doc</a>
+                    <a class="collapse-item" href="/system_admin/branches">API Clients</a>
+                    <a class="collapse-item" href="/system_admin/branches/create">API Doc</a>
                 </div>
             </div>
         </li>

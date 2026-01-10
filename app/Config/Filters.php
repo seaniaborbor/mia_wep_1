@@ -22,7 +22,8 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'agentProtector'     => \App\Filters\AgentProtector::class,
+        'matrimonial_protector'     => \App\Filters\MatrimonialRoutesProtection::class,
+        'system_admin_protector'    => \App\Filters\SystemAdminProtector::class,
     ];
 
     /**

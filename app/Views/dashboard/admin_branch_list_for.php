@@ -17,7 +17,7 @@
         <div>
             <!-- Only HQ (branchId 1) can create branches -->
             <?php if (session()->get('userData')['userBreanch'] == 1): ?>
-                <a href="/dashboard/branches/create" class="btn btn-success btn-sm">
+                <a href="/matrimonial_dashboard/branches/create" class="btn btn-success btn-sm">
                     Add New Branch
                 </a>
             <?php endif; ?>
@@ -159,12 +159,12 @@
                                                 <span class="badge badge-success">Active</span>
                                             </td>
                                             <td class="text-center align-middle">
-                                                <a href="/dashboard/branches/view/<?= $branch['branchId'] ?>" 
+                                                <a href="/matrimonial_dashboard/branches/view/<?= $branch['branchId'] ?>" 
                                                    class="btn btn-sm btn-primary" title="View Branch">
                                                     View
                                                 </a>
                                                 <?php if (session()->get('userData')['userBreanch'] == 1): ?>
-                                                    <a href="/dashboard/branches/edit/<?= $branch['branchId'] ?>" 
+                                                    <a href="/matrimonial_dashboard/branches/edit/<?= $branch['branchId'] ?>" 
                                                        class="btn btn-sm btn-warning" title="Edit Branch">
                                                         Edit
                                                     </a>
@@ -219,7 +219,7 @@
                                                 <span class="badge badge-danger">Inactive</span>
                                             </td>
                                             <td class="text-center align-middle">
-                                                <a href="/dashboard/branches/view/<?= $branch['branchId'] ?>" 
+                                                <a href="/matrimonial_dashboard/branches/view/<?= $branch['branchId'] ?>" 
                                                    class="btn btn-sm btn-primary" title="View Branch">
                                                     View
                                                 </a>

@@ -56,62 +56,32 @@ $routes->set404Override('App\Controllers\Errors::show404');
 
 // ========== ADMIN ACCESS ONLY ==========
 
-$routes->group("", ['filter'=>'agentProtector'], function($routes){
+$routes->group("", ['filter'=>'matrimonial_protector'], function($routes){
 
 // dashboard home 
 $routes->get('/matrimonial_dashboard', 'WeddingNDivorceDashboard::index');
 $routes->get('/matrimonial_dashboard/general', 'WeddingNDivorceDashboard::general_dashboard');
 
-
-//================== USER MANAGEMENT ROUTES ==============
-
-// create users
+// users routes
 $routes->get('/matrimonial_dashboard/users', 'UserController::index'); // view all users 
 $routes->get('/matrimonial_dashboard/users/view/(:num)', 'UserController::view/$1'); // view all users 
 
 $routes->get('/matrimonial_dashboard/users/edit/(:num)', 'UserController::edit/$1'); // view to edit user 
 $routes->post('/matrimonial_dashboard/users/edit/(:num)', 'UserController::edit/$1'); // save edit
 
-$routes->get('/matrimonial_dashboard/users/create', 'UserController::create'); // load the create user form
-$routes->post('/matrimonial_dashboard/users/create', 'UserController::create'); // process the create user form
-// activate or deactivate user account
-$routes->get('/matrimonial_dashboard/users/activate/(:num)', 'UserController::activate/$1'); // activate or deactivate user account
-
-
-
-// ================= BRANCH MANAGEMENT ROUTES ==========================
-$routes->get('/matrimonial_dashboard/branches', 'BranchController::index');
-$routes->get('/matrimonial_dashboard/branches/view/(:num)', 'BranchController::view/$1');
-$routes->get('/matrimonial_dashboard/branches/create', 'BranchController::create');
-$routes->post('/matrimonial_dashboard/branches/create', 'BranchController::create');
-// edit branches 
-$routes->get('/matrimonial_dashboard/branches/edit/(:num)', 'BranchController::edit/$1'); // process the edit user form 
-$routes->post('/matrimonial_dashboard/branches/edit/(:num)', 'BranchController::edit/$1'); // process the edit user form 
-// deactivate or activate branches
-$routes->get('/matrimonial_dashboard/branches/deactivate/(:num)', 'BranchController::deactivate/$1'); // deactivate or activate branches
-
-
-// ================ MARRIAGE CERT ==========================
+// wedding certificate routes
 $routes->get('/matrimonial_dashboard/wedcert/', 'WeddingCertController::index');
 $routes->get('/matrimonial_dashboard/wedcert/view/(:num)', 'WeddingCertController::view/$1');
-
 $routes->get('/matrimonial_dashboard/wedcert/print/(:num)', 'WeddingCertController::print/$1');
-
 $routes->get('/matrimonial_dashboard/wedcert/edit/(:num)', 'WeddingCertController::edit/$1');
 $routes->post('/matrimonial_dashboard/wedcert/edit/(:num)', 'WeddingCertController::edit/$1');
-
 $routes->get('/matrimonial_dashboard/wedcert/sign/(:num)', 'WeddingCertController::sign/$1');
-
 $routes->get('/matrimonial_dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->post('/matrimonial_dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->get('/matrimonial_dashboard/wedcert/allow_edit/(:num)', 'WeddingCertController::allow_edit/$1'); // allow edit for the certificate
 $routes->get('/matrimonial_dashboard/wedcert/issue/(:num)', 'WeddingCertController::mark_as_issued/$1'); // mark as issued 
-
-
-
 $routes->post('/matrimonial_dashboard/certificate_files/upload_file/(:num)', 'FileUploadController::upload_certificate_file/$1');
 $routes->get('/matrimonial_dashboard/certificate_files/delete/(:num)/(:num)', 'FileUploadController::delete/$1/$2');
-
 
 // divorce certificate routes 
 $routes->get('/matrimonial_dashboard/divorce_cert', 'DivorceCertificateController::index');
@@ -137,11 +107,38 @@ $routes->get('/matrimonial_dashboard/nativecert/issue-certificate/(:any)', 'Nati
 $routes->get('/matrimonial_dashboard/nativecert/delete/(:any)', 'NativeDocCertController::delete/$1');
 $routes->get('matrimonial_dashboard/nativecert/general', 'NativeDocCertController::generalDashboard');
 
-$routes->get('/matrimonial_dashboard/admin', 'AdminController::index'); /// admin dashboard home
-$routes->get('/matrimonial_dashboard/admin/user_list', 'AdminController::usersList'); ///view users on adman dashboard
-$routes->get('/matrimonial_dashboard/admin/branch_list', 'AdminController::branchList'); ///view branches on adman dashboard
+// $routes->get('/matrimonial_dashboard/admin', 'AdminController::index'); /// admin dashboard home
+// $routes->get('/matrimonial_dashboard/admin/user_list', 'AdminController::usersList'); ///view users on adman dashboard
+// $routes->get('/matrimonial_dashboard/admin/branch_list', 'AdminController::branchList'); ///view branches on adman dashboard
 
 });
+
+// ========== SYSTEM ADMIN ACCESS ONLY ==========
+$routes->group("", ['filter'=>'system_admin_protector'], function($routes){
+
+    // system admin dashboard
+    $routes->get('/system_admin_dashboard', 'SystemAdminController::index');
+
+    // branch management routes
+    $routes->get('/system_admin/branches', 'BranchController::index');
+    $routes->get('/system_admin/branches/view/(:num)', 'BranchController::view/$1');
+    $routes->get('/system_admin/branches/create', 'BranchController::create');
+    $routes->post('/system_admin/branches/create', 'BranchController::create');
+    $routes->get('/system_admin/branches/edit/(:num)', 'BranchController::edit/$1'); // process the edit user form 
+    $routes->post('/system_admin/branches/edit/(:num)', 'BranchController::edit/$1'); // process the edit user form 
+    $routes->get('/system_admin/branches/deactivate/(:num)', 'BranchController::deactivate/$1'); // deactivate or activate branches
+
+    // user management routes
+    $routes->get('/system_admin/users', 'SystemAdminController::usersList'); // view all users 
+    $routes->get('/system_admin/users/view/(:num)', 'UserController::view/$1'); // view all users 
+    $routes->get('/system_admin/users/edit/(:num)', 'UserController::edit/$1'); // view to edit user 
+    $routes->post('/system_admin/users/edit/(:num)', 'UserController::edit/$1'); // save edit
+    $routes->get('/system_admin/users/create', 'UserController::create'); // load the create user form
+    $routes->post('/system_admin/users/create', 'UserController::create'); // process the create user form
+    $routes->get('/system_admin/users/activate/(:num)', 'UserController::activate/$1'); // activate or deactivate user account
+
+});
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

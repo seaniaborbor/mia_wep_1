@@ -152,15 +152,6 @@ class UserController extends BaseController
 
         $userData = session()->get('userData');
 
-        // Check permissions
-        if ($userData['userBreanch'] != 1) {
-            return redirect()->back()->with('error', 'Access denied: Only users from the head office can create users.');
-        }
-
-        if ($userData['userAccountType'] !== 'SIGNC') {
-            return redirect()->back()->with('error', 'Only the assistant minister for legal affair can create user accounts.');
-        }
-
         // Define signatory roles that require signature
         $signatoryRoles = ['SIGNA', 'SIGNB', 'SIGNC', 'tradCertSignatoryA', 'tradCertSignatoryB', 'tradCertSignatoryC'];
 

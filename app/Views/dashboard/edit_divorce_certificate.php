@@ -15,7 +15,7 @@
                     <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
                 <?php endif; ?>
 
-                <form action="/dashboard/edit_divorce_cert/<?= esc($divorceCert['divorceCertId']) ?>" method="post" enctype="multipart/form-data">
+                <form action="/matrimonial_dashboard/edit_divorce_cert/<?= esc($divorceCert['divorceCertId']) ?>" method="post" enctype="multipart/form-data">
                     <?= csrf_field() ?>
 
                     <!-- Plaintiff Name -->

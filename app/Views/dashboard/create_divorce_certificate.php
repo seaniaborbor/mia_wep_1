@@ -38,7 +38,7 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <form action="/dashboard/divorce_cert/create" method="post" enctype="multipart/form-data" id="divorceForm">
+                    <form action="/matrimonial_dashboard/divorce_cert/create" method="post" enctype="multipart/form-data" id="divorceForm">
                         <?= csrf_field() ?>
 
                         <div class="row">
