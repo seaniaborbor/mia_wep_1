@@ -344,12 +344,37 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    const steps = Array.from(document.querySelectorAll('.step'));
+    const steps = [...document.querySelectorAll('.step')];
     const progress = document.getElementById('formProgress');
     const stepNum = document.getElementById('currentStep');
     const form = document.getElementById('marriageForm');
 
     let current = 0;
+
+    /* ==============================
+       UTILITIES
+    ============================== */
+    function isHidden(el) {
+        return el.offsetParent === null;
+    }
+
+    function clearErrors(step) {
+        step.querySelectorAll('.is-invalid').forEach(el => {
+            el.classList.remove('is-invalid');
+        });
+        step.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+    }
+
+    function showError(field, message) {
+        field.classList.add('is-invalid');
+
+        if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+            const div = document.createElement('div');
+            div.className = 'invalid-feedback';
+            div.textContent = message;
+            field.parentNode.appendChild(div);
+        }
+    }
 
     /* ==============================
        SHOW STEP
@@ -366,28 +391,24 @@ document.addEventListener('DOMContentLoaded', () => {
     showStep(current);
 
     /* ==============================
-       VALIDATE A STEP
+       VALIDATE STEP
     ============================== */
     function validateStep(index) {
         let valid = true;
+        const step = steps[index];
+        clearErrors(step);
 
-        const requiredFields = steps[index]
-            .querySelectorAll('input[required], select[required], textarea[required]');
+        const fields = step.querySelectorAll('input, select, textarea');
 
-        requiredFields.forEach(field => {
+        fields.forEach(field => {
 
-            // Skip hidden conditional fields
-            const conditionalWrapper = field.closest('.conditional-field');
-            if (conditionalWrapper && conditionalWrapper.style.display === 'none') {
-                field.classList.remove('is-invalid');
-                return;
-            }
+            // Skip hidden fields
+            if (isHidden(field)) return;
 
-            if (!field.value.trim()) {
-                field.classList.add('is-invalid');
+            // HTML5 validation
+            if (!field.checkValidity()) {
                 valid = false;
-            } else {
-                field.classList.remove('is-invalid');
+                showError(field, field.validationMessage || 'This field is required');
             }
         });
 
@@ -402,8 +423,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (validateStep(current)) {
                 current++;
                 showStep(current);
-            } else {
-                alert('Please fill all required fields.');
             }
         });
     });
@@ -413,8 +432,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ============================== */
     document.querySelectorAll('.prev-step').forEach(btn => {
         btn.addEventListener('click', () => {
-            current--;
-            showStep(current);
+            if (current > 0) {
+                current--;
+                showStep(current);
+            }
         });
     });
 
@@ -427,61 +448,63 @@ document.addEventListener('DOMContentLoaded', () => {
             `.conditional-field[data-condition="${fieldName}"]`
         );
 
-        function toggleConditional() {
+        function toggle() {
             conditionalFields.forEach(field => {
                 field.style.display = select.value === '1' ? 'block' : 'none';
+
+                // Clear validation when hidden
+                if (select.value !== '1') {
+                    field.querySelectorAll('input').forEach(input => {
+                        input.value = '';
+                        input.classList.remove('is-invalid');
+                    });
+                }
             });
         }
 
-        select.addEventListener('change', toggleConditional);
-        toggleConditional();
+        select.addEventListener('change', toggle);
+        toggle();
     });
 
     /* ==============================
-       AUTO CALCULATE AGE
+       AUTO AGE CALCULATION
     ============================== */
     function calculateAge(dob) {
         const today = new Date();
         let age = today.getFullYear() - dob.getFullYear();
         const m = today.getMonth() - dob.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-            age--;
-        }
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
         return age;
     }
 
-    document.querySelectorAll('input[name="groom_dob"], input[name="bride_dob"]')
-        .forEach(input => {
-            input.addEventListener('change', () => {
-                const dob = new Date(input.value);
-                if (isNaN(dob)) return;
+    document.querySelectorAll('[name="groom_dob"], [name="bride_dob"]').forEach(input => {
+        input.addEventListener('change', () => {
+            if (!input.value) return;
+            const dob = new Date(input.value);
+            if (isNaN(dob)) return;
 
-                const target =
-                    input.name === 'groom_dob' ? 'groom_age' : 'bride_age';
-
-                form.querySelector(`input[name="${target}"]`).value = calculateAge(dob);
-            });
+            const target = input.name === 'groom_dob' ? 'groom_age' : 'bride_age';
+            form.querySelector(`[name="${target}"]`).value = calculateAge(dob);
         });
+    });
 
     /* ==============================
-       FINAL FORM SUBMIT VALIDATION
+       FINAL SUBMIT VALIDATION
     ============================== */
     form.addEventListener('submit', e => {
-        let allValid = true;
+        let valid = true;
 
-        steps.some((_, i) => {
+        for (let i = 0; i < steps.length; i++) {
             if (!validateStep(i)) {
                 current = i;
                 showStep(i);
-                allValid = false;
-                return true; // stop loop
+                valid = false;
+                break;
             }
-            return false;
-        });
+        }
 
-        if (!allValid) {
+        if (!valid) {
             e.preventDefault();
-            alert('Please correct the errors before submitting.');
         }
     });
 

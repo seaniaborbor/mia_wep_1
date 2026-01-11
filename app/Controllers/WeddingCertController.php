@@ -131,10 +131,7 @@ public function view($cert_id)
     $data['createdBy'] = $this->userModel->find($certificate['ENTRY']);
     $data['last_edited_at'] = $certificate['last_edited_at'];
 
-    // print_r($data);
-    // exit();
-
-    
+   
 
     return view('dashboard/view_marrige_certificate', $data);
 }
@@ -227,133 +224,405 @@ public function sign($cert_id){
 
 }
 
-    /*
-    * METHOD TO EDIT WEDDING CERTIFICATE DETAILS
-    */
-public function edit($cert_id){
+  /*
+* METHOD TO EDIT WEDDING CERTIFICATE DETAILS
+*/
+public function edit($cert_id)
+{
+    // Check user permissions
+    if (!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])) {
+        return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+    }
 
-     // check if the user account is allowed to view marriage certificate
-        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-            exit();
-        }
+    $data['title'] = 'Edit Marriage Certificate';
+    $data['passLink'] = 'certificates';
 
-        $data['title'] = 'Edit Marriage Certificate';
-        $data['passLink'] = 'certificates';
+    // Fetch certificate
+    $certificate = $this->weddingCertModel->where('marriage_cert_id', $cert_id)->first();
+    if (!$certificate) {
+        return redirect()->back()->with('error', 'Certificate not found.');
+    }
 
-        // Fetch the certificate to edit
-        $certificate = $this->weddingCertModel
-            ->where('marriage_cert_id', $cert_id)
-            ->first();
-        if (!$certificate) {
-            return redirect()->back()->with('error', 'Certificate not found.');
-        }
-        if($certificate['SIGNA'] !== null || $certificate['SIGNB'] !== null || $certificate['SIGNC'] !== null){
-            return redirect()->back()->with('error', 'This certificate is locked and cannot be edited. It has already been signed by the required officials.');
-        }
-        $data['certificate'] = $certificate;
-        // Check if the user's branch matches the certificate's branch
-        if (session()->get('userData')['userBreanch'] != $certificate['cert_branch']) {
-            return redirect()->back()->with('error', 'You do not have permission to edit this certificate. Only the data entry clerk at the branch where the certificate was created can perfom this action');
-            exit();
-        }
-        if (session()->get('userData')['userAccountType'] !== 'ENTRY') {
-            return redirect()->back()->with('error', 'Only data entry clerk can edit certificate information. Only the data entry clerk can edit this cerficate');
-            exit();
-        }
-        if (!empty($certificate['SIGNA']) && !empty($certificate['SIGNB']) && !empty($certificate['SIGNC'])) {
-            return redirect()->back()->with('error', 'This certificate has already been reviewed and signed by all required officials. It cannot be altered.');
-            exit();
-        }
+    // Check if certificate is locked
+    if ($certificate['SIGNA'] !== null || $certificate['SIGNB'] !== null || $certificate['SIGNC'] !== null) {
+        return redirect()->back()->with('error', 'This certificate is locked and cannot be edited. It has already been signed.');
+        exit();
+    }
 
-        if ($this->request->getMethod() === 'post') {
-            // Validation rules (reuse from create, adjust file rules for optional upload)
-            $rules = [
-                // Groom Information
-                'groom_name' => 'required|max_length[255]',
-                'groom_cell' => 'required|max_length[20]',
-                'groom_county_of_origin' => 'required|max_length[100]',
-                'groom_nationality' => 'required|max_length[100]',
-                'groom_dob' => 'required|valid_date',
-                'groom_age' => 'required|integer|greater_than_equal_to[18]',
-                'groom_birth_city' => 'required|max_length[100]',
-                'groom_birth_county' => 'required|max_length[100]',
-                'groom_address' => 'required|max_length[255]',
-                'groom_father_name' => 'required|max_length[255]',
-                'groom_mother_name' => 'required|max_length[255]',
+    // Check branch
+    if (session()->get('userData')['userBreanch'] != $certificate['cert_branch']) {
+        return redirect()->back()->with('error', 'You do not have permission to edit this certificate. Only the branch data entry clerk can perform this action.');
+    }
 
-                // Groom passport photo is optional on edit
-                'groom_passport_photo' => [
-                    'rules' => 'if_exist|max_size[groom_passport_photo,2048]|is_image[groom_passport_photo]',
-                    'errors' => [
-                        'max_size' => 'The groom\'s passport photo must not exceed 2MB.',
-                        'is_image' => 'The groom\'s passport photo must be an image file.'
-                    ]
-                ],
+    // Only ENTRY user can edit
+    if (session()->get('userData')['userAccountType'] !== 'ENTRY') {
+        return redirect()->back()->with('error', 'Only data entry clerk can edit certificate information.');
+    }
 
-                // Bride Information
-                'bride_name' => 'required|max_length[255]',
-                'bride_cell' => 'required|max_length[20]',
-                'bride_county_of_origin' => 'required|max_length[100]',
-                'bride_nationality' => 'required|max_length[100]',
-                'bride_dob' => 'required|valid_date',
-                'bride_age' => 'required|integer|greater_than_equal_to[18]',
-                'bride_birth_city' => 'required|max_length[100]',
-                'bride_birth_county' => 'required|max_length[100]',
-                'bride_address' => 'required|max_length[255]',
-                'bride_father_name' => 'required|max_length[255]',
-                'bride_mother_name' => 'required|max_length[255]',
-                // Bride passport photo is optional on edit
+    $data['certificate'] = $certificate;
 
-                'bride_passport_photo' => [
-                    'rules' => 'if_exist|max_size[bride_passport_photo,2048]|is_image[bride_passport_photo]',
-                    'errors' => [
-                        'max_size' => 'The bride\'s passport photo must not exceed 2MB.',
-                        'is_image' => 'The bride\'s passport photo must be an image file.'
-                    ]
-                ],
+    if ($this->request->getMethod() === 'post') {
 
-                // Marriage Details
-                'place_of_marriage' => 'required|max_length[255]',
-                'date_of_marriage' => 'required|valid_date',
-                'bride_proposed_name' => 'permit_empty|max_length[255]',
+        // Validation rules with custom messages
+        $rules = [
+            // Groom Information
+            'groom_name' => [
+                'label' => 'Groom Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s name is required.',
+                    'max_length' => 'The groom\'s name cannot exceed 255 characters.'
+                ]
+            ],
+            'groom_cell' => [
+                'label' => 'Groom Cell',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The groom\'s cell number is required.',
+                    'max_length' => 'The groom\'s cell number cannot exceed 20 characters.'
+                ]
+            ],
+            'groom_county_of_origin' => [
+                'label' => 'Groom County of Origin',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s county of origin is required.',
+                    'max_length' => 'The groom\'s county of origin cannot exceed 100 characters.'
+                ]
+            ],
+            'groom_nationality' => [
+                'label' => 'Groom Nationality',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s nationality is required.',
+                    'max_length' => 'The groom\'s nationality cannot exceed 100 characters.'
+                ]
+            ],
+            'groom_dob' => [
+                'label' => 'Groom Date of Birth',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The groom\'s date of birth is required.',
+                    'valid_date' => 'Please provide a valid date for the groom\'s date of birth.'
+                ]
+            ],
+            'groom_age' => [
+                'label' => 'Groom Age',
+                'rules' => 'required|integer|greater_than_equal_to[18]',
+                'errors' => [
+                    'required' => 'The groom\'s age is required.',
+                    'integer' => 'The groom\'s age must be a number.',
+                    'greater_than_equal_to' => 'The groom must be at least 18 years old.'
+                ]
+            ],
+            'groom_birth_city' => [
+                'label' => 'Groom Birth City',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s birth city is required.',
+                    'max_length' => 'The groom\'s birth city cannot exceed 100 characters.'
+                ]
+            ],
+            'groom_birth_county' => [
+                'label' => 'Groom Birth County',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s birth county is required.',
+                    'max_length' => 'The groom\'s birth county cannot exceed 100 characters.'
+                ]
+            ],
+            'groom_address' => [
+                'label' => 'Groom Address',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s address is required.',
+                    'max_length' => 'The groom\'s address cannot exceed 255 characters.'
+                ]
+            ],
+            'groom_father_name' => [
+                'label' => 'Groom Father Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s father name is required.',
+                    'max_length' => 'The groom\'s father name cannot exceed 255 characters.'
+                ]
+            ],
+            'groom_mother_name' => [
+                'label' => 'Groom Mother Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s mother name is required.',
+                    'max_length' => 'The groom\'s mother name cannot exceed 255 characters.'
+                ]
+            ],
+            // Groom Passport Photo optional on edit
+            'groom_passport_photo' => [
+                'label' => 'Groom Passport Photo',
+                'rules' => 'if_exist|max_size[groom_passport_photo,2048]|is_image[groom_passport_photo]',
+                'errors' => [
+                    'max_size' => 'The groom\'s passport photo must not exceed 2MB.',
+                    'is_image' => 'The groom\'s passport photo must be an image file.'
+                ]
+            ],
 
-                // Witness & Declaration
-                'witness_name' => 'required|max_length[255]',
-                'witness_contact' => 'required|max_length[20]',
-                'officiator_name' => 'required|max_length[255]',
-                'officiator_contact' => 'required|max_length[20]',
-                'certificate_cost' => 'required|numeric',
-                'certificate_cost_words' => 'required|max_length[255]',
-                'declarant_name' => 'required|max_length[255]',
-                'declaration_date' => 'required|valid_date',
+            // Bride Information
+            'bride_name' => [
+                'label' => 'Bride Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s name is required.',
+                    'max_length' => 'The bride\'s name cannot exceed 255 characters.'
+                ]
+            ],
+            'bride_cell' => [
+                'label' => 'Bride Cell',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The bride\'s cell number is required.',
+                    'max_length' => 'The bride\'s cell number cannot exceed 20 characters.'
+                ]
+            ],
+            'bride_county_of_origin' => [
+                'label' => 'Bride County of Origin',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s county of origin is required.',
+                    'max_length' => 'The bride\'s county of origin cannot exceed 100 characters.'
+                ]
+            ],
+            'bride_nationality' => [
+                'label' => 'Bride Nationality',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s nationality is required.',
+                    'max_length' => 'The bride\'s nationality cannot exceed 100 characters.'
+                ]
+            ],
+            'bride_dob' => [
+                'label' => 'Bride Date of Birth',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The bride\'s date of birth is required.',
+                    'valid_date' => 'Please provide a valid date for the bride\'s date of birth.'
+                ]
+            ],
+            'bride_age' => [
+                'label' => 'Bride Age',
+                'rules' => 'required|integer|greater_than_equal_to[18]',
+                'errors' => [
+                    'required' => 'The bride\'s age is required.',
+                    'integer' => 'The bride\'s age must be a number.',
+                    'greater_than_equal_to' => 'The bride must be at least 18 years old.'
+                ]
+            ],
+            'bride_birth_city' => [
+                'label' => 'Bride Birth City',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s birth city is required.',
+                    'max_length' => 'The bride\'s birth city cannot exceed 100 characters.'
+                ]
+            ],
+            'bride_birth_county' => [
+                'label' => 'Bride Birth County',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s birth county is required.',
+                    'max_length' => 'The bride\'s birth county cannot exceed 100 characters.'
+                ]
+            ],
+            'bride_address' => [
+                'label' => 'Bride Address',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s address is required.',
+                    'max_length' => 'The bride\'s address cannot exceed 255 characters.'
+                ]
+            ],
+            'bride_father_name' => [
+                'label' => 'Bride Father Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s father name is required.',
+                    'max_length' => 'The bride\'s father name cannot exceed 255 characters.'
+                ]
+            ],
+            'bride_mother_name' => [
+                'label' => 'Bride Mother Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s mother name is required.',
+                    'max_length' => 'The bride\'s mother name cannot exceed 255 characters.'
+                ]
+            ],
+            'bride_passport_photo' => [
+                'label' => 'Bride Passport Photo',
+                'rules' => 'if_exist|max_size[bride_passport_photo,2048]|is_image[bride_passport_photo]',
+                'errors' => [
+                    'max_size' => 'The bride\'s passport photo must not exceed 2MB.',
+                    'is_image' => 'The bride\'s passport photo must be an image file.'
+                ]
+            ],
 
-                // Certification
-                'revenue_no' => 'permit_empty|max_length[50]',
-                'certification_day' => 'required|valid_date',
+            // Marriage Details
+            'place_of_marriage' => [
+                'label' => 'Place of Marriage',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The place of marriage is required.',
+                    'max_length' => 'The place of marriage cannot exceed 255 characters.'
+                ]
+            ],
+            'date_of_marriage' => [
+                'label' => 'Date of Marriage',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The date of marriage is required.',
+                    'valid_date' => 'Please provide a valid date for the marriage.'
+                ]
+            ],
+            'bride_proposed_name' => [
+                'label' => 'Bride Proposed Name',
+                'rules' => 'permit_empty|max_length[255]',
+                'errors' => [
+                    'max_length' => 'The bride\'s proposed name cannot exceed 255 characters.'
+                ]
+            ],
 
+            // Witness & Declaration
+            'witness_name' => [
+                'label' => 'Witness Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The witness name is required.',
+                    'max_length' => 'The witness name cannot exceed 255 characters.'
+                ]
+            ],
+            'witness_contact' => [
+                'label' => 'Witness Contact',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The witness contact is required.',
+                    'max_length' => 'The witness contact cannot exceed 20 characters.'
+                ]
+            ],
+            'officiator_name' => [
+                'label' => 'Officiator Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The officiator name is required.',
+                    'max_length' => 'The officiator name cannot exceed 255 characters.'
+                ]
+            ],
+            'officiator_contact' => [
+                'label' => 'Officiator Contact',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The officiator contact is required.',
+                    'max_length' => 'The officiator contact cannot exceed 20 characters.'
+                ]
+            ],
+            'certificate_cost' => [
+                'label' => 'Certificate Cost',
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'The certificate cost is required.',
+                    'numeric' => 'The certificate cost must be a number.'
+                ]
+            ],
+            'certificate_cost_words' => [
+                'label' => 'Certificate Cost (in Words)',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The certificate cost in words is required.',
+                    'max_length' => 'The certificate cost in words cannot exceed 255 characters.'
+                ]
+            ],
+            'declarant_name' => [
+                'label' => 'Declarant Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The declarant name is required.',
+                    'max_length' => 'The declarant name cannot exceed 255 characters.'
+                ]
+            ],
+            'declaration_date' => [
+                'label' => 'Declaration Date',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The declaration date is required.',
+                    'valid_date' => 'Please provide a valid date for the declaration.'
+                ]
+            ],
+
+            // Certification
+            'revenue_no' => [
+                'label' => 'Revenue Number',
+                'rules' => 'permit_empty|max_length[50]',
+                'errors' => [
+                    'max_length' => 'The revenue number cannot exceed 50 characters.'
+                ]
+            ],
+            'certification_day' => [
+                'label' => 'Certification Date',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The certification date is required.',
+                    'valid_date' => 'Please provide a valid date for the certification.'
+                ]
+            ]
+        ];
+
+        // Conditional rules for previous marriages
+        if ($this->request->getPost('groom_married_before') === 'Yes') {
+            $rules['groom_previous_marriage_date'] = [
+                'label' => 'Groom Previous Marriage Date',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The groom\'s previous marriage date is required.',
+                    'valid_date' => 'Please provide a valid date for the groom\'s previous marriage.'
+                ]
             ];
+            $rules['groom_previous_spouse_name'] = [
+                'label' => 'Groom Previous Spouse Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s previous spouse name is required.',
+                    'max_length' => 'The groom\'s previous spouse name cannot exceed 255 characters.'
+                ]
+            ];
+        }
 
-            if ($this->request->getPost('groom_married_before') === 'Yes') {
-                $rules['groom_previous_marriage_date'] = 'required|valid_date';
-                $rules['groom_previous_spouse_name'] = 'required|max_length[255]';
-            }
+        if ($this->request->getPost('bride_married_before') === 'Yes') {
+            $rules['bride_previous_marriage_date'] = [
+                'label' => 'Bride Previous Marriage Date',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The bride\'s previous marriage date is required.',
+                    'valid_date' => 'Please provide a valid date for the bride\'s previous marriage.'
+                ]
+            ];
+            $rules['bride_previous_spouse_name'] = [
+                'label' => 'Bride Previous Spouse Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s previous spouse name is required.',
+                    'max_length' => 'The bride\'s previous spouse name cannot exceed 255 characters.'
+                ]
+            ];
+        }
 
-            if ($this->request->getPost('bride_married_before') === 'Yes') {
-                $rules['bride_previous_marriage_date'] = 'required|valid_date';
-                $rules['bride_previous_spouse_name'] = 'required|max_length[255]';
-            }
-
-            if (!$this->validate($rules)) {
-                print_r($this->validator->listErrors());
-                exit();
-            }
-            // Handle file uploads (optional)
-
+        // **Validate**
+        if (!$this->validate($rules)) {
+            // Pass validation errors to view for modal
+            $data['errors'] = $this->validator->getErrors();
+        } else {
+            // Proceed with update logic
             $groomPhoto = $this->request->getFile('groom_passport_photo');
             $bridePhoto = $this->request->getFile('bride_passport_photo');
+
             $updateData = [
-                // Groom Information
+                // Groom
                 'groom_name' => $this->request->getPost('groom_name'),
                 'groom_cell' => $this->request->getPost('groom_cell'),
                 'groom_county_of_origin' => $this->request->getPost('groom_county_of_origin'),
@@ -369,7 +638,7 @@ public function edit($cert_id){
                 'groom_father_name' => $this->request->getPost('groom_father_name'),
                 'groom_mother_name' => $this->request->getPost('groom_mother_name'),
 
-                // Bride Information
+                // Bride
                 'bride_name' => $this->request->getPost('bride_name'),
                 'bride_cell' => $this->request->getPost('bride_cell'),
                 'bride_county_of_origin' => $this->request->getPost('bride_county_of_origin'),
@@ -401,40 +670,39 @@ public function edit($cert_id){
                 'declaration_date' => $this->request->getPost('declaration_date'),
 
                 // Certification
-                'revenue_no' => $this->request->getPost('revenue_no'),
                 'certification_date' => $this->request->getPost('certification_day'),
 
                 // System fields
                 'last_edited_by' => session()->get('userData')['userId'],
                 'updated_at' => date('Y-m-d H:i:s'),
-
             ];
 
-            // Handle groom photo upload if present
+            // Handle groom photo upload
             if ($groomPhoto && $groomPhoto->isValid() && !$groomPhoto->hasMoved()) {
                 $groomPhotoName = $groomPhoto->getRandomName();
                 $groomPhoto->move(ROOTPATH . 'public/uploads/marriage', $groomPhotoName);
                 $updateData['groom_passport_photo'] = $groomPhotoName;
             }
 
-            // Handle bride photo upload if present
+            // Handle bride photo upload
             if ($bridePhoto && $bridePhoto->isValid() && !$bridePhoto->hasMoved()) {
                 $bridePhotoName = $bridePhoto->getRandomName();
                 $bridePhoto->move(ROOTPATH . 'public/uploads/marriage', $bridePhotoName);
                 $updateData['bride_passport_photo'] = $bridePhotoName;
             }
 
-            // Update the certificate
+            // **Update certificate**
             if ($this->weddingCertModel->update($cert_id, $updateData)) {
                 return redirect()->back()->with('success', 'Marriage certificate updated successfully!');
             } else {
-                return redirect()->back()->with('error', 'There was an error updating the certificate. Please try again.');
+                $data['errors'] = ['There was an error updating the certificate. Please try again.'];
             }
-
         }
-
-        return view('dashboard/edit_marriage_certificate', $data);
     }
+
+    // Load the edit view (with $data including errors if validation failed)
+    return view('dashboard/edit_marriage_certificate', $data);
+}
 
 
 /*
@@ -475,399 +743,319 @@ public function print($cert_id){
     * METHOD TO CREATE WEDDING CERTIFICATE
     */
  public function create()
-    {
+{
+    // Only ENTRY users can create certificates
+    $user = session()->get('userData');
+    if ($user['userAccountType'] !== 'ENTRY') {
+        return redirect()->back()->with('error', 'Only data entry clerks can log certificate information');
+    }
 
-         // check if the user account is allowed to view marriage certificate
-        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-            exit();
-        }
-        
-        $data['title'] = 'Create Marriage Certificate';
-        $data['passLink'] = 'certificates';
-        if(session()->get('userData')['userAccountType'] != "ENTRY"){
-            return redirect()->back()->with('error', 'Only data entry clerk can log certificate information');
-            exit();
-        }
+    $data['title'] = 'Create Marriage Certificate';
+    $data['passLink'] = 'certificates';
 
-        if($this->request->getMethod() === "post"){
+    if ($this->request->getMethod() === 'post') {
+
+        // Validation rules with original custom error messages
         $rules = [
             // Groom Information
             'groom_name' => [
-            'label' => 'Groom Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The groom\'s name is required.',
-                'max_length' => 'The groom\'s name cannot exceed 255 characters.'
-            ]
+                'label' => 'Groom Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s name is required.',
+                    'max_length' => 'The groom\'s name cannot exceed 255 characters.'
+                ]
             ],
             'groom_cell' => [
-            'label' => 'Groom Cell',
-            'rules' => 'required|max_length[20]',
-            'errors' => [
-                'required' => 'The groom\'s cell number is required.',
-                'max_length' => 'The groom\'s cell number cannot exceed 20 characters.'
-            ]
-
+                'label' => 'Groom Cell',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The groom\'s cell number is required.',
+                    'max_length' => 'The groom\'s cell number cannot exceed 20 characters.'
+                ]
             ],
-
             'groom_county_of_origin' => [
-            'label' => 'Groom County of Origin',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The groom\'s county of origin is required.',
-                'max_length' => 'The groom\'s county of origin cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Groom County of Origin',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s county of origin is required.',
+                    'max_length' => 'The groom\'s county of origin cannot exceed 100 characters.'
+                ]
             ],
-
             'groom_nationality' => [
-            'label' => 'Groom Nationality',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The groom\'s nationality is required.',
-                'max_length' => 'The groom\'s nationality cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Groom Nationality',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s nationality is required.',
+                    'max_length' => 'The groom\'s nationality cannot exceed 100 characters.'
+                ]
             ],
-
             'groom_dob' => [
-            'label' => 'Groom Date of Birth',
-            'rules' => 'required|valid_date',
-            'errors' => [
-                'required' => 'The groom\'s date of birth is required.',
-                'valid_date' => 'Please provide a valid date for the groom\'s date of birth.'
-            ]
-
+                'label' => 'Groom Date of Birth',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The groom\'s date of birth is required.',
+                    'valid_date' => 'Please provide a valid date for the groom\'s date of birth.'
+                ]
             ],
-
-            'groom_age' => [
-            'label' => 'Groom Age',
-            'rules' => 'required|integer|greater_than_equal_to[18]',
-            'errors' => [
-                'required' => 'The groom\'s age is required.',
-                'integer' => 'The groom\'s age must be a number.',
-                'greater_than_equal_to' => 'The groom must be at least 18 years old.'
-            ]
-
-            ],
-
             'groom_birth_city' => [
-            'label' => 'Groom Birth City',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The groom\'s birth city is required.',
-                'max_length' => 'The groom\'s birth city cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Groom Birth City',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s birth city is required.',
+                    'max_length' => 'The groom\'s birth city cannot exceed 100 characters.'
+                ]
             ],
-
             'groom_birth_county' => [
-            'label' => 'Groom Birth County',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The groom\'s birth county is required.',
-                'max_length' => 'The groom\'s birth county cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Groom Birth County',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The groom\'s birth county is required.',
+                    'max_length' => 'The groom\'s birth county cannot exceed 100 characters.'
+                ]
             ],
-
             'groom_address' => [
-            'label' => 'Groom Address',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The groom\'s address is required.',
-                'max_length' => 'The groom\'s address cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Groom Address',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s address is required.',
+                    'max_length' => 'The groom\'s address cannot exceed 255 characters.'
+                ]
             ],
-
-           
-
             'groom_father_name' => [
-            'label' => 'Groom Father Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The groom\'s father name is required.',
-                'max_length' => 'The groom\'s father name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Groom Father Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s father name is required.',
+                    'max_length' => 'The groom\'s father name cannot exceed 255 characters.'
+                ]
             ],
-
             'groom_mother_name' => [
-            'label' => 'Groom Mother Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The groom\'s mother name is required.',
-                'max_length' => 'The groom\'s mother name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Groom Mother Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The groom\'s mother name is required.',
+                    'max_length' => 'The groom\'s mother name cannot exceed 255 characters.'
+                ]
             ],
-
             'groom_passport_photo' => [
-            'label' => 'Groom Passport Photo',
-            'rules' => 'uploaded[groom_passport_photo]|max_size[groom_passport_photo,2048]|is_image[groom_passport_photo]',
-            'errors' => [
-                'uploaded' => 'The groom\'s passport photo is required.',
-                'max_size' => 'The groom\'s passport photo must not exceed 2MB.',
-                'is_image' => 'The groom\'s passport photo must be an image file.'
-            ]
-
+                'label' => 'Groom Passport Photo',
+                'rules' => 'uploaded[groom_passport_photo]|max_size[groom_passport_photo,2048]|is_image[groom_passport_photo]',
+                'errors' => [
+                    'uploaded' => 'The groom\'s passport photo is required.',
+                    'max_size' => 'The groom\'s passport photo must not exceed 2MB.',
+                    'is_image' => 'The groom\'s passport photo must be an image file.'
+                ]
             ],
 
             // Bride Information
             'bride_name' => [
-            'label' => 'Bride Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The bride\'s name is required.',
-                'max_length' => 'The bride\'s name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Bride Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s name is required.',
+                    'max_length' => 'The bride\'s name cannot exceed 255 characters.'
+                ]
             ],
-
             'bride_cell' => [
-            'label' => 'Bride Cell',
-            'rules' => 'required|max_length[20]',
-            'errors' => [
-                'required' => 'The bride\'s cell number is required.',
-                'max_length' => 'The bride\'s cell number cannot exceed 20 characters.'
-            ]
+                'label' => 'Bride Cell',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The bride\'s cell number is required.',
+                    'max_length' => 'The bride\'s cell number cannot exceed 20 characters.'
+                ]
             ],
             'bride_county_of_origin' => [
-            'label' => 'Bride County of Origin',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The bride\'s county of origin is required.',
-                'max_length' => 'The bride\'s county of origin cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Bride County of Origin',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s county of origin is required.',
+                    'max_length' => 'The bride\'s county of origin cannot exceed 100 characters.'
+                ]
             ],
             'bride_nationality' => [
-            'label' => 'Bride Nationality',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The bride\'s nationality is required.',
-                'max_length' => 'The bride\'s nationality cannot exceed 100 characters.'
-            ]
-
-            ],
-
-            'bride_dob' => [
-            'label' => 'Bride Date of Birth',
-            'rules' => 'required|valid_date',
-            'errors' => [
-                'required' => 'The bride\'s date of birth is required.',
-                'valid_date' => 'Please provide a valid date for the bride\'s date of birth.'
-
-            ]
-
-            ],
-
-            'bride_age' => [
-            'label' => 'Bride Age',
-            'rules' => 'required|integer|greater_than_equal_to[18]',
-            'errors' => [
-                'required' => 'The bride\'s age is required.',
-                'integer' => 'The bride\'s age must be a number.',
-                'greater_than_equal_to' => 'The bride must be at least 18 years old.'
+                'label' => 'Bride Nationality',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s nationality is required.',
+                    'max_length' => 'The bride\'s nationality cannot exceed 100 characters.'
                 ]
-
             ],
-
+            'bride_dob' => [
+                'label' => 'Bride Date of Birth',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The bride\'s date of birth is required.',
+                    'valid_date' => 'Please provide a valid date for the bride\'s date of birth.'
+                ]
+            ],
             'bride_birth_city' => [
-            'label' => 'Bride Birth City',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The bride\'s birth city is required.',
-                'max_length' => 'The bride\'s birth city cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Bride Birth City',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s birth city is required.',
+                    'max_length' => 'The bride\'s birth city cannot exceed 100 characters.'
+                ]
             ],
-
             'bride_birth_county' => [
-            'label' => 'Bride Birth County',
-            'rules' => 'required|max_length[100]',
-            'errors' => [
-                'required' => 'The bride\'s birth county is required.',
-                'max_length' => 'The bride\'s birth county cannot exceed 100 characters.'
-            ]
-
+                'label' => 'Bride Birth County',
+                'rules' => 'required|max_length[100]',
+                'errors' => [
+                    'required' => 'The bride\'s birth county is required.',
+                    'max_length' => 'The bride\'s birth county cannot exceed 100 characters.'
+                ]
             ],
-
             'bride_address' => [
-            'label' => 'Bride Address',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The bride\'s address is required.',
-                'max_length' => 'The bride\'s address cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Bride Address',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s address is required.',
+                    'max_length' => 'The bride\'s address cannot exceed 255 characters.'
+                ]
             ],
-
             'bride_father_name' => [
-            'label' => 'Bride Father Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The bride\'s father name is required.',
-                'max_length' => 'The bride\'s father name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Bride Father Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s father name is required.',
+                    'max_length' => 'The bride\'s father name cannot exceed 255 characters.'
+                ]
             ],
-
             'bride_mother_name' => [
-            'label' => 'Bride Mother Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The bride\'s mother name is required.',
-                'max_length' => 'The bride\'s mother name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Bride Mother Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The bride\'s mother name is required.',
+                    'max_length' => 'The bride\'s mother name cannot exceed 255 characters.'
+                ]
             ],
-
             'bride_passport_photo' => [
-            'label' => 'Bride Passport Photo',
-            'rules' => 'uploaded[bride_passport_photo]|max_size[bride_passport_photo,2048]|is_image[bride_passport_photo]',
-            'errors' => [
-                'uploaded' => 'The bride\'s passport photo is required.',
-                'max_size' => 'The bride\'s passport photo must not exceed 2MB.',
-                'is_image' => 'The bride\'s passport photo must be an image file.'
-            ]
-
+                'label' => 'Bride Passport Photo',
+                'rules' => 'uploaded[bride_passport_photo]|max_size[bride_passport_photo,2048]|is_image[bride_passport_photo]',
+                'errors' => [
+                    'uploaded' => 'The bride\'s passport photo is required.',
+                    'max_size' => 'The bride\'s passport photo must not exceed 2MB.',
+                    'is_image' => 'The bride\'s passport photo must be an image file.'
+                ]
             ],
+
             // Marriage Details
-
             'place_of_marriage' => [
-            'label' => 'Place of Marriage',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The place of marriage is required.',
-                'max_length' => 'The place of marriage cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Place of Marriage',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The place of marriage is required.',
+                    'max_length' => 'The place of marriage cannot exceed 255 characters.'
+                ]
             ],
-
             'date_of_marriage' => [
-            'label' => 'Date of Marriage',
-            'rules' => 'required|valid_date',
-            'errors' => [
-                'required' => 'The date of marriage is required.',
-                'valid_date' => 'Please provide a valid date for the marriage.'
-            ]
+                'label' => 'Date of Marriage',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The date of marriage is required.',
+                    'valid_date' => 'Please provide a valid date for the marriage.'
+                ]
             ],
             'bride_proposed_name' => [
-            'label' => 'Bride Proposed Name',
-            'rules' => 'permit_empty|max_length[255]',
-            'errors' => [
-                'max_length' => 'The bride\'s proposed name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Bride Proposed Name',
+                'rules' => 'permit_empty|max_length[255]',
+                'errors' => [
+                    'max_length' => 'The bride\'s proposed name cannot exceed 255 characters.'
+                ]
             ],
+
             // Witness & Declaration
-
             'witness_name' => [
-            'label' => 'Witness Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The witness name is required.',
-                'max_length' => 'The witness name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Witness Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The witness name is required.',
+                    'max_length' => 'The witness name cannot exceed 255 characters.'
+                ]
             ],
-
             'witness_contact' => [
-            'label' => 'Witness Contact',
-            'rules' => 'required|max_length[20]',
-            'errors' => [
-                'required' => 'The witness contact is required.',
-                'max_length' => 'The witness contact cannot exceed 20 characters.'
-            ]
-
+                'label' => 'Witness Contact',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The witness contact is required.',
+                    'max_length' => 'The witness contact cannot exceed 20 characters.'
+                ]
             ],
-
             'officiator_name' => [
-            'label' => 'Officiator Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The officiator name is required.',
-                'max_length' => 'The officiator name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Officiator Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The officiator name is required.',
+                    'max_length' => 'The officiator name cannot exceed 255 characters.'
+                ]
             ],
-
             'officiator_contact' => [
-            'label' => 'Officiator Contact',
-            'rules' => 'required|max_length[20]',
-            'errors' => [
-                'required' => 'The officiator contact is required.',
-                'max_length' => 'The officiator contact cannot exceed 20 characters.'
-            ]
-
+                'label' => 'Officiator Contact',
+                'rules' => 'required|max_length[20]',
+                'errors' => [
+                    'required' => 'The officiator contact is required.',
+                    'max_length' => 'The officiator contact cannot exceed 20 characters.'
+                ]
             ],
 
             'certificate_cost' => [
-            'label' => 'Certificate Cost',
-            'rules' => 'required|numeric',
-            'errors' => [
-                'required' => 'The certificate cost is required.',
-                'numeric' => 'The certificate cost must be a number.'
-            ]
-
+                'label' => 'Certificate Cost',
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'The certificate cost is required.',
+                    'numeric' => 'The certificate cost must be a number.'
+                ]
             ],
 
             'certificate_cost_words' => [
-            'label' => 'Certificate Cost (in Words)',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The certificate cost in words is required.',
-                'max_length' => 'The certificate cost in words cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Certificate Cost (in Words)',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The certificate cost in words is required.',
+                    'max_length' => 'The certificate cost in words cannot exceed 255 characters.'
+                ]
             ],
 
             'declarant_name' => [
-            'label' => 'Declarant Name',
-            'rules' => 'required|max_length[255]',
-            'errors' => [
-                'required' => 'The declarant name is required.',
-                'max_length' => 'The declarant name cannot exceed 255 characters.'
-            ]
-
+                'label' => 'Declarant Name',
+                'rules' => 'required|max_length[255]',
+                'errors' => [
+                    'required' => 'The declarant name is required.',
+                    'max_length' => 'The declarant name cannot exceed 255 characters.'
+                ]
             ],
 
             'declaration_date' => [
-            'label' => 'Declaration Date',
-            'rules' => 'required|valid_date',
-            'errors' => [
-                'required' => 'The declaration date is required.',
-                'valid_date' => 'Please provide a valid date for the declaration.'
-            ]
-
+                'label' => 'Declaration Date',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The declaration date is required.',
+                    'valid_date' => 'Please provide a valid date for the declaration.'
+                ]
             ],
 
             // Certification
             'revenue_no' => [
-            'label' => 'Revenue Number',
-            'rules' => 'permit_empty|max_length[50]',
-            'errors' => [
-                'max_length' => 'The revenue number cannot exceed 50 characters.'
-            ]
-
+                'label' => 'Revenue Number',
+                'rules' => 'required|max_length[50]|is_unique[marriage_certificates.revenue_no]',
+                'errors' => [
+                    'required' => 'The revenue number is required.',
+                    'max_length' => 'The revenue number cannot exceed 50 characters.',
+                    'is_unique' => 'This revenue number already exists.'
+                ]
             ],
 
             'certification_day' => [
-            'label' => 'Certification Date',
-            'rules' => 'required|valid_date',
-            'errors' => [
-                'required' => 'The certification date is required.',
-                'valid_date' => 'Please provide a valid date for the certification.'
-
-            ]
-
+                'label' => 'Certification Date',
+                'rules' => 'required|valid_date',
+                'errors' => [
+                    'required' => 'The certification date is required.',
+                    'valid_date' => 'Please provide a valid date for the certification.'
+                ]
             ],
-
         ];
 
+        // Conditional previous marriages
         if ($this->request->getPost('groom_married_before') === 'Yes') {
             $rules['groom_previous_marriage_date'] = [
                 'label' => 'Groom Previous Marriage Date',
@@ -884,13 +1072,10 @@ public function print($cert_id){
                     'required' => 'The groom\'s previous spouse name is required.',
                     'max_length' => 'The groom\'s previous spouse name cannot exceed 255 characters.'
                 ]
-
             ];
-
         }
 
         if ($this->request->getPost('bride_married_before') === 'Yes') {
-
             $rules['bride_previous_marriage_date'] = [
                 'label' => 'Bride Previous Marriage Date',
                 'rules' => 'required|valid_date',
@@ -898,9 +1083,7 @@ public function print($cert_id){
                     'required' => 'The bride\'s previous marriage date is required.',
                     'valid_date' => 'Please provide a valid date for the bride\'s previous marriage.'
                 ]
-
             ];
-
             $rules['bride_previous_spouse_name'] = [
                 'label' => 'Bride Previous Spouse Name',
                 'rules' => 'required|max_length[255]',
@@ -908,13 +1091,12 @@ public function print($cert_id){
                     'required' => 'The bride\'s previous spouse name is required.',
                     'max_length' => 'The bride\'s previous spouse name cannot exceed 255 characters.'
                 ]
-
             ];
-
         }
 
+        // Validate
         if (!$this->validate($rules)) {
-            $data['errors'] = $this->validator;
+             $data['errors'] = $this->validator->getErrors();
         }else{
         // Handle file uploads
         $groomPhoto = $this->request->getFile('groom_passport_photo');
@@ -925,6 +1107,13 @@ public function print($cert_id){
         // Move files to upload directory
         $groomPhoto->move('uploads/marriage', $groomPhotoName);
         $bridePhoto->move('uploads/marriage', $bridePhotoName);
+        // Get branch data for identifier generation
+        $branch_data = $this->branchModel
+            ->where('branchId', session()->get('userData')['userBreanch'])
+            ->first();
+        // get certificate identifiers
+        $identifiers = $this->generateMarriageIdentifiers($branch_data);
+
         // Prepare data for database
         $data = [
             // Groom Information
@@ -976,6 +1165,8 @@ public function print($cert_id){
             'revenue_no' => $this->request->getPost('revenue_no'),
             'certification_date' => $this->request->getPost('certification_day'),
             'cert_branch' => session()->get('userData')['userBreanch'],
+            'reference_no' => $identifiers['reference_no'],
+            'marriage_code' => $identifiers['marriage_code'],
             // System fields
             'ENTRY' => session()->get('userData')['userId'],
             'created_at' => date('Y-m-d H:i:s'),
@@ -1138,6 +1329,31 @@ public function mark_as_issued($cert_id){
     }
            
 }
+
+
+
+
+    private  function generateMarriageIdentifiers($branch_data)
+    {
+        helper('text'); // For random_string()
+
+        $cert_identifyers = [];
+
+        $countyName = $branch_data['branchCounty'];
+        $abbr = strtoupper(substr($countyName, 0, 3)); // First three letters of county name
+        $yearSuffix = date('y'); // last two digits of the year
+        $monthDigit = date('m'); // Month as two digits
+        $randomPart = strtoupper(random_string('alnum', 6)); // Random alphanumeric string of length 6
+        $reference_no = "{$yearSuffix}{$monthDigit}{$randomPart}";
+        $cert_code = "{$abbr}{$yearSuffix}{$monthDigit}{$randomPart}";
+
+        $cert_identifyers['reference_no'] = $reference_no;
+        $cert_identifyers['marriage_code'] = $cert_code;
+
+        return $cert_identifyers;
+
+    }
+    
 
 
 }

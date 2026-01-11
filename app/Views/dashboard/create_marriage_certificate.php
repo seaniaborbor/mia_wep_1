@@ -119,9 +119,7 @@
 
     </div>
 </div>
-
-<!-- Error Modal (if validation fails) -->
-<?php if (isset($data['errors']) && !empty($data['errors'])): ?>
+<?php if (isset($errors) && !empty($errors)): ?>
 <div class="modal fade" id="errorModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
@@ -129,14 +127,14 @@
                 <h5 class="modal-title">
                     <i class="fas fa-exclamation-triangle mr-2"></i> Form Submission Errors
                 </h5>
-                <button type="button" class="close" data-dismiss="modal">
-                    <span>&times;</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <p>Please correct the following issues:</p>
                 <ul class="mb-0">
-                    <?php foreach ($data['errors'] as $error): ?>
+                    <?php foreach ($errors as $error): ?>
                         <li class="text-danger"><i class="fas fa-times-circle mr-1"></i> <?= esc($error) ?></li>
                     <?php endforeach; ?>
                 </ul>
@@ -149,10 +147,17 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#errorModal').modal('show');
+    document.addEventListener('DOMContentLoaded', function () {
+        var errorModal = document.getElementById('errorModal');
+        if (errorModal) {
+            // Initialize Bootstrap modal
+            var modal = new bootstrap.Modal(errorModal);
+            modal.show();
+        }
     });
 </script>
 <?php endif; ?>
+
+
 
 <?= $this->endSection() ?>

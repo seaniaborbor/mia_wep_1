@@ -60,51 +60,5 @@ class MarriageCertificateModel extends Model
         'SIGNA', 'SIGNB', 'SIGNC', 'ENTRY', 'last_edited_by', 'isWedCertIssued'
     ];
 
-    protected $beforeInsert = ['generateMarriageIdentifiers'];
-
-
-    protected function generateMarriageIdentifiers(array $data)
-{
-    helper('text'); // For random_string()
-
-    $counties = [
-        'Bomi' => ['BM', '01'],
-        'Bong' => ['BG', '02'],
-        'Gbarpolu' => ['GP', '03'],
-        'Grand Bassa' => ['GB', '04'],
-        'Grand Cape Mount' => ['GCM', '05'],
-        'Grand Gedeh' => ['GG', '06'],
-        'Grand Kru' => ['GK', '07'],
-        'Lofa' => ['LF', '08'],
-        'Margibi' => ['MG', '09'],
-        'Maryland' => ['MY', '10'],
-        'Montserrado' => ['MT', '11'],
-        'Nimba' => ['NM', '12'],
-        'River Cess' => ['RC', '13'],
-        'River Gee' => ['RG', '14'],
-        'Sinoe' => ['SN', '15'],
-    ];
-
-    $countyName = $data['data']['groom_birth_county'] ?? null;
-
-    if ($countyName && isset($counties[$countyName])) {
-        list($abbr, $code) = $counties[$countyName];
-
-        $yearSuffix = date('y'); // last two digits of the year
-        $randomPart = strtoupper(random_string('alnum', 4));
-
-        $data['data']['marriage_code'] = "{$abbr}-{$code}-{$yearSuffix}{$randomPart}";
-    }
-
-    // We assume the primary key is auto-incremented and generated *after* insert,
-    // so reference_no generation must be done *after* insert if it depends on ID.
-    // For now, make it based on marriage_code suffix:
-    if (!empty($code)) {
-        $lastChar = substr($data['data']['marriage_code'], 6,10);
-        $data['data']['reference_no'] = "{$code}-{$lastChar}";
-    }
-
-    return $data;
-}
-
+    
 }

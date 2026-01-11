@@ -44,9 +44,9 @@
             <div class="modern-card h-100">
 
                 <div class="modern-card-body p-5">
-                    <form action="/dashboard/users/create" method="post" enctype="multipart/form-data" id="userCreateForm">
+                    <form action="/system_admin/users/create" method="post" enctype="multipart/form-data" id="userCreateForm">
                         <?= csrf_field() ?>
-
+                        
                         <div class="form-grid">
                             <!-- Full Name -->
                             <div class="form-group">

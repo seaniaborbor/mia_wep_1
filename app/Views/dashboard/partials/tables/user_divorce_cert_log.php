@@ -40,7 +40,7 @@
                             <?= date('M d, Y', strtotime($cert['divorceissuanceDate'])) ?>
                         </td>
                         <td class="text-center align-middle">
-                            <a href="/dashboard/divorce_cert/view/<?= $cert['divorceCertId'] ?>"
+                            <a href="/matrimonial_dashboard/divorce_cert/view/<?= $cert['divorceCertId'] ?>"
                                class="btn btn-sm btn-primary"
                                title="View Divorce Certificate">
                                 <i class="fas fa-eye"></i> View

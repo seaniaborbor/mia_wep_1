@@ -9,7 +9,9 @@
                 <th>Marriage Date</th>
                 <th>Place of Marriage</th>
                 <th>Issuance Date</th>
+                 <?php if(session()->get('userData')['userAccountType'] != "ADMIN"): ?>
                 <th class="text-center" width="100">Actions</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
@@ -18,7 +20,7 @@
                     <tr>
                         <td class="text-center align-middle">
                             <span class="badge badge-primary font-weight-bold">
-                                #<?= esc($cert['marriageCertId']) ?>
+                                #<?= esc($cert['marriage_cert_id']) ?>
                             </span>
                         </td>
                         <td class="align-middle"><strong><?= esc($cert['groom_name']) ?></strong></td>
@@ -32,13 +34,15 @@
                             <i class="fas fa-certificate text-success mr-2"></i>
                             <?= date('M d, Y', strtotime($cert['certification_day'])) ?>
                         </td>
-                        <td class="text-center align-middle">
-                            <a href="/dashboard/wedcert/view/<?= $cert['marriageCertId'] ?>"
-                               class="btn btn-sm btn-success"
-                               title="View Marriage Certificate">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                        </td>
+                        <?php if(session()->get('userData')['userAccountType'] != "ADMIN"): ?>
+                            <td class="text-center align-middle">
+                                <a href="/matrimonial_dashboard/wedcert/view/<?= $cert['marriage_cert_id'] ?>"
+                                   class="btn btn-sm btn-success"
+                                   title="View Marriage Certificate">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>

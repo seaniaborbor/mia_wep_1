@@ -51,7 +51,7 @@ class UserController extends BaseController
         return view('dashboard/users_list', $data);
     }
 
-    public function view($user_id)
+public function view($user_id)
     {
         $data['title'] = 'View User';
         $data['passLink'] = 'users';
@@ -377,6 +377,7 @@ class UserController extends BaseController
 
     public function edit($user_id)
     {
+
         $data['title'] = 'Edit User';
         $data['passLink'] = 'users';
         $data['branches'] = $this->branchModel->findAll();
@@ -389,16 +390,12 @@ class UserController extends BaseController
         $userData = session()->get('userData');
 
         // Only the user whose profile is this or only user from branch 1 with account type SIGNC can access
-        if ($userData['userBreanch'] == $data['user']['userBreanch']) {
-            if (
-                $userData['userId'] == $user_id ||
-                ($userData['userAccountType'] == 'SIGNC' && $userData['userBreanch'] == 1)
-            ) {
-                $allow_edit = true;
-            } else {
-                return redirect()->back()->with('error', 'You do not have permission to edit this user.');
-            }
+        if ($userData['userBreanch'] == $user_id || $userData['userAccountType'] == "ADMIN") {
+            $allow_edit = true;
+        } else {
+            return redirect()->back()->with('error', 'You do not have permission to edit this user.');
         }
+        
 
         if (!$allow_edit) {
             return redirect()->back()->with('error', 'You do not have permission to edit this user.');

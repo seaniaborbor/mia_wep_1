@@ -408,7 +408,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">Revenue No.</label>
-                <input type="text" name="revenue_no" class="form-control" value="<?= old('revenue_no', $certificate['revenue_no'] ?? '') ?>" required>
+                <input type="text" name="revenue_no" disabled class="form-control" value="<?= old('revenue_no', $certificate['revenue_no'] ?? '') ?>" required>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Certification Date</label>

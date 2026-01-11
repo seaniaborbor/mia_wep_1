@@ -17,8 +17,8 @@ $accountTypeLabels = [
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-user-shield mr-2"></i>User Profile
         </h1>
-        <?php if(session()->get('userData')['userId'] == $user['userId'] || session()->get('userData')['userAccountType'] == "SIGNC"): ?>
-            <a href="/dashboard/users/edit/<?= $user['userId'] ?>" class="btn btn-warning btn-sm">
+        <?php if(session()->get('userData')['userId'] == $user['userId'] || session()->get('userData')['userAccountType'] == "ADMIN"): ?>
+            <a href="/matrimonial_dashboard/users/edit/<?= $user['userId'] ?>" class="btn btn-warning btn-sm">
                 <i class="fas fa-edit mr-1"></i> Edit Profile
             </a>
         <?php endif; ?>
@@ -144,7 +144,11 @@ $accountTypeLabels = [
                 </div>
                 <div class="card-body">
 
-                    <!-- Nav Tabs -->
+                   
+
+                    
+                     <?php if($user['userAccountType'] != 'ADMIN'): ?>
+                         <!-- Nav Tabs -->
                     <ul class="nav nav-tabs mb-4" id="certTabs" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="marriage-tab" data-toggle="tab" href="#marriage">
@@ -157,16 +161,23 @@ $accountTypeLabels = [
                             </a>
                         </li>
                     </ul>
-
-                    <!-- Tab Content -->
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="marriage">
-                            <?php include("partials/tables/user_wedding_cert_log.php"); ?>
+                        <!-- Tab Content -->
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="marriage">
+                                <?php include("partials/tables/user_wedding_cert_log.php"); ?>
+                            </div>
+                            <div class="tab-pane fade" id="divorce">
+                                <?php include("partials/tables/user_divorce_cert_log.php"); ?>
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="divorce">
-                            <?php include("partials/tables/user_divorce_cert_log.php"); ?>
+                    <?php else: ?>
+                        <div class="card">
+                            <div class="card-body text-center text-muted">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <p class="mb-0">The user is an System Admin, He/She is not associated with any certificate. </p>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
 
                 </div>
             </div>

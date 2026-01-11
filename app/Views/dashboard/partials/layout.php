@@ -168,26 +168,26 @@ $userData = session()->get('userData');
     </a>
 
     <?php if (session()->getFlashdata('success')): ?>
-<script>
-    Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: '<?= esc(session()->getFlashdata('success')) ?>',
-        confirmButtonColor: '#3085d6'
-    });
-</script>
-<?php endif; ?>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '<?= esc(session()->getFlashdata('success')) ?>',
+                confirmButtonColor: '#3085d6'
+            });
+        </script>
+        <?php endif; ?>
 
-<?php if (session()->getFlashdata('error')): ?>
-<script>
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: '<?= esc(session()->getFlashdata('error')) ?>',
-        confirmButtonColor: '#d33'
-    });
-</script>
-<?php endif; ?>
+        <?php if (session()->getFlashdata('error')): ?>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '<?= esc(session()->getFlashdata('error')) ?>',
+                confirmButtonColor: '#d33'
+            });
+        </script>
+    <?php endif; ?>
 
 
     <!-- Logout Modal-->

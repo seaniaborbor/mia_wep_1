@@ -34,16 +34,42 @@ function labelUser($branch, $type)
         <tbody>
             <?php if (!empty($users_active) && is_array($users_active)): ?>
                 <?php foreach ($users_active as $user): ?>
+                    <?php
+                    $isActive = $user['userAccountActiveStatus'];
+                    $statusClass = $isActive ? 'success' : 'danger';
+                    $statusColor = $isActive ? '#28a745' : '#dc3545';
+                    ?>
                     <tr>
                         <!-- Profile Picture + Status Dot -->
                         <td class="text-center">
-                            <div class="position-relative d-inline-block">
+                            <div class="position-relative d-inline-block" style="width: 45px; height: 45px;">
                                 <img src="<?= base_url('uploads/users/pictures/' . ($user['userPicture'] ?? 'default-avatar.png')) ?>"
                                      alt="<?= esc($user['userFullName']) ?>"
                                      class="img-profile rounded-circle"
-                                     width="45" height="45">
-                                <span class="position-absolute bottom-0 end-0 translate-middle-ping rounded-circle p-1 bg-<?= $user['userAccountActiveStatus'] ? 'success' : 'danger' ?> border border-light">
-                                    <span class="visually-hidden">Status</span>
+                                     width="45" height="45"
+                                     style="object-fit: cover;">
+                                
+                                <!-- Enhanced Status Indicator -->
+                                <span class="position-absolute bottom-0 end-0 translate-middle">
+                                    <span class="d-block">
+                                        <!-- Outer ring (optional) -->
+                                        <span class="position-absolute top-50 start-50 translate-middle rounded-circle" 
+                                              style="width: 16px; height: 16px; background-color: white; border: 2px solid white; z-index: 1;">
+                                        </span>
+                                        
+                                        <!-- Inner status dot -->
+                                        <span class="position-absolute top-50 start-50 translate-middle rounded-circle border border-white shadow-sm" 
+                                              style="width: 12px; height: 12px; background-color: <?= $statusColor ?>; z-index: 2;"
+                                              title="<?= $isActive ? 'User is active' : 'User is inactive' ?>">
+                                        </span>
+                                        
+                                        <!-- Optional ping animation for active users -->
+                                        <?php if ($isActive): ?>
+                                        <span class="position-absolute top-50 start-50 translate-middle rounded-circle" 
+                                              style="width: 16px; height: 16px; background-color: <?= $statusColor ?>; opacity: 0.4; z-index: 0; animation: statusPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;">
+                                        </span>
+                                        <?php endif; ?>
+                                    </span>
                                 </span>
                             </div>
                         </td>
@@ -90,23 +116,25 @@ function labelUser($branch, $type)
 
                         <!-- Status Badge -->
                         <td class="text-center align-middle">
-                            <span class="badge badge-<?= $user['userAccountActiveStatus'] ? 'success' : 'danger' ?>">
-                                <?= $user['userAccountActiveStatus'] ? 'Active' : 'Inactive' ?>
+                            <span class="badge badge-<?= $statusClass ?> px-3 py-1">
+                                <?= $isActive ? 'Active' : 'Inactive' ?>
                             </span>
                         </td>
 
                         <!-- Actions -->
                         <td class="text-center align-middle">
-                            <a href="/dashboard/users/view/<?= $user['userId'] ?>"
+                            <a href="/matrimonial_dashboard/users/view/<?= $user['userId'] ?>"
                                class="btn btn-sm btn-primary"
                                title="View Profile">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="/dashboard/users/edit/<?= $user['userId'] ?>"
+                            <?php if(session()->get('userData')['userId'] == $user['userId'] || session()->get('userData')['userAccountType'] == "ADMIN"): ?>
+                            <a href="/matrimonial_dashboard/users/edit/<?= $user['userId'] ?>"
                                class="btn btn-sm btn-warning"
                                title="Edit User">
                                 <i class="fas fa-edit"></i>
                             </a>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -121,6 +149,50 @@ function labelUser($branch, $type)
         </tbody>
     </table>
 </div>
+
+<style>
+/* Ping animation for active status */
+@keyframes statusPing {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.6;
+    }
+    70%, 100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+/* Ensure proper positioning */
+.position-relative {
+    position: relative;
+}
+.position-absolute {
+    position: absolute;
+}
+.translate-middle {
+    transform: translate(-50%, -50%);
+}
+.rounded-circle {
+    border-radius: 50%;
+}
+.d-inline-block {
+    display: inline-block;
+}
+.d-block {
+    display: block;
+}
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+.border {
+    border-width: 1px;
+    border-style: solid;
+}
+.border-white {
+    border-color: white;
+}
+</style>
 
 <script>
 $(document).ready(function() {

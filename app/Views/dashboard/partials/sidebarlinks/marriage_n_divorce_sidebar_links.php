@@ -60,21 +60,3 @@
 <div class="sidebar-heading">
     Addons
 </div>
-
-<!-- Nav Item - Pages Collapse Menu -->
-<li class="nav-item ">
-    <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
-        aria-controls="collapsePages">
-        <i class="fas fa-fw fa-folder"></i>
-        <span>Manage Branches</span>
-    </a>
-    <div id="collapsePages" class="collapse <?= mark_active('branches', $passLink) ?>" aria-labelledby="headingPages"
-        data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Actions</h6>
-            <a class="collapse-item" href="/matrimonial_dashboard/branches">View Branches</a>
-            
-            <a class="collapse-item" href="/matrimonial_dashboard/branches/create">Create Branche</a>
-        </div>
-    </div>
-</li>

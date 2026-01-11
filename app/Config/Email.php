@@ -6,112 +6,60 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail  = 'tarnuepb@gmail.com';
+    public string $fromEmail  = 'noreply@myapp.test';
     public string $fromName   = 'MIA - Database';
     public string $recipients = '';
 
-    /**
-     * The "user agent"
-     */
     public string $userAgent = 'CodeIgniter';
 
     /**
-     * The mail sending protocol: mail, sendmail, smtp
+     * Use SMTP for MailHog
      */
-    public string $protocol = 'smtp';  // Changed from 'mail' to 'smtp'
+    public string $protocol = 'smtp';
 
     /**
-     * The server path to Sendmail.
+     * Sendmail not used
      */
-    public string $mailPath = '/usr/sbin/sendmail';
+    public string $mailPath = '';
 
     /**
-     * SMTP Server Address
+     * MailHog SMTP host
      */
-    public string $SMTPHost = 'smtp.gmail.com';  // Set Gmail SMTP
+    public string $SMTPHost = '127.0.0.1';
 
     /**
-     * SMTP Username
+     * MailHog does NOT require auth
      */
-    public string $SMTPUser = 'tarnuepb@gmail.com';  // Your Gmail
+    public string $SMTPUser = '';
+    public string $SMTPPass = '';
 
     /**
-     * SMTP Password
+     * MailHog SMTP port
      */
-    public string $SMTPPass = 'uyztoeyonaulqqng';  // Your App Password
+    public int $SMTPPort = 1025;
 
     /**
-     * SMTP Port
+     * No encryption for MailHog
      */
-    public int $SMTPPort = 587;  // Changed to 587 for TLS
+    public string $SMTPCrypto = '';
 
-    /**
-     * SMTP Timeout (in seconds)
-     */
-    public int $SMTPTimeout = 60;  // Increased timeout
-
-    /**
-     * Enable persistent SMTP connections
-     */
+    public int $SMTPTimeout = 30;
     public bool $SMTPKeepAlive = false;
 
-    /**
-     * SMTP Encryption. Either tls or ssl
-     */
-    public string $SMTPCrypto = 'tls';  // Use TLS
-
-    /**
-     * Enable word-wrap
-     */
     public bool $wordWrap = true;
-
-    /**
-     * Character count to wrap at
-     */
     public int $wrapChars = 76;
 
-    /**
-     * Type of mail, either 'text' or 'html'
-     */
-    public string $mailType = 'html';  // Changed to html for better formatting
+    public string $mailType = 'html';
+    public string $charset  = 'UTF-8';
 
-    /**
-     * Character set (utf-8, iso-8859-1, etc.)
-     */
-    public string $charset = 'UTF-8';
-
-    /**
-     * Whether to validate the email address
-     */
     public bool $validate = false;
-
-    /**
-     * Email Priority. 1 = highest. 5 = lowest. 3 = normal
-     */
     public int $priority = 3;
 
-    /**
-     * Newline character. (Use "\r\n" to comply with RFC 822)
-     */
     public string $CRLF = "\r\n";
-
-    /**
-     * Newline character. (Use "\r\n" to comply with RFC 822)
-     */
     public string $newline = "\r\n";
 
-    /**
-     * Enable BCC Batch Mode.
-     */
     public bool $BCCBatchMode = false;
-
-    /**
-     * Number of emails in each BCC batch
-     */
     public int $BCCBatchSize = 200;
 
-    /**
-     * Enable notify message from server
-     */
     public bool $DSN = false;
 }

@@ -105,8 +105,8 @@ class AuthController extends BaseController
                         return redirect()->to('/system_admin_dashboard')->with('success', 'Welcome to the System Admin Dashboard!');
                     }
 
-                    print_r($user);
-                    die();
+                    // print_r($user);
+                    // die();
 
                     if (session()->has('isLoggedIn')) {
                         session()->remove(['isLoggedIn', 'userData']);
