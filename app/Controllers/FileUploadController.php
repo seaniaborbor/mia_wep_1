@@ -199,9 +199,29 @@ class FileUploadController extends BaseController
         if (file_exists($file_path)) {
             unlink($file_path);
         }
-
+        // get emails for notification
+        $recipients = $this->userModel
+            ->where('userBreanch', $cert_data[$certificate_type === "marriage" ? 'breanch_id' : ($certificate_type === "divorce" ? 'divorcebreanch_id' : 'tradCertBranchId')])
+            ->where('userAccountActiveStatus', 1)
+            ->findAll();
+        $emails = array_map(function($user) {
+            return $user['userEmail'];
+        }, $recipients);
         // Delete database record
         if ($this->fileModel->delete($file_id)) {
+            // Send notification emails
+            $emailService = \Config\Services::email();
+            try{
+                foreach ($emails as $email) {
+                    $emailService->setTo($email);
+                    $emailService->setSubject('Certificate File Deleted');
+                    $emailService->setMessage('A file titled "' . $file_to_delete['fileTitle'] . '" associated with certificate ID ' . $cert_id . ' has been deleted.');
+                    $emailService->send();
+                }   
+            }catch(\Exception $e){
+                // Log the error but do not interrupt the flow
+                log_message('error', 'Failed to send deletion notification emails: ' . $e->getMessage());
+            }
             return redirect()->back()->with("success", "File deleted successfully.");
         } else {
             return redirect()->back()->with("error", "Failed to delete file from database.");

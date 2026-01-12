@@ -148,7 +148,6 @@ public function create()
                 'divorceRevNo' => $this->request->getPost('divorceRevNo'),
                 'divorcemarriageDate' => $this->request->getPost('divorcemarriageDate'),
                 'divorcedateOfDivorce' => $this->request->getPost('divorcedateOfDivorce'),
-                'divorceissuanceDate' => $this->request->getPost('divorceissuanceDate'),
                 'divorcebreanch_id' => session()->get('userData')['userBreanch'],
                 'divorcecreated_by' => session()->get('userData')['userId']
             ];
@@ -170,14 +169,23 @@ public function create()
                 $defendantPic->move('uploads/divorce', $newName);
                 $formData['divorcedefendantPic'] = $newName;
             }
+
+            // Generate divorce code and reference number
+            $branchData = $this->branchModel->find(session()->get('userData')['userBreanch']);
+            $codes = $this->generateDivorceCode($branchData); 
+            $formData['divorceCode'] = $codes['divorceCode'];
+            $formData['divorceRefNo'] = $codes['divorceRefNo'];
+            // print_r($formData);
+            // exit();
             
             // Save to database
             try {
                 $saved = $this->divorceCertificateModel->insert($formData);
                 
                 if ($saved) {
+                    // geltw
                     // Success - redirect with success message
-                    return redirect()->to('/dashboard/divorce_cert/create')
+                    return redirect()->back()
                         ->with('success', 'Divorce certificate created successfully!');
                 } else {
                     // Database error
@@ -194,7 +202,7 @@ public function create()
         }
     }
     
-    // Handle GET request (load form)
+    // Handle GET request (load form)ltwltw
     return view('dashboard/create_divorce_certificate', $data);
 }
 
@@ -270,108 +278,157 @@ public function edite()
             return view('dashboard/divorce_certificate_log', $data);
         }
 
-
 public function sign($certificate_id)
-    {
-    
-     // check if the user account is allowed to view marriage certificate
-        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-            exit();
-        }
+{
+    // Allowed roles
+    $allowedRoles = ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'];
+
+    if (!in_array(session()->get('userData')['userAccountType'], $allowedRoles)) {
+        return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
+    }
 
     $data['title'] = 'Sign Divorce Certificate';
     $data['passLink'] = 'certificates';
 
-    // Fetch the certificate details
-    $data['certificate'] = $this->divorceCertificateModel
+    // Fetch certificate
+    $certificate = $this->divorceCertificateModel
         ->join('branchs_table', 'branchs_table.branchId = divorce_certificates.divorcebreanch_id')
         ->where('divorce_certificates.divorceCertId', $certificate_id)
         ->first();
 
-    if (!$data['certificate']) {
-        return redirect()->back()->with('error', 'Certificate not found');
+    if (!$certificate) {
+        return redirect()->back()->with('error', 'Certificate not found.');
     }
 
-    // Check if the user is authorized to sign
-    if (session()->get('userData')['userBreanch'] != $data['certificate']['divorcebreanch_id']) {
-        return redirect()->back()->with('error', 'You are not authorized to sign this certificate');
+    // Branch authorization
+    if ((int) session()->get('userData')['userBreanch'] !== (int) $certificate['divorcebreanch_id']) {
+        return redirect()->back()->with('error', 'You are not authorized to sign this certificate.');
     }
 
-    $loginUserId = session()->get('userData')['userId'];
-    $loginUserAccountType = session()->get('userData')['userAccountType'];
-    $loginUserBranch = session()->get('userData')['userBreanch'];
-    $userSignature = session()->get('userData')['userSignature'];
+    $user = session()->get('userData');
+    $role = $user['userAccountType'];
 
-    // Check if the login user account type is SIGNA, SIGNB or SIGNC
-    if ($loginUserAccountType == 'SIGNA' || $loginUserAccountType == 'SIGNB' || $loginUserAccountType == 'SIGNC') {
-
-        // Prepare the update data based on the user type
-        $updateData = [];
-
-        if ($loginUserAccountType == 'SIGNA' && empty($data['certificate']['divorceSIGN_A'])) {
-
-            $updateData['divorceSIGN_A'] = $userSignature;
-            $updateData['divorceSIGN_A_DATE_SIGNED'] = date('Y-m-d H:i:s');
-            $updateData['divorceSIGN_A_ID'] = $loginUserId;
-            $updateData['divorceSIGN_A_branch'] = $loginUserBranch;
-
-
-        } elseif ($loginUserAccountType == 'SIGNB' && empty($data['certificate']['divorceSIGN_B'])) {
-            $updateData['divorceSIGN_B'] = $userSignature;
-            $updateData['divorceSIGN_B_DATE_SIGNED'] = date('Y-m-d H:i:s');
-            $updateData['divorceSIGN_B_ID'] = $loginUserId;
-            $updateData['divorceSIGN_B_branch'] = $loginUserBranch;
-
-        } elseif ($loginUserAccountType == 'SIGNC' && empty($data['certificate']['divorceSIGN_C'])) {
-            $updateData['divorceSIGN_C'] = $userSignature;
-            $updateData['divorceSIGN_C_DATE_SIGNED'] = date('Y-m-d H:i:s');
-            $updateData['divorceSIGN_C_ID'] = $loginUserId;
-            $updateData['divorceSIGN_C_branch'] = $loginUserBranch;
-        }
-
-            $updateData['divorceupdated_by'] = $loginUserId;
-
-
-        // Ensure there's data to update
-        if (empty($updateData)) {
-            return redirect()->back()->with('error', 'You may have already signed this certificate or you are not authorized to sign it.');
-        }
-
-        // Attempt to update the certificate
-        if ($this->divorceCertificateModel->update($certificate_id, $updateData)) {
-            return redirect()->to('/dashboard/divorce_cert/view/' . $certificate_id)
-                ->with('success', 'Certificate signed successfully');
-        } else {
-            return redirect()->back()->with('error', 'Failed to sign the certificate');
-        }
-    } else {
-        return redirect()->back()->with('error', 'You are not authorized to sign this certificate');
+    // Only signers allowed beyond this point
+    if (!in_array($role, ['SIGNA', 'SIGNB', 'SIGNC'])) {
+        return redirect()->back()->with('error', 'You are not authorized to sign this certificate.');
     }
+
+    $updateData = [];
+    $recipients = [];
+    $message = '';
+    $now = date('Y-m-d H:i:s');
+
+    switch ($role) {
+        case 'SIGNA':
+            if (!empty($certificate['divorceSIGN_A'])) {
+                return redirect()->back()->with('error', 'You have already signed this certificate.');
+            }
+
+            $updateData = [
+                'divorceSIGN_A' => $user['userSignature'],
+                'divorceSIGN_A_DATE_SIGNED' => $now,
+                'divorceSIGN_A_ID' => $user['userId'],
+                'divorceSIGN_A_branch' => $user['userBreanch'],
+            ];
+
+            $recipients = $this->userModel
+                ->where('userBreanch', $user['userBreanch'])
+                ->whereIn('userAccountType', ['SIGNB', 'SIGNC'])
+                ->findAll();
+
+            $message = "Divorce Certificate with Reference No: {$certificate['divorceRefNo']} has been signed by Signatory A ({$user['userFullName']}).";
+            break;
+
+        case 'SIGNB':
+            if (!empty($certificate['divorceSIGN_B'])) {
+                return redirect()->back()->with('error', 'You have already signed this certificate.');
+            }
+
+            $updateData = [
+                'divorceSIGN_B' => $user['userSignature'],
+                'divorceSIGN_B_DATE_SIGNED' => $now,
+                'divorceSIGN_B_ID' => $user['userId'],
+                'divorceSIGN_B_branch' => $user['userBreanch'],
+            ];
+
+            $recipients = $this->userModel
+                ->where('userBreanch', $user['userBreanch'])
+                ->whereIn('userAccountType', ['SIGNA', 'SIGNC'])
+                ->findAll();
+
+            $message = "Divorce Certificate with Reference No: {$certificate['divorceRefNo']} has been signed by Signatory B ({$user['userFullName']}).";
+            break;
+
+        case 'SIGNC':
+            if (!empty($certificate['divorceSIGN_C'])) {
+                return redirect()->back()->with('error', 'You have already signed this certificate.');
+            }
+
+            $updateData = [
+                'divorceSIGN_C' => $user['userSignature'],
+                'divorceSIGN_C_DATE_SIGNED' => $now,
+                'divorceSIGN_C_ID' => $user['userId'],
+                'divorceSIGN_C_branch' => $user['userBreanch'],
+            ];
+
+            $recipients = $this->userModel
+                ->where('userBreanch', $user['userBreanch'])
+                ->whereIn('userAccountType', ['SIGNA', 'SIGNB'])
+                ->findAll();
+
+            $message = "Divorce Certificate with Reference No: {$certificate['divorceRefNo']} has been signed by Signatory C ({$user['userFullName']}).";
+            break;
+    }
+
+    $updateData['divorceupdated_by'] = $user['userId'];
+
+    if (!$this->divorceCertificateModel->update($certificate_id, $updateData)) {
+        return redirect()->back()->with('error', 'Failed to sign the certificate.');
+    }
+
+    // Send notifications (non-blocking)
+    $email = \Config\Services::email();
+
+    foreach ($recipients as $recipient) {
+        try {
+            $email->clear();
+            $email->setTo($recipient['userEmail']);
+            $email->setSubject('Divorce Certificate Signed');
+            $email->setMessage(
+                "Dear {$recipient['userFullName']},<br><br>{$message}<br><br>Regards,<br>Matrimonial System"
+            );
+            $email->send();
+        } catch (\Throwable $e) {
+            log_message('error', 'Email failed: ' . $e->getMessage());
+        }
+    }
+
+    return redirect()
+        ->to('/matrimonial_dashboard/divorce_cert/view/' . $certificate_id)
+        ->with('success', 'Certificate signed successfully.');
 }
+
 
 
 public function edit_certificate($certificate_id)
     {
-     // check if the user account is allowed to view marriage certificate
-        if(!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])){
-            return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-            exit();
-        }
-
 
     $data['title'] = 'Edit Divorce Certificate';
     $data['passLink'] = 'certificates';
-
-    
 
     // Fetch the certificate details
     $data['divorceCert'] = $this->divorceCertificateModel
         ->where('divorceCertId', $certificate_id)
         ->first();
+    
+    // only ENTRY user at the same branch can edit the certificate
+    if (session()->get('userData')['userAccountType'] != 'ENTRY' ||
+        session()->get('userData')['userBreanch'] != $data['divorceCert']['divorcebreanch_id']) {
+        return redirect()->back()->with('error', 'You are not authorized to edit this certificate.');
+    }
 
     if (!$data['divorceCert']) {
-        return redirect()->back()->with('error', 'Certificate not found');
+        return redirect()->back()->with('error', 'Certificate not found - try again later.');
     }
 
     // Handle form submission
@@ -384,7 +441,6 @@ public function edit_certificate($certificate_id)
             'divorceRevNo' => 'permit_empty|max_length[20]',
             'divorcemarriageDate' => 'required|valid_date',
             'divorcedateOfDivorce' => 'required|valid_date',
-            'divorceissuanceDate' => 'required|valid_date'
         ];
 
         $errors = [
@@ -417,10 +473,7 @@ public function edit_certificate($certificate_id)
                 'required' => 'Divorce date is required',
                 'valid_date' => 'Please enter a valid divorce date'
             ],
-            'divorceissuanceDate' => [
-                'required' => 'Issuance date is required',
-                'valid_date' => 'Please enter a valid issuance date'
-            ]
+            
         ];
 
         if (!$this->validate($rules, $errors)) {
@@ -433,7 +486,6 @@ public function edit_certificate($certificate_id)
             'divorceRevNo' => $this->request->getPost('divorceRevNo'),
             'divorcemarriageDate' => $this->request->getPost('divorcemarriageDate'),
             'divorcedateOfDivorce' => $this->request->getPost('divorcedateOfDivorce'),
-            'divorceissuanceDate' => $this->request->getPost('divorceissuanceDate')
         ];
 
         // Handle plaintiff picture upload if a new file is provided
@@ -460,8 +512,29 @@ public function edit_certificate($certificate_id)
                 ->withInput();
         }
 
-        // Validate and update the certificate data here
-        // ...
+        // choose active users at this branch who are SIGNA, SIGNB, SIGNC to notify about the edit
+        $signatories = $this->userModel
+            ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC'])
+            ->where('userBreanch', $data['divorceCert']['divorcebreanch_id'])
+            ->findAll();
+        $email = \Config\Services::email();
+        foreach ($signatories as $signatory) {
+            try {
+                $email->clear();
+                $email->setTo($signatory['userEmail']);
+                $email->setSubject('Divorce Certificate Edited');
+                $email->setMessage(
+                    "Dear {$signatory['userFullName']},<br><br>"
+                    . "Divorce Certificate with Reference No: {$data['divorceCert']['divorceRefNo']} has been edited by "
+                    . session()->get('userData')['userFullName'] . ".<br><br>"
+                    . "Please review the changes made to the certificate and Sign<br><br>"
+                    . "Regards,<br>Matrimonial System"
+                );
+                $email->send();
+            } catch (\Throwable $e) {
+                log_message('error', 'Email notification failed: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->to('/dashboard/divorce_cert/view/' . $certificate_id)
             ->with('success', 'Certificate updated successfully');
@@ -542,6 +615,29 @@ public function allow_edit($certificate_id)
 
 
     if($this->divorceCertificateModel->update($certificate_id, $certificate)){
+        // Fetch all signatories and send notifications
+        $signatories = $this->userModel
+            ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC'])
+            ->where('userBreanch', $certificate['divorcebreanch_id'])
+            ->findAll();
+
+        $email = \Config\Services::email();
+        foreach ($signatories as $signatory) {
+            try {
+                $email->clear();
+                $email->setTo($signatory['userEmail']);
+                $email->setSubject('Divorce Certificate - Reopened for Review and Signing');
+                $email->setMessage(
+                    "Dear {$signatory['userFullName']},<br><br>"
+                    . "Divorce Certificate with Reference No: {$certificate['divorceRefNo']} has been reopened for review and signing by Signatory C.<br><br>"
+                    . "Please review and sign the certificate accordingly.<br><br>"
+                    . "Regards,<br>Matrimonial System"
+                );
+                $email->send();
+            } catch (\Throwable $e) {
+                log_message('error', 'Email notification failed: ' . $e->getMessage());
+            }
+        }
         return redirect()->back()->with('success', 'Edit permission granted for the certificate.');
     } else {
         return redirect()->back()->with('error', 'Failed to grant edit permission for the certificate.');
@@ -553,9 +649,143 @@ public function allow_edit($certificate_id)
  /**
      * Get issued certificates (API endpoint)
      */
-private function isIssued($certificate): bool
+    private function isIssued($certificate): bool
     {
         return !empty($certificate['divorceissuanceDate']);
+    }
+
+
+     private  function generateDivorceCode($branch_data)
+    {
+        helper('text'); // For random_string()
+
+        $cert_identifyers = [];
+
+        $countyName = $branch_data['branchCounty'];
+        $abbr = strtoupper(substr($countyName, 0, 3)); // First three letters of county name
+        $yearSuffix = date('y'); // last two digits of the year
+        $monthDigit = date('m'); // Month as two digits
+        $randomPart = strtoupper(random_string('alnum', 6)); // Random alphanumeric string of length 6
+        $reference_no = "{$yearSuffix}{$monthDigit}{$randomPart}";
+        $cert_code = "{$abbr}-{$yearSuffix}{$monthDigit}{$randomPart}";
+
+        $cert_identifyers['divorceRefNo'] = $reference_no;
+        $cert_identifyers['divorceCode'] = $cert_code;
+
+        return $cert_identifyers;
+
+    }
+
+    
+    public function markAsIssued($certificate_id)
+    {
+        
+
+        // Fetch the certificate details
+        $certificate = $this->divorceCertificateModel->find($certificate_id);
+        if (!$certificate) {
+            return redirect()->back()->with('error', 'Certificate not found.');
+        }
+
+         // only ENTRY user at the same branch can mark as issued
+        if (session()->get('userData')['userAccountType'] != 'ENTRY' ||
+            session()->get('userData')['userBreanch'] != $certificate['divorcebreanch_id']) {
+            return redirect()->back()->with('error', 'You are not authorized to mark this certificate as issued.');
+        }
+
+        // check if already issued
+        if ($this->isIssued($certificate)) {
+            return redirect()->back()->with('error', 'Certificate is already marked as issued.');
+        }
+       
+
+        // Update the issuance date to mark as issued
+        $certificate['divorceissuanceDate'] = date('Y-m-d H:i:s');
+        $certificate['divorceupdated_by'] = session()->get('userData')['userId'];
+        $certificate['divorceIsIssued'] = 1;
+
+        if ($this->divorceCertificateModel->update($certificate_id, $certificate)) {
+            // Fetch all active users at this branch
+            $users = $this->userModel
+                ->where('userBreanch', $certificate['divorcebreanch_id'])
+                ->where('userAccountActiveStatus', 1)
+                ->findAll();
+
+            // Send email notifications
+            $email = \Config\Services::email();
+            foreach ($users as $user) {
+                try {
+                    $email->clear();
+                    $email->setTo($user['userEmail']);
+                    $email->setSubject($certificate['divorceRefNo'] . ' - Divorce Certificate Hand Delivered');
+                    $email->setMessage(
+                        "Dear {$user['userFullName']},<br><br>"
+                        . "The Data Entry Clerk has hand delivered Divorce Certificate with Reference No: {$certificate['divorceRefNo']}.<br><br>"
+                        . "Regards,<br>Matrimonial System"
+                    );
+                    $email->send();
+                } catch (\Throwable $e) {
+                    log_message('error', 'Email notification failed: ' . $e->getMessage());
+                }
+            }
+            return redirect()->back()->with('success', 'Certificate marked as issued.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to mark certificate as issued.');
+        }
+    }
+
+
+    // delete divorce certificate
+    public function delete($certificate_id)
+    {
+        // only ENTRY user at the same branch can delete the certificate
+        if (session()->get('userData')['userAccountType'] != 'ENTRY') {
+            return redirect()->back()->with('error', 'You are not authorized to delete this certificate.');
+        }
+
+        $certificate = $this->divorceCertificateModel->find($certificate_id);
+        if (!$certificate) {
+            return redirect()->back()->with('error', 'Certificate not found.');
+        }
+
+        if (session()->get('userData')['userBreanch'] != $certificate['divorcebreanch_id']) {
+            return redirect()->back()->with('error', 'You are not authorized to delete this certificate. It is not at your branch.');
+        }
+
+        // check if the certificate is signed, if signed cannot delete
+        if (!empty($certificate['divorceSIGN_A']) || !empty($certificate['divorceSIGN_B']) || !empty($certificate['divorceSIGN_C'])) {
+            return redirect()->back()->with('error', 'Cannot delete a signed certificate.');
+        }
+
+        // get receipients lists to notify about the deletion
+        $recipients = $this->userModel
+            ->where('userBreanch', $certificate['divorcebreanch_id'])
+            ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])
+            ->findAll();
+
+        if ($this->divorceCertificateModel->delete($certificate_id)) {
+            // send notification emails
+            $email = \Config\Services::email();
+            foreach ($recipients as $recipient) {
+                try {
+                    $email->clear();
+                    $email->setTo($recipient['userEmail']);
+                    $email->setSubject('Divorce Certificate Deleted');
+                    $email->setMessage(
+                        "Dear {$recipient['userFullName']},<br><br>"
+                        . "Divorce Certificate with Reference No: {$certificate['divorceRefNo']} has been deleted by "
+                        . session()->get('userData')['userFullName'] . ".<br><br>"
+                        . "Regards,<br>Matrimonial System"
+                    );
+                    $email->send();
+                } catch (\Throwable $e) {
+                    log_message('error', 'Email notification failed: ' . $e->getMessage());
+                }
+            }
+            return redirect()->to('/matrimonial_dashboard/divorce_cert')->with('success', 'Certificate deleted successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to delete certificate.');
+        }
     }
 
 

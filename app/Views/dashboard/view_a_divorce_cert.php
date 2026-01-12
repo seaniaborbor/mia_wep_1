@@ -11,7 +11,7 @@
                         <p style="font-size:13px; margin-left: 50px;" class="text-danger mb-0">
                             <?php if(isset($certificate[0]['branchName']) && !empty($certificate[0]['branchName'])): ?>
                                 <?= htmlspecialchars($certificate[0]['branchName']) ?>
-                            <?php else: ?> 
+                            <?php else: ?>  
                                 <?= htmlspecialchars(session()->get('userData')['branchName'] ?? 'Unknown Branch') ?>
                             <?php endif; ?>
                         </p>
@@ -30,8 +30,9 @@
                         $isSameBranch = ($userBranch == $certBranch);
                     ?>
                     
+                    
                     <!-- Generate Button -->
-                    <a href="/dashboard/divorce_cert/generate_certificate/<?= $certificate[0]['divorceCertId'] ?>" 
+                    <a href="/matrimonial_dashboard/divorce_cert/generate_certificate/<?= $certificate[0]['divorceCertId'] ?>" 
                        class="btn btn-sm btn-primary btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-file-pdf"></i>
@@ -49,7 +50,7 @@
                     
                     <!-- Sign Button (for non-ENTRY users when not completed) -->
                     <?php if ($isSameBranch && $userAccountType !== 'ENTRY' && !$isCompleted): ?>
-                    <a href="/dashboard/divorce_cert/sign/<?= $certificate[0]['divorceCertId'] ?>" 
+                    <a href="/matrimonial_dashboard/divorce_cert/sign/<?= $certificate[0]['divorceCertId'] ?>" 
                        class="btn btn-sm btn-success btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-signature"></i>
@@ -60,7 +61,7 @@
 
                     <!-- Edit Button (for ENTRY users when no signatures) -->
                     <?php if ($isSameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
-                    <a href="/dashboard/edit_divorce_cert/<?= $certificate[0]['divorceCertId'] ?>" 
+                    <a href="/matrimonial_dashboard/edit_divorce_cert/<?= $certificate[0]['divorceCertId'] ?>" 
                        class="btn btn-sm btn-warning btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-edit"></i>
@@ -71,7 +72,7 @@
 
                     <!-- Allow Edit Button (for SIGNC users when complete) -->
                     <?php if ($isSameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
-                    <a href="/dashboard/divorce_cert/allow_edit/<?= $certificate[0]['divorceCertId'] ?>" 
+                    <a href="/matrimonial_dashboard/divorce_cert/allow_edit/<?= $certificate[0]['divorceCertId'] ?>" 
                        class="btn btn-sm btn-secondary btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-unlock"></i>
@@ -80,13 +81,17 @@
                     </a>
                     <?php endif; ?>
 
-                    <!-- Back Button -->
-                    <a href="/divorcecert" class="btn btn-sm btn-dark btn-icon-split">
-                        <span class="icon text-white-50">
-                            <i class="fas fa-arrow-left"></i>
-                        </span>
-                        <span class="text">Back</span>
-                    </a>
+                    <!-- if the user is clerk and no signature has been made, show delete button -->
+                    <?php if ($isSameBranch && $userAccountType === 'ENTRY' && $allMissing): ?>
+                        <a href="/matrimonial_dashboard/divorce_cert/delete/<?= $certificate[0]['divorceCertId'] ?>" 
+                        class="btn btn-sm btn-danger btn-icon-split"
+                        onclick="return confirm('Are you sure you want to delete this certificate? This action cannot be undone.');">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-trash-alt"></i>
+                            </span>
+                            <span class="text">Delete</span>
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="card-body p-4">
@@ -106,7 +111,7 @@
                                     <div class="col-md-8">
                                         <h3 class="mb-1 liberia-red">Divorce Certificate</h3>
                                         <p class="text-muted mb-0">
-                                            <strong><?= esc($certificate[0]['divorceRefNo']) ?></strong>
+                                            <strong><?= esc($certificate[0]['divorceCode']) ?></strong>
                                         </p>
                                     </div>
                                     <div class="col-md-4 text-md-right">
@@ -252,7 +257,7 @@
                                                         <td><?= date('M j, Y', strtotime($file['fileCreatedAt'])) ?></td>
                                                         <td><?= esc($file['userFullName']) ?></td>
                                                         <td>
-                                                            <a href="/dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate[0]['divorceCertId'] ?>"
+                                                            <a href="/matrimonial_dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate[0]['divorceCertId'] ?>"
                                                                class="btn btn-sm btn-outline-danger"
                                                                onclick="return confirm('Delete this file?');">
                                                                 Delete
@@ -314,10 +319,10 @@
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-                                <div class="row">
-                                    <?php if($isCompleted && !$isIssued): ?>
+                                <div class="row my-3 ">
+                                    <?php if($isCompleted && empty($certificate[0]['divorceissuanceDate'])): ?>
                                         <p>The certificate is completed but has not been marked as issued. Please 
-                                            mark it as issued by clicking <a href="#">here</a>
+                                            mark it as issued by clicking <a href="/matrimonial_dashboard/divorce_cert/deliver/<?= $certificate[0]['divorceCertId'] ?>">here</a>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -326,44 +331,6 @@
 
                     <!-- ==================== SIDEBAR ==================== -->
                     <div class="col-lg-4">
-                        <!-- Actions -->
-                        <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
-                            <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-blue">Actions</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-grid gap-2">
-                                    <?php if ($isSameBranch): ?>
-                                        <!-- ENTRY user: Edit & Delete only if NO signatures -->
-                                        <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
-                                            <a href="/dashboard/edit_divorce_cert/<?= $certificate[0]['divorceCertId'] ?>"
-                                               class="btn btn-sm liberia-btn-red">Edit</a>
-                                            <a href="/dashboard/divorce_cert/delete/<?= $certificate[0]['divorceCertId'] ?>"
-                                               class="btn btn-sm btn-outline-danger"
-                                               onclick="return confirm('Delete this certificate?');">Delete</a>
-                                        <?php endif; ?>
-
-                                        <!-- Non-ENTRY: Sign if not complete -->
-                                        <?php if ($userAccountType !== 'ENTRY' && !$isCompleted): ?>
-                                            <a href="/dashboard/divorce_cert/sign/<?= $certificate[0]['divorceCertId'] ?>"
-                                               class="btn btn-sm liberia-btn-blue">Sign</a>
-                                        <?php endif; ?>
-
-                                        <!-- Allow Edit: ONLY for SIGNC when document is complete -->
-                                        <?php if ($userAccountType === 'SIGNC'): ?>
-                                            <a href="/dashboard/divorce_cert/allow_edit/<?= $certificate[0]['divorceCertId'] ?>"
-                                               class="btn btn-sm liberia-btn-red">Allow Edit</a>
-                                        <?php endif; ?>
-
-                                        <!-- Always available -->
-                                        <a href="/dashboard/divorce_cert/generate_certificate/<?= $certificate[0]['divorceCertId'] ?>"
-                                           class="btn btn-sm liberia-btn-blue">Generate</a>
-                                        <button onclick="window.print();" class="btn btn-sm liberia-btn-blue">Print</button>
-                                    <?php endif; ?>
-                                    <a href="/divorcecert" class="btn btn-sm btn-outline-secondary">Back</a>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Editing Guidelines -->
                         <?php if ($userAccountType === 'ENTRY' && $allMissing): ?>
@@ -621,7 +588,7 @@
                     <span>×</span>
                 </button>
             </div>
-            <form action="/dashboard/certificate_files/upload_file/<?= $certificate[0]['divorceCertId'] ?>"
+            <form action="/matrimonial_dashboard/certificate_files/upload_file/<?= $certificate[0]['divorceCertId'] ?>"
                   method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">

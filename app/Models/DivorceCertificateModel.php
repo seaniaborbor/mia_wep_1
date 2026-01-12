@@ -32,36 +32,12 @@ class DivorceCertificateModel extends Model
         'divorceCode',
         'divorceRevNo',
         'divorceupdated_by',
+        'divorceIsIssued',
         
         
         'divorcecreated_at',
         'divorceupdated_at'
     ];
-
-    protected function generateDivorceCode()
-    {
-        $year = date('y');
-        $random = strtoupper(substr(bin2hex(random_bytes(2)), 0, 4));
-        return "MIA-11-{$year}-{$random}";
-    }
-
-    protected function generateDivorceRefNo($divorceCode)
-    {
-        $lastFour = substr($divorceCode, -4);
-        return "MT-11-{$lastFour}";
-    }
-
-    protected function beforeInsert(array $data)
-    {
-        if (empty($data['data']['divorceCode'])) {
-            $divorceCode = $this->generateDivorceCode();
-            $data['data']['divorceCode'] = $divorceCode;
-            $data['data']['divorceRefNo'] = $this->generateDivorceRefNo($divorceCode);
-        }
-        return $data;
-    }
-
-    protected $beforeInsert = ['beforeInsert'];
     
    
 }

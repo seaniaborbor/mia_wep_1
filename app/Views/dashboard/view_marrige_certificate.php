@@ -402,42 +402,55 @@
         <div class="card-body">
             <div class="row">
 
-                <?php foreach ($signerProfiles as $role => $signer): ?>
-                    <?php if (!empty($signer)): ?>
-                        <div class="col-md-12  mb-3">
-                            <div class="border rounded p-3 h-100 d-flex align-items-center">
-
-                                <!-- Profile Picture -->
-                                <div class="mr-3">
-                                    <?php if (!empty($signer['userPicture']) && file_exists(FCPATH . 'uploads/users/pictures/' . $signer['userPicture'])): ?>
-                                        <img src="<?= base_url('uploads/users/pictures/' . $signer['userPicture']) ?>"
-                                             class="rounded-circle"
-                                             width="60"
-                                             height="60">
-                                    <?php else: ?>
-                                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-                                             style="width:60px;height:60px;">
-                                            <i class="fas fa-user text-muted"></i>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- Info -->
-                                <div>
-                                    <strong><?= esc($signer['userFullName']) ?></strong><br>
-                                    <small class="text-muted">
-                                        <?= esc($signer['userPosition'] ?? 'Signer') ?>
-                                    </small><br>
-
-                                    <span class="badge badge-info mt-1">
-                                        <?= esc(str_replace('_profile', '', $role)) ?>
-                                    </span>
-                                </div>
-
-                            </div>
+                <?php if (empty($signerProfiles) || !array_filter($signerProfiles)): ?>
+                    <div class="col-md-12">
+                        <div class="alert alert-warning mb-0">
+                           <h3> <i class="fas fa-exclamation-triangle mr-2"></i> No signatories have been assigned yet.</h3>
+                            <?php if($userAccountType === 'ENTRY' && $userBranch == $certificate['cert_branch']): ?>
+                               <center>
+                                <a href="/matrimonial_dashboard/wedcert/delete/<?=$certificate['marriage_cert_id']?>" class="btn btn-danger btn-sm">Delete Certificate</a>
+                               </center>
+                            <?php endif; ?>
                         </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($signerProfiles as $role => $signer): ?>
+                        <?php if (!empty($signer)): ?>
+                            <div class="col-md-12 mb-3">
+                                <div class="border rounded p-3 h-100 d-flex align-items-center">
+
+                                    <!-- Profile Picture -->
+                                    <div class="mr-3">
+                                        <?php if (!empty($signer['userPicture']) && file_exists(FCPATH . 'uploads/users/pictures/' . $signer['userPicture'])): ?>
+                                            <img src="<?= base_url('uploads/users/pictures/' . $signer['userPicture']) ?>"
+                                                 class="rounded-circle"
+                                                 width="60"
+                                                 height="60">
+                                        <?php else: ?>
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
+                                                 style="width:60px;height:60px;">
+                                                <i class="fas fa-user text-muted"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <!-- Info -->
+                                    <div>
+                                        <strong><?= esc($signer['userFullName']) ?></strong><br>
+                                        <small class="text-muted">
+                                            <?= esc($signer['userPosition'] ?? 'Signer') ?>
+                                        </small><br>
+
+                                        <span class="badge badge-info mt-1">
+                                            <?= esc(str_replace('_profile', '', $role)) ?>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
 
             </div>
         </div>

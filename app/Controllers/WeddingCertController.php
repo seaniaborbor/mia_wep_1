@@ -169,7 +169,25 @@ public function sign($cert_id){
                 $certificate['SIGNA_id'] = session()->get('userData')['userId'];
                 $certificate['last_edited_by'] = session()->get('userData')['userId'];
                 $certificate['SIGNA_signedDate'] = date('Y-m-d');  // Full date format
+                // get signatories except SIGN A to notify them of the signing
+                $signatories = $this->userModel
+                    ->where('userBreanch', $user_breanch)
+                    ->whereIn('userAccountType', ['SIGNB', 'SIGNC'])
+                    ->findAll();
+                $signner_name = session()->get('userData')['userFullName'];
                 if($this->weddingCertModel->update($cert_id, $certificate)){
+                    // notify other signatories
+                    $emailLib = \Config\Services::email();
+                    foreach($signatories as $signatory){
+                        $emailLib->setTo($signatory['userEmail']);
+                        $emailLib->setSubject('Wedding Certificate Signed Notification');
+                        $emailLib->setMessage("Dear {$signatory['userFullName']},<br><br>
+                        This is to inform you that the wedding certificate with Reference No: <strong>{$certificate['reference_no']}</strong> has been signed by <strong>{$signner_name}</strong>.<br>
+                        Please proceed to review and sign the certificate at your earliest convenience.<br><br>
+                        Best regards,<br>
+                        Marriage Certificate System");
+                        $emailLib->send();
+                    }
                     return redirect()->back()->with("success", "Your signature has been affixed to this wedding certificate and cannot be channged. The date and time are also recorded when you signed this document");
                 }else{
                     return redirect()->back()->with('error', 'There was an undetected errer in affixing your signature');
@@ -186,8 +204,26 @@ public function sign($cert_id){
                  $certificate['SIGNB_id'] = session()->get('userData')['userId'];
                 $certificate['last_edited_by'] = session()->get('userData')['userId'];
                 $certificate['SIGNB_signedDate'] = date('Y-m-d');  // Full date format
+                // get signatories except SIGN B to notify them of the signing
+                $signatories = $this->userModel
+                    ->where('userBreanch', $user_breanch)
+                    ->whereIn('userAccountType', ['SIGNA', 'SIGNC'])
+                    ->findAll();
+                $signner_name = session()->get('userData')['userFullName'];
 
                 if($this->weddingCertModel->update($cert_id, $certificate)){
+                    // notify other signatories
+                    $emailLib = \Config\Services::email();
+                    foreach($signatories as $signatory){
+                        $emailLib->setTo($signatory['userEmail']);
+                        $emailLib->setSubject('Wedding Certificate Signed Notification');
+                        $emailLib->setMessage("Dear {$signatory['userFullName']},<br><br>
+                        This is to inform you that the wedding certificate with Reference No: <strong>{$certificate['reference_no']}</strong> has been signed by <strong>{$signner_name}</strong>.<br>
+                        Please proceed to review and sign the certificate at your earliest convenience.<br><br>
+                        Best regards,<br>
+                        Marriage Certificate System");
+                        $emailLib->send();
+                    }
                     return redirect()->back()->with("success", "Your signature has been affixed to this wedding certificate and cannot be channged. The date and time are also recorded when you signed this document");
                 }else{
                     return redirect()->back()->with('error', 'There was an undetected errer in affixing your signature');
@@ -206,9 +242,26 @@ public function sign($cert_id){
                 $certificate['SIGNC_id'] = session()->get('userData')['userId'];
                 $certificate['last_edited_by'] = session()->get('userData')['userId'];
                 $certificate['SIGNC_signedDate'] = date('Y-m-d');  // Full date format
-
+                // get signatories except SIGN C to notify them of the signing
+                $signatories = $this->userModel
+                    ->where('userBreanch', $user_breanch)
+                    ->whereIn('userAccountType', ['SIGNA', 'SIGNB'])
+                    ->findAll();
+                $signner_name = session()->get('userData')['userFullName'];
 
                 if($this->weddingCertModel->update($cert_id, $certificate)){
+                    // notify other signatories
+                    $emailLib = \Config\Services::email();
+                    foreach($signatories as $signatory){
+                        $emailLib->setTo($signatory['userEmail']);
+                        $emailLib->setSubject('Wedding Certificate Signed Notification');
+                        $emailLib->setMessage("Dear {$signatory['userFullName']},<br><br>
+                        This is to inform you that the wedding certificate with Reference No: <strong>{$certificate['reference_no']}</strong> has been signed by <strong>{$signner_name}</strong>.<br>
+                        Please proceed to review and sign the certificate at your earliest convenience.<br><br>
+                        Best regards,<br>
+                        Marriage Certificate System");
+                        $emailLib->send();
+                    }
                     return redirect()->back()->with("success", "Your signature has been affixed to this wedding certificate and cannot be channged. The date and time are also recorded when you signed this document");
                 }else{
                     return redirect()->back()->with('error', 'There was an undetected errer in affixing your signature');
@@ -229,11 +282,6 @@ public function sign($cert_id){
 */
 public function edit($cert_id)
 {
-    // Check user permissions
-    if (!in_array(session()->get('userData')['userAccountType'], ['SIGNA', 'SIGNB', 'SIGNC', 'VIEWER', 'ENTRY'])) {
-        return redirect()->back()->with('error', 'You do not have permission to view this certificate.');
-    }
-
     $data['title'] = 'Edit Marriage Certificate';
     $data['passLink'] = 'certificates';
 
@@ -242,7 +290,10 @@ public function edit($cert_id)
     if (!$certificate) {
         return redirect()->back()->with('error', 'Certificate not found.');
     }
-
+    // only ENTRY user from the certificate branch where it was created can edit
+    if (session()->get('userData')['userAccountType'] !== 'ENTRY' || session()->get('userData')['userBreanch'] != $certificate['cert_branch']) {
+        return redirect()->back()->with('error', 'You do not have permission to edit this certificate. Only the data entry clerk from the branch that created this certificate can perform this action.');
+    }
     // Check if certificate is locked
     if ($certificate['SIGNA'] !== null || $certificate['SIGNB'] !== null || $certificate['SIGNC'] !== null) {
         return redirect()->back()->with('error', 'This certificate is locked and cannot be edited. It has already been signed.');
@@ -691,8 +742,31 @@ public function edit($cert_id)
                 $updateData['bride_passport_photo'] = $bridePhotoName;
             }
 
+            // get the signatories emails, and fullName only   active this branch to notify them of the edit
+            $branchId = session()->get('userData')['userBreanch'];
+            $emails = $this->userModel
+                ->select('userEmail, userFullName')
+                ->where('userBreanch', $branchId)
+                ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC'])
+                ->where('userAccountActiveStatus', 1)
+                ->findAll();
+            $editor_name = session()->get('userData')['userFullName'];
+
             // **Update certificate**
             if ($this->weddingCertModel->update($cert_id, $updateData)) {
+                // notify signatories about the edit
+                $emailLib = \Config\Services::email();
+                foreach ($emails as $email) {
+                   $reciepitntName = $email['userFullName'];
+                    $emailLib->setTo($email['userEmail']);
+                    $emailLib->setSubject('Wedding Certificate Edited Notification');
+                    $emailLib->setMessage("Dear {$reciepitntName},<br><br>
+                    This is to inform you that the wedding certificate with Reference No: <strong>{$certificate['reference_no']}</strong> has been edited by <strong>{$editor_name}</strong>.<br>
+                    Please review the changes at your earliest convenience before proceeding to sign the certificate.<br><br>
+                    Best regards,<br>
+                    Marriage Certificate System");
+                    $emailLib->send();
+                }
                 return redirect()->back()->with('success', 'Marriage certificate updated successfully!');
             } else {
                 $data['errors'] = ['There was an error updating the certificate. Please try again.'];
@@ -1173,6 +1247,29 @@ public function print($cert_id){
         ];
         // Save to database
         if ($this->weddingCertModel->save($data)) {
+            // send notification emails to signatories in this branch
+            $branchId = session()->get('userData')['userBreanch'];
+            $emails = $this->userModel
+                ->select('userEmail, userFullName')
+                ->where('userBreanch', $branchId)
+                ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC'])
+                ->where('userAccountActiveStatus', 1)
+                ->findAll();
+          // creaded by name
+          $creator_name = session()->get('userData')['userFullName'];
+            // use email liberary to send the notification emails
+            $emailLib = \Config\Services::email();
+            foreach ($emails as $email) {
+                $reciepitntName = $email['userFullName'];
+                $emailLib->setTo($email['userEmail']);
+                $emailLib->setSubject('New Marriage Certificate Created - ' . $data['reference_no']);
+                $emailLib->setMessage("Dear {$reciepitntName},<br><br>
+                A new marriage certificate with reference number <strong>{$data['reference_no']}</strong> has been created by <strong>{$creator_name}</strong>.<br>
+                Please review and proceed with the signing process at your earliest convenience.<br><br>
+                Best regards,<br>
+                Marriage Certificate System");
+                $emailLib->send();
+            }
             return redirect()->back()->with('success', 'Marriage certificate created successfully!');
         }else{
             return redirect()->back()->with('error', 'There was saving error please try again');
@@ -1266,6 +1363,26 @@ public function allow_edit($cert_id)
 
         // perform update
         if($this->weddingCertModel->update($cert_id, $certificate)){
+            // send notification emails to signatories in this branch that edit was allowed
+            $branchId = session()->get('userData')['userBreanch'];
+            $emails = $this->userModel
+                ->select('userEmail, userFullName')
+                ->where('userBreanch', $branchId)
+                ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC', 'ENTRY'])
+                ->where('userAccountActiveStatus', 1)
+                ->findAll();
+            // use email liberary to send the notification emails it should contain certificate reference number and who allowed the edit
+            $emailLib = \Config\Services::email();
+            foreach ($emails as $email) {
+                $recipientName = $email['userFullName'];
+                $emailLib->setTo($email['userEmail']);
+                $emailLib->setSubject('Marriage Certificate Edit Allowed - ' . $certificate['reference_no']);
+                $emailLib->setMessage("Dear {$recipientName},<br><br>
+                The marriage certificate with reference number <strong>{$certificate['reference_no']}</strong> has been allowed for edit by <strong>" . session()->get('userData')['userFullName'] . "</strong>. Please review the certificate at your earliest convenience.<br><br>
+                Best regards,<br>
+                Marriage Certificate System");
+                $emailLib->send();
+            }
             return redirect()->back()->with('success', 'Certificate edit allowed successfully!');
         } else {
             return redirect()->back()->with('error', 'There was an error allowing edit on the certificate. Please try again.');
@@ -1322,6 +1439,28 @@ public function mark_as_issued($cert_id){
 
     // try updating and return success if it fails not
     if($this->weddingCertModel->update($cert_id, $certificate)){
+        // send notification email  that the cleark mark this certificate as issued
+        $branchId = session()->get('userData')['userBreanch'];
+        $emails = $this->userModel
+            ->select('userEmail, userFullName')
+            ->where('userBreanch', $branchId)
+            ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC'])
+            ->where('userAccountActiveStatus', 1)
+            ->findAll();
+        // creaded by name
+        $actor_name = session()->get('userData')['userFullName'];
+        // use email liberary to send the notification emails
+        $emailLib = \Config\Services::email();
+        foreach ($emails as $email) {
+            $reciepitntName = $email['userFullName'];
+            $emailLib->setTo($email['userEmail']);
+            $emailLib->setSubject('Marriage Certificate Issued - ' . $certificate['reference_no']);
+            $emailLib->setMessage("Dear {$reciepitntName},<br><br>
+            The marriage certificate with reference number <strong>{$certificate['reference_no']}</strong> has been marked as issued by <strong>{$actor_name}</strong>.<br><br>
+            Best regards,<br>
+            Marriage Certificate System");
+            $emailLib->send();
+        }
          return redirect()->back()->with('success', 'The Certificate is nown marked as issued');
          exit();
     }else{
@@ -1352,6 +1491,61 @@ public function mark_as_issued($cert_id){
 
         return $cert_identifyers;
 
+    }
+
+    public function delete($cert_id)
+    {
+        // Check if the certificate exists
+        $certificate = $this->weddingCertModel->find($cert_id);
+        if (!$certificate) {
+            return redirect()->back()->with('error', 'Certificate not found.');
+        }
+
+        // check if the user is at the same branch as the certificate
+        if (session()->get('userData')['userBreanch'] != $certificate['cert_branch']) {
+            return redirect()->back()->with('error', 'You are not allowed to delete this certificate.');
+        }
+
+        // only allow delete if the user account type is ENTRY 
+        if (session()->get('userData')['userAccountType'] != "ENTRY") {
+            return redirect()->back()->with('error', 'Only authorized users can delete this certificate.');
+        }
+
+        // if the cetificate is signed, it cannot be deleted
+        if (
+            !empty($certificate['SIGNA_id']) ||
+            !empty($certificate['SIGNB_id']) ||
+            !empty($certificate['SIGNC_id'])
+        ) {
+            return redirect()->back()->with('error', 'Signed certificates cannot be deleted.');
+        }
+
+        // perform delete
+        if ($this->weddingCertModel->delete($cert_id)) {
+            // send notification emails to signatories in this branch that certificate was deleted
+            $branchId = session()->get('userData')['userBreanch'];
+            $emails = $this->userModel
+                ->select('userEmail, userFullName')
+                ->where('userBreanch', $branchId)
+                ->whereIn('userAccountType', ['SIGNA', 'SIGNB', 'SIGNC', 'ENTRY'])
+                ->where('userAccountActiveStatus', 1)
+                ->findAll();
+            // use email liberary to send the notification emails it should contain certificate reference number and who deleted it
+            $emailLib = \Config\Services::email();
+            foreach ($emails as $email) {
+                $recipientName = $email['userFullName'];
+                $emailLib->setTo($email['userEmail']);
+                $emailLib->setSubject('Marriage Certificate Deleted - ' . $certificate['reference_no']);
+                $emailLib->setMessage("Dear {$recipientName},<br><br>
+                The marriage certificate with reference number <strong>{$certificate['reference_no']}</strong> has been deleted by <strong>" . session()->get('userData')['userFullName'] . "</strong>.<br><br>
+                Best regards,<br>
+                Marriage Certificate System");
+                $emailLib->send();
+            }
+            return redirect()->to('/matrimonial_dashboard')->with('success', 'Certificate deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'There was an error deleting the certificate. Please try again.');
+        }
     }
     
 

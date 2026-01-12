@@ -274,4 +274,9 @@ private function mapCountsToBranches($allBranches, $countedBranches)
 
     return $result;
 }
+
+
+ 
+
+
 }

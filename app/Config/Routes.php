@@ -76,6 +76,7 @@ $routes->get('/matrimonial_dashboard/wedcert/print/(:num)', 'WeddingCertControll
 $routes->get('/matrimonial_dashboard/wedcert/edit/(:num)', 'WeddingCertController::edit/$1');
 $routes->post('/matrimonial_dashboard/wedcert/edit/(:num)', 'WeddingCertController::edit/$1');
 $routes->get('/matrimonial_dashboard/wedcert/sign/(:num)', 'WeddingCertController::sign/$1');
+$routes->get('/matrimonial_dashboard/wedcert/delete/(:num)', 'WeddingCertController::delete/$1');
 $routes->get('/matrimonial_dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->post('/matrimonial_dashboard/wedcert/create', 'WeddingCertController::create');
 $routes->get('/matrimonial_dashboard/wedcert/allow_edit/(:num)', 'WeddingCertController::allow_edit/$1'); // allow edit for the certificate
@@ -93,6 +94,9 @@ $routes->get('/matrimonial_dashboard/divorce_cert/generate_certificate/(:num)', 
 $routes->get('/matrimonial_dashboard/edit_divorce_cert/(:num)', 'DivorceCertificateController::edit_certificate/$1');
 $routes->post('/matrimonial_dashboard/edit_divorce_cert/(:num)', 'DivorceCertificateController::edit_certificate/$1');
 $routes->get('/matrimonial_dashboard/divorce_cert/allow_edit/(:num)', 'DivorceCertificateController::allow_edit/$1');
+$routes->get('/matrimonial_dashboard/divorce_cert/allow_edit/(:num)', 'DivorceCertificateController::allow_edit/$1');
+$routes->get('/matrimonial_dashboard/divorce_cert/deliver/(:num)', 'DivorceCertificateController::markAsIssued/$1');
+$routes->get('/matrimonial_dashboard/divorce_cert/delete/(:num)', 'DivorceCertificateController::delete/$1');
 
 // native certificate management routes 
 $routes->get('/matrimonial_dashboard/nativecert', 'NativeDocCertController::index'); ///
