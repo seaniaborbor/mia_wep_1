@@ -72,7 +72,7 @@
                                 <?= date('M d, Y', strtotime($divorce['divorcecreated_at'])) ?>
                             </td>
                             <td class="text-center">
-                                <a href="/dashboard/divorce_cert/view/<?= $divorce['divorceCertId'] ?>"
+                                <a href="/matrimonial_dashboard/divorce_cert/view/<?= $divorce['divorceCertId'] ?>"
                                    class="btn btn-danger btn-sm btn-icon-split">
                                     <span class="icon text-white-50">
                                         <i class="fas fa-eye"></i>

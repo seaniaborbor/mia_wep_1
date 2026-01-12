@@ -57,16 +57,3 @@
         </tbody>
     </table>
 </div>
-
-<script>
-$(document).ready(function() {
-    $('#weddingCertTable').DataTable({
-        responsive: true,
-        pageLength: 10,
-        order: [[5, 'desc']],
-        columnDefs: [
-            { orderable: false, targets: [6] }
-        ]
-    });
-});
-</script>

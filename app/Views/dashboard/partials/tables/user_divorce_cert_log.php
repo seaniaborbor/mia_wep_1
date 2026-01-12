@@ -61,20 +61,3 @@
     </table>
 </div>
 
-<script>
-$(document).ready(function() {
-    $('#divorceCertTable').DataTable({
-        responsive: true,
-        pageLength: 10,
-        order: [[5, 'desc']], // Latest issuance first
-        columnDefs: [
-            { orderable: false, targets: [6] },
-            { searchable: false, targets: [6] }
-        ],
-        language: {
-            emptyTable: "No divorce certificates found",
-            zeroRecords: "No matching records found"
-        }
-    });
-});
-</script>
