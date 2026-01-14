@@ -6,14 +6,14 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail  = 'noreply@myapp.test';
+    public string $fromEmail  = 'tarnuepb@gmail.com';  // Changed to your email
     public string $fromName   = 'MIA - Database';
     public string $recipients = '';
 
     public string $userAgent = 'CodeIgniter';
 
     /**
-     * Use SMTP for MailHog
+     * Use SMTP for Gmail
      */
     public string $protocol = 'smtp';
 
@@ -23,25 +23,25 @@ class Email extends BaseConfig
     public string $mailPath = '';
 
     /**
-     * MailHog SMTP host
+     * Gmail SMTP host
      */
-    public string $SMTPHost = '127.0.0.1';
+    public string $SMTPHost = 'smtp.gmail.com';  // Changed to Gmail SMTP
 
     /**
-     * MailHog does NOT require auth
+     * Gmail requires authentication with App Password
      */
-    public string $SMTPUser = '';
-    public string $SMTPPass = '';
+    public string $SMTPUser = 'tarnuepb@gmail.com';  // Your email
+    public string $SMTPPass = 'whenwtfbidgvsjbh';    // Your app password
 
     /**
-     * MailHog SMTP port
+     * Gmail SMTP port for TLS
      */
-    public int $SMTPPort = 1025;
+    public int $SMTPPort = 587;  // Changed to 587 for TLS
 
     /**
-     * No encryption for MailHog
+     * TLS encryption for Gmail
      */
-    public string $SMTPCrypto = '';
+    public string $SMTPCrypto = 'tls';  // Changed to TLS
 
     public int $SMTPTimeout = 30;
     public bool $SMTPKeepAlive = false;
