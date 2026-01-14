@@ -59,13 +59,13 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="/dashboard/branches/view/<?= $branch['branchId'] ?>" 
+                                        <a href="/system_admin/branches/view/<?= $branch['branchId'] ?>" 
                                            class="btn btn-sm btn-outline-primary"
                                            data-bs-toggle="tooltip" 
                                            title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="/dashboard/branches/edit/<?= $branch['branchId'] ?>" 
+                                        <a href="/system_admin/branches/edit/<?= $branch['branchId'] ?>" 
                                            class="btn btn-sm btn-outline-secondary"
                                            data-bs-toggle="tooltip" 
                                            title="Edit Branch">

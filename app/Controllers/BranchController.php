@@ -51,7 +51,7 @@ class BranchController extends Controller
     {
         // Validate branch_id to prevent SQL injection
         if (!is_numeric($branch_id)) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Invalid branch identifier');
+            return redirect()->back()->with('error', 'Invalid branch identifier');
         }
 
         $data['title'] = 'View Branch';
@@ -67,7 +67,7 @@ class BranchController extends Controller
                   ->join('login_users', 'login_users.userId = branchs_table.branchCreatedBy')->first();
         
         if (!$branch) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Branch not found or may have been deleted');
+            return redirect()->back()->with('error', 'Branch not found or may have been deleted');
         }
         
         // Allow access only if user is from this branch or from head office (branch 1)
@@ -75,7 +75,7 @@ class BranchController extends Controller
             session()->get('userData')['userBreanch'] != $branch_id &&
             session()->get('userData')['userBreanch'] != 1
         ) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Unauthorized access to branch details');
+            return redirect()->back()->with('error', 'Unauthorized access to branch details');
         }
 
         $data['total_inactive_user'] = $this->branchModel->db->table('login_users')
@@ -211,7 +211,7 @@ class BranchController extends Controller
             ];
 
             if ($this->branchModel->save($saveData)) {
-                return redirect()->to('/dashboard/branches')->with('success', 'Branch created successfully.');
+                return redirect()->back()->with('success', 'Branch created successfully.');
             } else {
                 return redirect()->back()->with('error', 'Failed to create branch. Please try again.');
             }           
@@ -224,18 +224,13 @@ class BranchController extends Controller
     {
         // Validate branch_id
         if (!is_numeric($branch_id)) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Invalid branch identifier');
+            return redirect()->back()->with('error', 'Invalid branch identifier');
         }
 
-        // Strict access control
-        if (session()->get('userData')['userBreanch'] != 1 || 
-            session()->get('userData')['userAccountType'] != "SIGNC") {
-            return redirect()->back()->with("error", "You do not have permission to edit branches. Only the Assistant Minister at the Head Office can.");
-        }
 
         $branch = $this->branchModel->where('branchId', $branch_id)->first();
         if (!$branch) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Branch not found or may have been deleted');
+            return redirect()->back()->with('error', 'Branch not found or may have been deleted');
         }
 
         $data['title'] = 'Edit Branch';
@@ -321,7 +316,7 @@ class BranchController extends Controller
             ];
 
             if ($this->branchModel->save($updateData)) {
-                return redirect()->to('/dashboard/branches')->with('success', 'Branch updated successfully.');
+                return redirect()->back()->with('success', 'Branch updated successfully.');
             } else {
                 return redirect()->back()->with('error', 'Failed to update branch. Please try again.');
             }
@@ -334,7 +329,7 @@ class BranchController extends Controller
     {
         // Validate branch_id
         if (!is_numeric($branch_id)) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Invalid branch identifier');
+            return redirect()->back()->with('error', 'Invalid branch identifier');
         }
 
         // Strict access control
@@ -345,7 +340,7 @@ class BranchController extends Controller
 
         $branch = $this->branchModel->where('branchId', $branch_id)->first();
         if (!$branch) {
-            return redirect()->to('/dashboard/branches')->with('error', 'Branch not found or may have been deleted');
+            return redirect()->back()->with('error', 'Branch not found or may have been deleted');
         }
 
         if( $branch['isActive'] == 0 ) {

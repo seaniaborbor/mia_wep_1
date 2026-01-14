@@ -1,4 +1,4 @@
-<form action="/dashboard/branches/create" method="post">
+<form action="/system_admin/branches/create" method="post">
     <?= csrf_field() ?>
 
     <div class="row">

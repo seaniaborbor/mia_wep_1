@@ -1,4 +1,4 @@
-<form action="/dashboard/branches/edit/<?= esc($branch['branchId']) ?>" method="post">
+<form action="/system_admin/branches/edit/<?= esc($branch['branchId']) ?>" method="post">
     <?= csrf_field() ?>
 
     <div class="row">
