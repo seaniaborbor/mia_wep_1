@@ -129,21 +129,21 @@ function labelUser($branch, $type)
                             <?php elseif(session()->get('userData')['userDepartment'] == 'Matrimonial') : ?>
                                 /matrimonial_dashboard/users/view/<?= $user['userId'] ?>
                             <?php else: ?>
-                                /dashboard/users/view/<?= $user['userId'] ?>
+                                /system_admin/users/view/<?= $user['userId'] ?>
                             <?php endif; ?>
                             "
                                class="btn btn-sm btn-primary"
                                title="View Profile">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <?php if(session()->get('userData')['userId'] == $user['userId'] || session()->get('userData')['userAccountType'] == "ADMIN"): ?>
+                            <?php if(session()->get('userData')['userId'] == $user['userId'] || session()->get('userData')['userAccountType'] == "System-Admin"): ?>
                             <a href="
                             <?php if(session()->get('userData')['userDepartment'] == 'Cultural') : ?>
                                 /cultural_dashboard/users/edit/<?= $user['userId'] ?>
                                 <?php elseif(session()->get('userData')['userDepartment'] == 'Matrimonial') : ?>
                                 /matrimonial_dashboard/users/edit/<?= $user['userId'] ?>
                                 <?php else: ?>
-                                /dashboard/users/edit/<?= $user['userId'] ?>
+                                /system_admin/users/edit/<?= $user['userId'] ?>
                                 <?php endif; ?>
                             "
                                class="btn btn-sm btn-warning"

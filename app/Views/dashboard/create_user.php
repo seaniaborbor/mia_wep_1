@@ -1,52 +1,59 @@
 <?php $this->extend('dashboard/partials/layout') ?>
-<?=$this->section('main') ?>
+<?= $this->section('main') ?>
 
-<div class="container-fluid px-4">
-    <!-- Header -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <div class="d-flex align-items-center">
-                <div class="me-3">
-                    <i class="fas fa-user-plus fa-2x"></i>
-                </div>
-                <div>
-                    <h4 class="mb-0">Create New User Account</h4>
-                    <p class="mb-0 opacity-75">Register a new staff member securely</p>
-                </div>
-            </div>
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-user-plus mr-2 text-primary"></i>Create New User Account
+        </h1>
+        <div>
+            <a href="/system_admin/users" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+                <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Back to Users
+            </a>
         </div>
     </div>
 
     <!-- Flash Messages -->
     <?php if (session()->has('success')): ?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <i class="fas fa-check-circle mr-2"></i>
             <?= session('success') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     <?php endif; ?>
 
     <?php if (session()->has('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="fas fa-exclamation-circle me-2"></i>
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <i class="fas fa-exclamation-circle mr-2"></i>
             <?= session('error') ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
     <?php endif; ?>
 
     <div class="row">
         <!-- Main Form -->
         <div class="col-lg-8">
-            <div class="card">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-primary text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-user-plus mr-1"></i> Register New Staff Member
+                    </h6>
+                </div>
                 <div class="card-body">
                     <form action="/system_admin/users/create" method="post" enctype="multipart/form-data" id="userCreateForm">
                         <?= csrf_field() ?>
 
                         <div class="row">
+                            <!-- Left Column -->
                             <div class="col-md-6">
                                 <!-- Full Name -->
-                                <div class="mb-3">
-                                    <label class="form-label">Full Name</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Full Name</label>
                                     <input type="text" name="userFullName" class="form-control <?= validation_show_error('userFullName') ? 'is-invalid' : '' ?>"
                                            value="<?= old('userFullName') ?>" placeholder="Enter full name" required>
                                     <?php if (validation_show_error('userFullName')): ?>
@@ -55,8 +62,8 @@
                                 </div>
 
                                 <!-- Email -->
-                                <div class="mb-3">
-                                    <label class="form-label">Email Address</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Email Address</label>
                                     <input type="email" name="userEmail" class="form-control <?= validation_show_error('userEmail') ? 'is-invalid' : '' ?>"
                                            value="<?= old('userEmail') ?>" placeholder="staff@example.gov.lr" required>
                                     <?php if (validation_show_error('userEmail')): ?>
@@ -65,8 +72,8 @@
                                 </div>
 
                                 <!-- Phone -->
-                                <div class="mb-3">
-                                    <label class="form-label">Phone Number</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Phone Number</label>
                                     <input type="tel" name="userPhone" class="form-control <?= validation_show_error('userPhone') ? 'is-invalid' : '' ?>"
                                            value="<?= old('userPhone') ?>" placeholder="+231 XXX XXX XXX">
                                     <?php if (validation_show_error('userPhone')): ?>
@@ -75,8 +82,8 @@
                                 </div>
 
                                 <!-- Position -->
-                                <div class="mb-3">
-                                    <label class="form-label">Position</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Position</label>
                                     <input type="text" name="userPosition" class="form-control <?= validation_show_error('userPosition') ? 'is-invalid' : '' ?>"
                                            value="<?= old('userPosition') ?>" placeholder="e.g. Senior Registrar">
                                     <?php if (validation_show_error('userPosition')): ?>
@@ -85,10 +92,11 @@
                                 </div>
                             </div>
 
+                            <!-- Right Column -->
                             <div class="col-md-6">
                                 <!-- Department -->
-                                <div class="mb-3">
-                                    <label class="form-label">Department</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Department</label>
                                     <select name="userDepartment" id="userDepartment" class="form-control <?= validation_show_error('userDepartment') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Department</option>
                                         <option value="Registrar" <?= old('userDepartment') == 'Registrar' ? 'selected' : '' ?>>Registrar</option>
@@ -102,8 +110,8 @@
                                 </div>
 
                                 <!-- Password -->
-                                <div class="mb-3">
-                                    <label class="form-label">Password</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Password</label>
                                     <input type="password" name="userPassword" class="form-control <?= validation_show_error('userPassword') ? 'is-invalid' : '' ?>" 
                                            placeholder="Enter strong password" required>
                                     <?php if (validation_show_error('userPassword')): ?>
@@ -112,8 +120,8 @@
                                 </div>
 
                                 <!-- Branch -->
-                                <div class="mb-3">
-                                    <label class="form-label">Branch</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Branch</label>
                                     <select name="userBreanch" class="form-control <?= validation_show_error('userBreanch') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Branch</option>
                                         <?php if (isset($branches) && is_array($branches)): ?>
@@ -130,8 +138,8 @@
                                 </div>
 
                                 <!-- Account Type -->
-                                <div class="mb-3">
-                                    <label class="form-label">Account Type</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Account Type</label>
                                     <select name="userAccountType" id="userAccountType" class="form-control <?= validation_show_error('userAccountType') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Account Type</option>
                                         <!-- Options will be populated by JavaScript -->
@@ -142,8 +150,8 @@
                                 </div>
 
                                 <!-- Account Status -->
-                                <div class="mb-3">
-                                    <label class="form-label">Account Status</label>
+                                <div class="form-group">
+                                    <label class="font-weight-bold text-gray-700">Account Status</label>
                                     <select name="userAccountActiveStatus" class="form-control">
                                         <option value="1" <?= old('userAccountActiveStatus', '1') == '1' ? 'selected' : '' ?>>Active</option>
                                         <option value="0" <?= old('userAccountActiveStatus') == '0' ? 'selected' : '' ?>>Inactive</option>
@@ -154,42 +162,44 @@
 
                         <!-- File Uploads -->
                         <div class="mt-4">
-                            <h5 class="mb-3">Required Documents</h5>
+                            <h5 class="font-weight-bold text-gray-800 mb-3">
+                                <i class="fas fa-paperclip mr-2 text-info"></i> Required Documents
+                            </h5>
 
                             <!-- Profile Picture -->
-                            <div class="mb-3">
-                                <label class="form-label">Profile Picture <span class="text-danger">*</span></label>
+                            <div class="form-group">
+                                <label class="font-weight-bold text-gray-700">Profile Picture <span class="text-danger">*</span></label>
                                 <input type="file" name="userPicture" class="form-control" accept="image/*" required>
-                                <div class="form-text">Required for all users</div>
+                                <small class="form-text text-muted">Required for all users</small>
                                 <?php if (validation_show_error('userPicture')): ?>
                                     <div class="text-danger small"><?= validation_show_error('userPicture') ?></div>
                                 <?php endif; ?>
                             </div>
 
                             <!-- Signature (Conditional) -->
-                            <div class="mb-3" id="signatureField" style="display:none;">
-                                <label class="form-label" id="signatureTitle">Signature Image</label>
+                            <div class="form-group" id="signatureField" style="display:none;">
+                                <label class="font-weight-bold text-gray-700" id="signatureTitle">Signature Image</label>
                                 <input type="file" name="userSignature" id="userSignature" class="form-control" accept="image/png">
-                                <div class="form-text" id="signatureHelp">Transparent PNG required for signatories</div>
+                                <small class="form-text text-muted" id="signatureHelp">Transparent PNG required for signatories</small>
                                 <?php if (validation_show_error('userSignature')): ?>
                                     <div class="text-danger small"><?= validation_show_error('userSignature') ?></div>
                                 <?php endif; ?>
                             </div>
 
                             <!-- Application File -->
-                            <div class="mb-3">
-                                <label class="form-label">Application File</label>
+                            <div class="form-group">
+                                <label class="font-weight-bold text-gray-700">Application File</label>
                                 <input type="file" name="userApplicationFile" class="form-control" accept=".pdf">
-                                <div class="form-text">Official PDF document required</div>
+                                <small class="form-text text-muted">Official PDF document required</small>
                                 <?php if (validation_show_error('userApplicationFile')): ?>
                                     <div class="text-danger small"><?= validation_show_error('userApplicationFile') ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>
 
-                        <div class="mt-4">
+                        <div class="mt-4 pt-3 border-top">
                             <button type="submit" class="btn btn-primary" id="submitBtn">
-                                <i class="fas fa-user-plus me-2"></i>
+                                <i class="fas fa-user-plus mr-2"></i>
                                 Create User Account
                             </button>
                         </div>
@@ -200,17 +210,11 @@
 
         <!-- Guidelines Sidebar -->
         <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-danger text-white">
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <i class="fas fa-user-shield fa-2x"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0">Account Creation Rules</h5>
-                            <p class="mb-0 opacity-75">User Account Regulations</p>
-                        </div>
-                    </div>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-danger text-white">
+                    <h6 class="m-0 font-weight-bold">
+                        <i class="fas fa-user-shield mr-1"></i> Account Creation Rules
+                    </h6>
                 </div>
                 <div class="card-body">
                     <p class="text-muted mb-4">
@@ -218,32 +222,42 @@
                     </p>
 
                     <div class="mb-3">
-                        <h6><i class="fas fa-exchange-alt text-success me-2"></i>Department Specific</h6>
+                        <h6 class="font-weight-bold text-gray-800">
+                            <i class="fas fa-exchange-alt text-success mr-2"></i> Department Specific
+                        </h6>
                         <p class="text-muted small">Matrimonial department can only have matrimonial signatories.</p>
                     </div>
 
                     <div class="mb-3">
-                        <h6><i class="fas fa-pen-fancy text-danger me-2"></i>Signature Requirements</h6>
+                        <h6 class="font-weight-bold text-gray-800">
+                            <i class="fas fa-pen-fancy text-danger mr-2"></i> Signature Requirements
+                        </h6>
                         <p class="text-muted small">Signatories must upload transparent PNG signature images.</p>
                     </div>
 
                     <div class="mb-3">
-                        <h6><i class="fas fa-users-cog text-warning me-2"></i>Unique Account Types</h6>
+                        <h6 class="font-weight-bold text-gray-800">
+                            <i class="fas fa-users-cog text-warning mr-2"></i> Unique Account Types
+                        </h6>
                         <p class="text-muted small">Only one active user per account type per branch allowed.</p>
                     </div>
 
                     <div class="mb-3">
-                        <h6><i class="fas fa-image text-info me-2"></i>Profile Pictures</h6>
+                        <h6 class="font-weight-bold text-gray-800">
+                            <i class="fas fa-image text-info mr-2"></i> Profile Pictures
+                        </h6>
                         <p class="text-muted small">Profile picture is mandatory for all users.</p>
                     </div>
 
                     <div class="mb-4">
-                        <h6><i class="fas fa-file-pdf text-primary me-2"></i>Documentation</h6>
+                        <h6 class="font-weight-bold text-gray-800">
+                            <i class="fas fa-file-pdf text-primary mr-2"></i> Documentation
+                        </h6>
                         <p class="text-muted small">PDF application file must be uploaded for verification.</p>
                     </div>
 
                     <div class="alert alert-info text-center">
-                        <i class="fas fa-shield-alt me-2"></i>
+                        <i class="fas fa-shield-alt mr-2"></i>
                         All user actions are logged and monitored by the National Registry Office
                     </div>
                 </div>
@@ -425,4 +439,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?=$this->endSection() ?>
+<?= $this->endSection() ?>

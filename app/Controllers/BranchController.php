@@ -332,12 +332,6 @@ class BranchController extends Controller
             return redirect()->back()->with('error', 'Invalid branch identifier');
         }
 
-        // Strict access control
-        if (session()->get('userData')['userBreanch'] != 1 || 
-            session()->get('userData')['userAccountType'] != "SIGNC") {
-            return redirect()->back()->with("error", "You do not have permission to deactivate branches. Only the Assistant Minister at the Head Office can.");
-        }
-
         $branch = $this->branchModel->where('branchId', $branch_id)->first();
         if (!$branch) {
             return redirect()->back()->with('error', 'Branch not found or may have been deleted');

@@ -51,7 +51,7 @@
                         </a>
                     <?php endforeach; ?>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/cultural_dashboard/general">
+                    <a class="dropdown-item" href="/cultural_dashboard/nativecert/general">
                         <i class="fas fa-flag fa-sm fa-fw mr-2 text-gray-400"></i>
                         Nation's Dashboard
                     </a>
@@ -158,7 +158,7 @@
                 <div class="tab-pane fade show active" id="pending" role="tabpanel">
                     <?php if (!empty($incompleteCertificates)): ?>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <table id="" class="table table-bordered datatable2 table-hover" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Serial No</th>
@@ -220,7 +220,7 @@
                 <div class="tab-pane fade" id="completed" role="tabpanel">
                     <?php if (!empty($certificates)): ?>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <table id="" class="table datatable table-bordered table-hover" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Serial No</th>

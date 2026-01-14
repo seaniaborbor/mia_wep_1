@@ -7,6 +7,7 @@ use App\Models\BranchModel;
 use App\Models\UsersModel;
 use App\Models\MarriageCertificateModel;
 use App\Models\DivorceCertificateModel;
+use App\Models\TraditionalCertificateModel;
 use Config\Services;
 
 class UserController extends BaseController
@@ -18,6 +19,7 @@ class UserController extends BaseController
         $this->userModel = new UsersModel();
         $this->weddingCertModel = new MarriageCertificateModel();
         $this->divorceCertModel = new DivorceCertificateModel();
+        $this->culturalCertModel = new TraditionalCertificateModel();
     }
 
     public function index()
@@ -140,6 +142,40 @@ public function view($user_id)
                     ->findAll();
                 break;
         }
+
+        // get the cultural certificate for the user if the
+        $data['cultural_certificate'] = [];
+         switch ($user['userAccountType']) {
+            case "tradCertEntryClerk":
+                $data['cultural_certificate'] = $this->culturalCertModel
+                    ->where('tradCertInsertedBy', $user['userId'])
+                    ->join('branchs_table', 'branchs_table.branchId = traditionalcertificates.tradCertBranch')
+                    ->findAll();
+                break;
+
+            case "tradCertSignatoryA":
+                $data['cultural_certificate'] = $this->culturalCertModel
+                    ->where('tradCertSignatoryAID', $user['userId'])
+                    ->join('branchs_table', 'branchs_table.branchId = traditionalcertificates.tradCertBranch')
+                    ->findAll();
+                break;
+
+            case "tradCertSignatoryB":
+                $data['cultural_certificate'] = $this->culturalCertModel
+                    ->where('tradCertSignatoryBID', $user['userId'])
+                    ->join('branchs_table', 'branchs_table.branchId = traditionalcertificates.tradCertBranch')
+                    ->findAll();
+                break;
+
+            case "tradCertSignatoryC":
+                $data['cultural_certificate'] = $this->culturalCertModel
+                    ->where('tradCertSignatoryCID', $user['userId'])
+                    ->join('branchs_table', 'branchs_table.branchId = traditionalcertificates.tradCertBranch')
+                    ->findAll();
+                break;
+        }
+
+
 
         // only the user whose profile is this can access
         // Otherwise, only any user from branch 1 can access

@@ -274,6 +274,13 @@ class NativeDocCertController extends BaseController
         $data['tradCertBranch'] = session()->get('userData')['branchId'];
         $data['tradCertAppliedType'] = "Clerk Entry";
 
+        // use the session id of the user to get the branch county
+        $branchCounty = $this->branchModel->find(session()->get('userData')['branchId']);
+        
+        // Generate serial number and certificate code
+        $serialAndCode = $this->generateSerialAndCodes($branchCounty);
+        $data['tradCertCode'] = $serialAndCode['tradCertCode'];
+        $data['tradCertSn'] = $serialAndCode['tradCertSn'];
 
         try {
             if ($this->certificateModel->save($data)) {
@@ -906,4 +913,36 @@ private function getMonthlyStatistics()
     
     return $monthlyData;
 }
+
+/**
+ * Generate serial number and codes for traditional certificate
+ */
+private function generateSerialAndCodes(array $county): array
+{
+    $year  = date('Y');
+    $month = date('m');
+
+    // Sanitize & format county name
+    $countyCode = strtoupper(substr(
+        preg_replace('/[^A-Za-z]/', '', $county['branchCounty'] ?? 'XXX'),
+        0,
+        3
+    ));
+    $countyCode = str_pad($countyCode, 3, 'X');
+
+    // Generate random alphanumeric string
+    helper('text');
+    $randomStr = strtoupper(random_string('alnum', 5));
+
+    $serialNumber = "{$countyCode}-{$year}{$month}{$randomStr}";
+    $certCode     = "{$year}{$month}{$randomStr}";
+
+    return [
+        'tradCertCode' => $certCode,
+        'tradCertSn'   => $serialNumber,
+    ];
+}
+
+
+
 }
