@@ -98,23 +98,35 @@ $routes->get('/matrimonial_dashboard/divorce_cert/allow_edit/(:num)', 'DivorceCe
 $routes->get('/matrimonial_dashboard/divorce_cert/deliver/(:num)', 'DivorceCertificateController::markAsIssued/$1');
 $routes->get('/matrimonial_dashboard/divorce_cert/delete/(:num)', 'DivorceCertificateController::delete/$1');
 
-// native certificate management routes 
-$routes->get('/matrimonial_dashboard/nativecert', 'NativeDocCertController::index'); ///
-$routes->get('/matrimonial_dashboard/nativecert/create', 'NativeDocCertController::new'); 
-$routes->post('/matrimonial_dashboard/nativecert/store', 'NativeDocCertController::create'); 
-$routes->get('/matrimonial_dashboard/nativecert/view/(:any)', 'NativeDocCertController::view/$1'); // 
-$routes->get('/matrimonial_dashboard/nativecert/print/(:any)', 'NativeDocCertController::print/$1');
-$routes->get('/nativecert/add-signatories/(:any)', 'NativeDocCertController::addSignatories/$1');
-$routes->get('/matrimonial_dashboard/nativecert/edit/(:any)', 'NativeDocCertController::edit/$1');
-$routes->post('/matrimonial_dashboard/nativecert/update/(:any)', 'NativeDocCertController::update/$1');
-$routes->get('/matrimonial_dashboard/nativecert/issue-certificate/(:any)', 'NativeDocCertController::issue/$1');
-$routes->get('/matrimonial_dashboard/nativecert/delete/(:any)', 'NativeDocCertController::delete/$1');
-$routes->get('matrimonial_dashboard/nativecert/general', 'NativeDocCertController::generalDashboard');
 
 // $routes->get('/matrimonial_dashboard/admin', 'AdminController::index'); /// admin dashboard home
 // $routes->get('/matrimonial_dashboard/admin/user_list', 'AdminController::usersList'); ///view users on adman dashboard
 // $routes->get('/matrimonial_dashboard/admin/branch_list', 'AdminController::branchList'); ///view branches on adman dashboard
 
+});
+
+// ========== CULTURAL DEPARTMENT ACCESS ONLY ==========
+$routes->group("", ['filter'=>'cultural_protector'], function($routes){
+
+// native certificate management routes 
+$routes->get('/cultural_dashboard/nativecert', 'NativeDocCertController::index'); ///
+$routes->get('/cultural_dashboard/nativecert/create', 'NativeDocCertController::new'); 
+$routes->post('/cultural_dashboard/nativecert/store', 'NativeDocCertController::create'); 
+$routes->get('/cultural_dashboard/nativecert/view/(:any)', 'NativeDocCertController::view/$1'); // 
+$routes->get('/cultural_dashboard/nativecert/print/(:any)', 'NativeDocCertController::print/$1');
+$routes->get('/cultural_dashboard/nativecert/add-signatories/(:any)', 'NativeDocCertController::addSignatories/$1');
+$routes->get('/cultural_dashboard/nativecert/edit/(:any)', 'NativeDocCertController::edit/$1');
+$routes->post('/cultural_dashboard/nativecert/update/(:any)', 'NativeDocCertController::update/$1');
+$routes->get('/cultural_dashboard/nativecert/issue-certificate/(:any)', 'NativeDocCertController::issue/$1');
+$routes->get('/cultural_dashboard/nativecert/delete/(:any)', 'NativeDocCertController::delete/$1');
+$routes->get('/cultural_dashboard/nativecert/general', 'NativeDocCertController::generalDashboard');
+
+// users routes
+$routes->get('/cultural_dashboard/users', 'UserController::index'); // view all users 
+$routes->get('/cultural_dashboard/users/view/(:num)', 'UserController::view/$1'); // view all users 
+
+$routes->get('/cultural_dashboard/users/edit/(:num)', 'UserController::edit/$1'); // view to edit user 
+$routes->post('/cultural_dashboard/users/edit/(:num)', 'UserController::edit/$1'); // save edit
 });
 
 // ========== SYSTEM ADMIN ACCESS ONLY ==========

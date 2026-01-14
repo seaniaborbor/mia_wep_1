@@ -123,13 +123,29 @@ function labelUser($branch, $type)
 
                         <!-- Actions -->
                         <td class="text-center align-middle">
-                            <a href="/matrimonial_dashboard/users/view/<?= $user['userId'] ?>"
+                            <a href="
+                            <?php if(session()->get('userData')['userDepartment'] == 'Cultural') : ?>
+                                /cultural_dashboard/users/view/<?= $user['userId'] ?>
+                            <?php elseif(session()->get('userData')['userDepartment'] == 'Matrimonial') : ?>
+                                /matrimonial_dashboard/users/view/<?= $user['userId'] ?>
+                            <?php else: ?>
+                                /dashboard/users/view/<?= $user['userId'] ?>
+                            <?php endif; ?>
+                            "
                                class="btn btn-sm btn-primary"
                                title="View Profile">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <?php if(session()->get('userData')['userId'] == $user['userId'] || session()->get('userData')['userAccountType'] == "ADMIN"): ?>
-                            <a href="/matrimonial_dashboard/users/edit/<?= $user['userId'] ?>"
+                            <a href="
+                            <?php if(session()->get('userData')['userDepartment'] == 'Cultural') : ?>
+                                /cultural_dashboard/users/edit/<?= $user['userId'] ?>
+                                <?php elseif(session()->get('userData')['userDepartment'] == 'Matrimonial') : ?>
+                                /matrimonial_dashboard/users/edit/<?= $user['userId'] ?>
+                                <?php else: ?>
+                                /dashboard/users/edit/<?= $user['userId'] ?>
+                                <?php endif; ?>
+                            "
                                class="btn btn-sm btn-warning"
                                title="Edit User">
                                 <i class="fas fa-edit"></i>

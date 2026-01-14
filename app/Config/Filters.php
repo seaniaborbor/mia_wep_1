@@ -24,6 +24,7 @@ class Filters extends BaseConfig
         'secureheaders' => SecureHeaders::class,
         'matrimonial_protector'     => \App\Filters\MatrimonialRoutesProtection::class,
         'system_admin_protector'    => \App\Filters\SystemAdminProtector::class,
+        'cultural_protector'        => \App\Filters\CulturalDepartmentProtector::class,
     ];
 
     /**

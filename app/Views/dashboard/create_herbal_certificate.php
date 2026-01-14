@@ -55,7 +55,7 @@
                         </div>
                     <?php endif; ?>
 
-                    <form action="matrimonial_dashboard/nativecert/store" method="post" id="certificateForm" enctype="multipart/form-data">
+                    <form action="/cultural_dashboard/nativecert/store" method="post" id="certificateForm" enctype="multipart/form-data">
                         <?= csrf_field() ?>
 
                         <!-- Certificate Holder Information -->

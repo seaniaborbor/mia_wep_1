@@ -101,7 +101,11 @@ class AuthController extends BaseController
                         return redirect()->to('/cultural_dashboard/nativecert')->with('success', 'Welcome to the Cultural Certificate Dashboard!');
                     } 
 
-                    if ($user['userDepartment'] == "System-Admin") {
+                    if ($user['userDepartment'] == "Cultural") {
+                        return redirect()->to('/cultural_dashboard/nativecert')->with('success', 'Welcome to the Cultural Certificate Dashboard!');
+                    }
+
+                     if ($user['userDepartment'] == "System-Admin") {
                         return redirect()->to('/system_admin_dashboard')->with('success', 'Welcome to the System Admin Dashboard!');
                     }
 

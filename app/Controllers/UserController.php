@@ -48,7 +48,14 @@ class UserController extends BaseController
          $data['breanchDetail'] = $this->branchModel->find($branchId);
          $data['allBranches'] = $this->branchModel->findAll();
 
-        return view('dashboard/users_list', $data);
+       // check if the user is in the culture department or marriage department and render the appropriate view
+        $userData = session()->get('userData');
+
+         if ($userData['userDepartment'] == 'Cultural') {
+              return view('dashboard/users_list_for_culture', $data);
+            } else {
+              return view('dashboard/users_list_for_marriage', $data);
+            }
     }
 
 public function view($user_id)
@@ -314,6 +321,7 @@ public function view($user_id)
                     ->where('userAccountActiveStatus', 1)
                     ->where('userBreanch', $newUser['userBreanch'])
                     ->where('userAccountType', $newUser['userAccountType'])
+                    ->where('userDepartment', $newUser['userDepartment'])
                     ->first();
 
                 if ($existingUser) {

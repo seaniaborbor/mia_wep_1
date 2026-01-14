@@ -31,7 +31,7 @@
                     ?>
                     
                     <!-- Generate Button -->
-                    <a href="/dashboard/nativecert/print/<?= $certificate['tradCertId'] ?>" 
+                    <a href="/cultural_dashboard/nativecert/print/<?= $certificate['tradCertId'] ?>" 
                        class="btn btn-sm btn-primary btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-file-pdf"></i>
@@ -49,7 +49,7 @@
                     
                     <!-- Sign Button (for non-ENTRY users when not completed) -->
                     <?php if ($isSameBranch && $userAccountType !== 'tradCertEntryClerk' && !$isCompleted): ?>
-                    <a href="/nativecert/add-signatories/<?= $certificate['tradCertId'] ?>" 
+                    <a href="/cultural_dashboard/nativecert/add-signatories/<?= $certificate['tradCertId'] ?>" 
                        class="btn btn-sm btn-success btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-signature"></i>
@@ -60,7 +60,7 @@
 
                     <!-- Edit Button (for ENTRY users when no signatures) -->
                     <?php if ($isSameBranch && $userAccountType === 'tradCertEntryClerk' && $allMissing): ?>
-                    <a href="/dashboard/nativecert/edit/<?= $certificate['tradCertId'] ?>" 
+                    <a href="/cultural_dashboard/nativecert/edit/<?= $certificate['tradCertId'] ?>" 
                        class="btn btn-sm btn-warning btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-edit"></i>
@@ -71,7 +71,7 @@
 
                     <!-- Allow Edit Button (for SIGNC users when complete) -->
                     <?php if ($isSameBranch && $userAccountType === 'SIGNC' && $isCompleted): ?>
-                    <a href="/dashboard/nativecert/allow_edit/<?= $certificate['tradCertId'] ?>" 
+                    <a href="/cultural_dashboard/nativecert/allow_edit/<?= $certificate['tradCertId'] ?>" 
                        class="btn btn-sm btn-secondary btn-icon-split mr-2">
                         <span class="icon text-white-50">
                             <i class="fas fa-unlock"></i>
@@ -81,7 +81,7 @@
                     <?php endif; ?>
 
                     <!-- Back Button -->
-                    <a href="/nativecert" class="btn btn-sm btn-dark btn-icon-split">
+                    <a href="/cultural_dashboard/nativecert" class="btn btn-sm btn-dark btn-icon-split">
                         <span class="icon text-white-50">
                             <i class="fas fa-arrow-left"></i>
                         </span>
@@ -266,7 +266,7 @@
                                                         <td><?= date('M j, Y', strtotime($file['fileCreatedAt'])) ?></td>
                                                         <td><?= esc($file['userFullName']) ?></td>
                                                         <td>
-                                                            <a href="/dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate['tradCertId'] ?>"
+                                                            <a href="/cultural_dashboard/certificate_files/delete/<?= $file['fileId'] ?>/<?= $certificate['tradCertId'] ?>"
                                                                class="btn btn-sm btn-outline-danger"
                                                                onclick="return confirm('Delete this file?');">
                                                                 Delete
@@ -331,7 +331,7 @@
                                 <div class="row">
                                     <?php if($isCompleted && !$isIssued): ?>
                                         <p>The certificate is completed but has not been marked as issued. Please 
-                                            mark it as issued by clicking <a href="/dashboard/nativecert/issue-certificate/<?= $certificate['tradCertId'] ?>">here</a>
+                                            mark it as issued by clicking <a href="/cultural_dashboard/nativecert/issue-certificate/<?= $certificate['tradCertId'] ?>">here</a>
                                         </p>
                                     <?php endif; ?>
                                 </div>
@@ -341,45 +341,6 @@
 
                     <!-- ==================== SIDEBAR ==================== -->
                     <div class="col-lg-4">
-                        <!-- Actions -->
-                        <div class="card border-0 shadow-sm mb-4 liberia-card-blue">
-                            <div class="card-header bg-white py-2 border-bottom">
-                                <h6 class="m-0 liberia-blue">Actions</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-grid gap-2">
-                                    <?php if ($isSameBranch): ?>
-                                        <!-- ENTRY user: Edit & Delete only if NO signatures -->
-                                        <?php if ($userAccountType === 'tradCertEntryClerk' && $allMissing): ?>
-                                            <a href="/dashboard/nativecert/edit/<?= $certificate['tradCertId'] ?>"
-                                               class="btn btn-sm liberia-btn-red">Edit</a>
-                                            <a href="/dashboard/nativecert/delete/<?= $certificate['tradCertId'] ?>"
-                                               class="btn btn-sm btn-outline-danger"
-                                               onclick="return confirm('Delete this certificate?');">Delete</a>
-                                        <?php endif; ?>
-
-                                        <!-- Non-ENTRY: Sign if not complete -->
-                                        <?php if ($userAccountType !== 'tradCertEntryClerk' && !$isCompleted): ?>
-                                            <a href="/nativecert/add-signatories/<?= $certificate['tradCertId'] ?>"
-                                               class="btn btn-sm liberia-btn-blue">Sign</a>
-                                        <?php endif; ?>
-
-                                        <!-- Allow Edit: ONLY for SIGNC when document is complete -->
-                                        <?php if ($userAccountType === 'SIGNC'): ?>
-                                            <a href="/dashboard/nativecert/allow_edit/<?= $certificate['tradCertId'] ?>"
-                                               class="btn btn-sm liberia-btn-red">Allow Edit</a>
-                                        <?php endif; ?>
-
-                                        <!-- Always available -->
-                                        <a href="/dashboard/nativecert/generate_certificate/<?= $certificate['tradCertId'] ?>"
-                                           class="btn btn-sm liberia-btn-blue">Generate</a>
-                                        <button onclick="window.print();" class="btn btn-sm liberia-btn-blue">Print</button>
-                                    <?php endif; ?>
-                                    <a href="/nativecert" class="btn btn-sm btn-outline-secondary">Back</a>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Editing Guidelines -->
                         <?php if ($userAccountType === 'tradCertEntryClerk' && $allMissing): ?>
                         <div class="card shadow-sm border-0 mb-4">
@@ -633,7 +594,7 @@
                     <span>×</span>
                 </button>
             </div>
-            <form action="/dashboard/certificate_files/upload_file/<?= $certificate['tradCertId'] ?>"
+            <form action="/cultural_dashboard/certificate_files/upload_file/<?= $certificate['tradCertId'] ?>"
                   method="post" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">

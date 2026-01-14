@@ -35,13 +35,6 @@ class NativeDocCertController extends BaseController
     public function index()
     {
 
-              // check if the user account is allowed to view native doctor activities
-        if(!in_array(session()->get('userData')['userAccountType'], ['tradCertSignatoryA','tradCertSignatoryB','tradCertSignatoryC','tradCertEntryClerk', 'SIGNC'])){
-            // redirect to /dashboard/nativecert
-            return redirect()->to('/dashboard/nativecert');
-            exit();
-        }
-
         // Get current user's branch ID
         $branchId = session()->get('userData')['branchId'];
 
@@ -130,7 +123,7 @@ class NativeDocCertController extends BaseController
     public function new()
     {
         // validate that only data entry clerk can create a certificate
-        if(session()->get('userData')['userAccountType'] !== 'tradCertEntryClerk')
+        if(session()->get('userData')['userAccountType'] !== 'ENTRY')
         {
             return redirect()->back()->with("error", "Sorry. Access to create a traditional certificate is not allowed for this account");
             exit();
@@ -152,7 +145,7 @@ class NativeDocCertController extends BaseController
     public function create()
     {
         // validate that only data entry clerk can create a certificate
-        if(session()->get('userData')['userAccountType'] !== 'tradCertEntryClerk')
+        if(session()->get('userData')['userAccountType'] !== 'ENTRY')
         {
             return redirect()->back()->with("error", "Sorry. Access to create a traditional certificate is not allowed for this account");
             exit();
@@ -290,7 +283,7 @@ class NativeDocCertController extends BaseController
                 session()->setFlashdata('success', 
                     "Certificate created successfully! Serial Number: {$certificate['tradCertSn']}");
                 
-                return redirect()->to('/dashboard/nativecert');
+                return redirect()->back();
             } else {
                 throw new \Exception('Failed to save certificate');
             }
@@ -319,7 +312,7 @@ class NativeDocCertController extends BaseController
             ->first();
 
         if (!$certificate) {
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+            return redirect()->back()->with('error', 'Certificate not found.');
         }
 
         $data = [
@@ -376,19 +369,19 @@ class NativeDocCertController extends BaseController
         
         
         if (!$certificate) {
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+            return redirect()->back()->with('error', 'Certificate not found.');
         }
 
         // check if the user is from this branch
         $branchId = session()->get('userData')['branchId'];
         if($branchId != $certificate['tradCertBranch'] || $branchId != 1){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to edit this certificate');
+            return redirect()->back()->with('error', 'You are not allowed to edit this certificate');
             exit();
         }
 
         // check if the certificate is already issued - then disallow edit
         if($this->isIssued($certificate)){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Issued certificates cannot be edited');
+            return redirect()->back()->with('error', 'Issued certificates cannot be edited');
             exit();
         }
 
@@ -417,7 +410,7 @@ class NativeDocCertController extends BaseController
         $certificate = $this->certificateModel->find($id);
         
         if (!$certificate) {
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+            return redirect()->back()->with('error', 'Certificate not found.');
         }
 
         // Validation rules (including optional picture update)
@@ -532,19 +525,19 @@ class NativeDocCertController extends BaseController
         
 
         if (empty($certificate)) {
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+            return redirect()->back()->with('error', 'Certificate not found.');
         }
 
         // check if the user is from this branch 
         if($branchId != $certificate['tradCertBranch'] || $branchId != 1){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to affix signature to this doc');
+            return redirect()->back()->with('error', 'You are not allowed to affix signature to this doc');
             exit();
         }
 
         // check who wants to sign
         if(!(session()->get('userData')['userAccountType'] == "tradCertSignatoryA" || session()->get('userData')['userAccountType'] == "tradCertSignatoryB" || session()->get('userData')['userAccountType'] == "tradCertSignatoryC"))
         {
-            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to sign a traditional certificate');
+            return redirect()->back()->with('error', 'You are not allowed to sign a traditional certificate');
             exit();
         }
 
@@ -571,7 +564,7 @@ class NativeDocCertController extends BaseController
 
         // check if a signature is set 
         if(empty($signature)){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'You must have signed this certificate or it was signed by the previous occupant of your position');
+            return redirect()->back()->with('error', 'You must have signed this certificate or it was signed by the previous occupant of your position');
             exit();
         }
 
@@ -584,10 +577,10 @@ class NativeDocCertController extends BaseController
 
 
          if ($this->certificateModel->update($id, $data)){
-            return redirect()->to('/dashboard/nativecert')->with('success', 'You finally affixed your signature on a traditional certificate');
+            return redirect()->back()->with('success', 'You finally affixed your signature on a traditional certificate');
             exit();
          }else{
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Unknow error occured while affixing your signature');
+            return redirect()->back()->with('error', 'Unknow error occured while affixing your signature');
             exit();
          }
 
@@ -681,13 +674,13 @@ public function stats()
 
          // check if the user is from this branch 
         if($branchId != $data['tradCertBranch'] || $branchId != 1){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Your breanch is not allow to mark this certificate as issued');
+            return redirect()->back()->with('error', 'Your breanch is not allow to mark this certificate as issued');
             exit();
         }
 
         // check if the the certificate is completed
         if(!$this->isCertificateCompleted($data)){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Only completed certificates can be marked as issued');
+            return redirect()->back()->with('error', 'Only completed certificates can be marked as issued');
             exit();
         }
 
@@ -695,10 +688,10 @@ public function stats()
         $data['tradCertLastUpdatedBy'] = $userId;
 
         if ($this->certificateModel->update($id, $data)){
-            return redirect()->to('/dashboard/nativecert')->with('success', 'Certificate marked as issued successfully');
+            return redirect()->back()->with('success', 'Certificate marked as issued successfully');
             exit();
          }else{
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Unknow error occured while marking certificate as issued');
+            return redirect()->back()->with('error', 'Unknow error occured while marking certificate as issued');
             exit();
          }
 
@@ -714,19 +707,19 @@ public function stats()
         $certificate = $this->certificateModel->find($id);
         
         if (!$certificate) {
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Certificate not found.');
+            return redirect()->back()->with('error', 'Certificate not found.');
         }
 
             // check if the user is from this branch
         $branchId = session()->get('userData')['branchId'];
         if($branchId != $certificate['tradCertBranch'] || $branchId != 1){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'You are not allowed to delete this certificate');
+            return redirect()->back()->with('error', 'You are not allowed to delete this certificate');
             exit();
         }
 
          // check if the certificate is already issued - then disallow delete
         if($this->isIssued($certificate)){
-            return redirect()->to('/dashboard/nativecert')->with('error', 'Issued certificates cannot be deleted');
+            return redirect()->back()->with('error', 'Issued certificates cannot be deleted');
             exit();
         }
         
@@ -749,7 +742,7 @@ public function stats()
             session()->setFlashdata('error', 'Failed to delete certificate. Please try again.');
         }
 
-        return redirect()->to('/dashboard/nativecert');
+        return redirect()->back();
     }
 
 
@@ -763,7 +756,7 @@ public function generalDashboard()
     // Only allow specific admin roles or higher-level users
     // $allowedRoles = ['super_admin', 'admin', 'SIGNC']; // Add appropriate roles
     // if (!in_array(session()->get('userData')['userAccountType'], $allowedRoles)) {
-    //     return redirect()->to('/dashboard/nativecert')->with('error', 'Access denied to general dashboard');
+    //     return redirect()->back()->with('error', 'Access denied to general dashboard');
     // }
 
     // Get certificates from ALL branches

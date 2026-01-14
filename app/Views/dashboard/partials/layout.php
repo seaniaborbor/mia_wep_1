@@ -69,8 +69,8 @@ $userData = session()->get('userData');
             <?php elseif($userData['userDepartment'] == 'Matrimonial'): ?>
                 <?= $this->include('dashboard/partials/sidebarlinks/marriage_n_divorce_sidebar_links.php') ?>
 
-            <?php elseif($userData['userDepartment'] == 'Viewer'): ?>
-                <?= $this->include('dashboard/partials/viewer_sidebar') ?>
+            <?php elseif($userData['userDepartment'] == 'Cultural'): ?>
+                <?= $this->include('dashboard/partials/sidebarlinks/cultural_sidebar_links') ?>
             <?php endif; ?>
 
             <!-- Sidebar Toggler (Sidebar) -->

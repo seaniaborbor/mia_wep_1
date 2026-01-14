@@ -89,7 +89,7 @@
                                 <!-- Department -->
                                 <div class="mb-3">
                                     <label class="form-label">Department</label>
-                                    <select name="userDepartment" class="form-control <?= validation_show_error('userDepartment') ? 'is-invalid' : '' ?>" required>
+                                    <select name="userDepartment" id="userDepartment" class="form-control <?= validation_show_error('userDepartment') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Department</option>
                                         <option value="Registrar" <?= old('userDepartment') == 'Registrar' ? 'selected' : '' ?>>Registrar</option>
                                         <option value="Matrimonial" <?= old('userDepartment') == 'Matrimonial' ? 'selected' : '' ?>>Matrimonial</option>
@@ -134,16 +134,7 @@
                                     <label class="form-label">Account Type</label>
                                     <select name="userAccountType" id="userAccountType" class="form-control <?= validation_show_error('userAccountType') ? 'is-invalid' : '' ?>" required>
                                         <option value="">Select Account Type</option>
-                                        <optgroup label="Certificate Signatory">
-                                            <option value="SIGNA" <?= old('userAccountType') == 'SIGNA' ? 'selected' : '' ?>>Signatory A</option>
-                                            <option value="SIGNB" <?= old('userAccountType') == 'SIGNB' ? 'selected' : '' ?>>Signatory B</option>
-                                            <option value="SIGNC" <?= old('userAccountType') == 'SIGNC' ? 'selected' : '' ?>>Signatory C</option>
-                                        </optgroup>
-                                        <optgroup label="Other Staff">
-                                            <option value="Registrar" <?= old('userAccountType') == 'Registrar' ? 'selected' : '' ?>>Registrar</option>
-                                            <option value="ENTRY" <?= old('userAccountType') == 'ENTRY' ? 'selected' : '' ?>>Data Entry Clerk</option>
-                                            <option value="ADMIN" <?= old('userAccountType') == 'ADMIN' ? 'selected' : '' ?>>SYSTEM ADMIN</option>
-                                        </optgroup>
+                                        <!-- Options will be populated by JavaScript -->
                                     </select>
                                     <?php if (validation_show_error('userAccountType')): ?>
                                         <div class="invalid-feedback"><?= validation_show_error('userAccountType') ?></div>
@@ -179,7 +170,7 @@
                             <div class="mb-3" id="signatureField" style="display:none;">
                                 <label class="form-label" id="signatureTitle">Signature Image</label>
                                 <input type="file" name="userSignature" id="userSignature" class="form-control" accept="image/png">
-                                <div class="form-text">Transparent PNG required for signatories</div>
+                                <div class="form-text" id="signatureHelp">Transparent PNG required for signatories</div>
                                 <?php if (validation_show_error('userSignature')): ?>
                                     <div class="text-danger small"><?= validation_show_error('userSignature') ?></div>
                                 <?php endif; ?>
@@ -227,8 +218,8 @@
                     </p>
 
                     <div class="mb-3">
-                        <h6><i class="fas fa-users-cog text-success me-2"></i>Unique Account Types</h6>
-                        <p class="text-muted small">Only one active user per account type per branch allowed.</p>
+                        <h6><i class="fas fa-exchange-alt text-success me-2"></i>Department Specific</h6>
+                        <p class="text-muted small">Matrimonial department can only have matrimonial signatories.</p>
                     </div>
 
                     <div class="mb-3">
@@ -237,8 +228,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <h6><i class="fas fa-lock text-warning me-2"></i>Account Protection</h6>
-                        <p class="text-muted small">Accounts linked to certificates cannot be deleted.</p>
+                        <h6><i class="fas fa-users-cog text-warning me-2"></i>Unique Account Types</h6>
+                        <p class="text-muted small">Only one active user per account type per branch allowed.</p>
                     </div>
 
                     <div class="mb-3">
@@ -263,34 +254,173 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const accountType = document.getElementById('userAccountType');
+    const departmentSelect = document.getElementById('userDepartment');
+    const accountTypeSelect = document.getElementById('userAccountType');
     const signatureField = document.getElementById('signatureField');
     const signatureTitle = document.getElementById('signatureTitle');
     const signatureInput = document.getElementById('userSignature');
+    const signatureHelp = document.getElementById('signatureHelp');
+    const oldDepartment = "<?= old('userDepartment') ?>";
+    const oldAccountType = "<?= old('userAccountType') ?>";
 
-    const signatoryRoles = ['SIGNA', 'SIGNB', 'SIGNC'];
+    // Account type options configuration
+    const accountTypeOptions = {
+        // Common options for all departments
+        common: [
+            { value: 'Registrar', label: 'Registrar' },
+            { value: 'ENTRY', label: 'Data Entry Clerk' },
+            { value: 'ADMIN', label: 'SYSTEM ADMIN' }
+        ],
+        // Department-specific signatories
+        matrimonial: [
+            { value: 'SIGNA', label: 'Signatory A' },
+            { value: 'SIGNB', label: 'Signatory B' },
+            { value: 'SIGNC', label: 'Signatory C' }
+        ],
+        cultural: [
+            { value: 'tradCertSignatoryB', label: 'Traditional Cert Signatory B' },
+            { value: 'tradCertSignatoryC', label: 'Traditional Cert Signatory C' },
+            { value: 'tradCertSignatoryA', label: 'Traditional Cert Signatory A' }
+        ],
+        registrar: [
+            // No additional signatories for Registrar
+        ],
+        'system-admin': [
+            // No additional signatories for System Admin
+        ]
+    };
+
+    // All signatory roles for validation
+    const matrimonialSignatories = ['SIGNA', 'SIGNB', 'SIGNC'];
+    const culturalSignatories = ['tradCertSignatoryB', 'tradCertSignatoryA', 'tradCertSignatoryC'];
+    const allSignatories = [...matrimonialSignatories, ...culturalSignatories];
+
+    function populateAccountTypes() {
+        const department = departmentSelect.value.toLowerCase();
+        const currentValue = oldAccountType;
+        
+        // Clear existing options
+        accountTypeSelect.innerHTML = '<option value="">Select Account Type</option>';
+        
+        // Add department-specific signatories first
+        if (accountTypeOptions[department] && accountTypeOptions[department].length > 0) {
+            const deptGroup = document.createElement('optgroup');
+            
+            if (department === 'matrimonial') {
+                deptGroup.label = "Certificate Signatory (Matrimonial)";
+                // Add matrimonial signatories
+                accountTypeOptions.matrimonial.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.label;
+                    if (option.value === currentValue) opt.selected = true;
+                    deptGroup.appendChild(opt);
+                });
+            } else if (department === 'cultural') {
+                deptGroup.label = "Certificate Signatory (Cultural)";
+                // Add cultural signatories
+                accountTypeOptions.cultural.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.label;
+                    if (option.value === currentValue) opt.selected = true;
+                    deptGroup.appendChild(opt);
+                });
+            }
+            
+            // Add department group if it exists
+            if (deptGroup.children.length > 0) {
+                accountTypeSelect.appendChild(deptGroup);
+            }
+        }
+        
+        // Add common options for all departments
+        const commonGroup = document.createElement('optgroup');
+        commonGroup.label = "Other Staff";
+        
+        accountTypeOptions.common.forEach(option => {
+            const opt = document.createElement('option');
+            opt.value = option.value;
+            opt.textContent = option.label;
+            if (option.value === currentValue) opt.selected = true;
+            commonGroup.appendChild(opt);
+        });
+        
+        accountTypeSelect.appendChild(commonGroup);
+        
+        // Trigger signature field update
+        toggleSignature();
+    }
 
     function toggleSignature() {
-        const isSignatory = signatoryRoles.includes(accountType.value);
+        const selectedAccountType = accountTypeSelect.value;
+        const isSignatory = allSignatories.includes(selectedAccountType);
+        
         signatureField.style.display = isSignatory ? 'block' : 'none';
+        
+        // Update signature requirements
         if (isSignatory) {
             signatureInput.setAttribute('required', 'required');
             signatureTitle.innerHTML = 'Signature Image <span class="text-danger">*</span>';
+            
+            // Update help text based on department
+            const dept = departmentSelect.value;
+            if (dept === 'Matrimonial') {
+                signatureHelp.textContent = 'Transparent PNG signature required for matrimonial signatories';
+            } else if (dept === 'Cultural') {
+                signatureHelp.textContent = 'Transparent PNG signature required for traditional certificate signatories';
+            }
         } else {
             signatureInput.removeAttribute('required');
             signatureInput.value = '';
             signatureTitle.textContent = 'Signature Image';
+            signatureHelp.textContent = 'Transparent PNG required for signatories';
         }
     }
 
-    accountType.addEventListener('change', toggleSignature);
-    toggleSignature();
+    // Initialize on page load
+    if (oldDepartment) {
+        populateAccountTypes();
+    } else {
+        // Set default state
+        toggleSignature();
+    }
+    
+    // Event listeners
+    departmentSelect.addEventListener('change', function() {
+        populateAccountTypes();
+    });
+
+    accountTypeSelect.addEventListener('change', toggleSignature);
 
     // Form submission loading state
     document.getElementById('userCreateForm').addEventListener('submit', function() {
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creating...';
+    });
+
+    // File feedback
+    document.querySelectorAll('input[type="file"]').forEach(input => {
+        input.addEventListener('change', function() {
+            const formText = this.nextElementSibling;
+            if (formText && formText.classList.contains('form-text')) {
+                if (this.files[0]) {
+                    const originalText = formText.textContent;
+                    formText.dataset.original = originalText;
+                    formText.textContent = 'Selected: ' + this.files[0].name;
+                    formText.style.color = '#198754';
+                    formText.style.fontWeight = 'bold';
+                } else {
+                    // Reset to original text
+                    if (formText.dataset.original) {
+                        formText.textContent = formText.dataset.original;
+                    }
+                    formText.style.color = '#6c757d';
+                    formText.style.fontWeight = 'normal';
+                }
+            }
+        });
     });
 });
 </script>

@@ -1,5 +1,3 @@
-## Corrected create_user.php (no major changes, but ensured consistency)
-
 <?php $this->extend('dashboard/partials/layout') ?>
 <?=$this->section('main') ?>
 
@@ -10,11 +8,11 @@
             <div class="header-content">
                 <div class="header-title">
                     <div class="title-icon" style="background: #BF0A30; box-shadow: 0 0 25px rgba(191,10,48,0.5);">
-                        <i class="fas fa-user-plus text-white"></i>
+                        <i class="fas fa-user-edit text-white"></i>
                     </div>
                     <div class="title-text">
-                        <h1 class="page-title text-white mb-0">Create New User Account</h1>
-                        <p class="page-subtitle text-white opacity-90 mb-0">Register a new staff member securely</p>
+                        <h1 class="page-title text-white mb-0">Edit User Account</h1>
+                        <p class="page-subtitle text-white opacity-90 mb-0">Update staff member information securely</p>
                     </div>
                 </div>
             </div>
@@ -42,9 +40,8 @@
         <!-- Main Form Card -->
         <div class="col-lg-8">
             <div class="modern-card h-100">
-
                 <div class="modern-card-body p-5">
-                    <form action="/system_admin/users/create" method="post" enctype="multipart/form-data" id="userCreateForm">
+                    <form action="/system_admin/users/edit/<?= esc($user['userId']) ?>" method="post" enctype="multipart/form-data" id="userEditForm">
                         <?= csrf_field() ?>
                         
                         <div class="form-grid">
@@ -52,7 +49,7 @@
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-user me-2"></i>Full Name</label>
                                 <input type="text" name="userFullName" id="userFullName" class="form-control <?= validation_show_error('userFullName') ? 'is-invalid' : '' ?>"
-                                       value="<?= old('userFullName') ?>" placeholder="Enter full name" required>
+                                       value="<?= old('userFullName', $user['userFullName']) ?>" placeholder="Enter full name" required>
                                 <?php if (validation_show_error('userFullName')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userFullName') ?></div>
                                 <?php endif; ?>
@@ -62,7 +59,7 @@
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-envelope me-2"></i>Email Address</label>
                                 <input type="email" name="userEmail" id="userEmail" class="form-control <?= validation_show_error('userEmail') ? 'is-invalid' : '' ?>"
-                                       value="<?= old('userEmail') ?>" placeholder="staff@example.gov.lr" required>
+                                       value="<?= old('userEmail', $user['userEmail']) ?>" placeholder="staff@example.gov.lr" required>
                                 <?php if (validation_show_error('userEmail')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userEmail') ?></div>
                                 <?php endif; ?>
@@ -72,7 +69,7 @@
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-phone me-2"></i>Phone Number</label>
                                 <input type="tel" name="userPhone" id="userPhone" class="form-control <?= validation_show_error('userPhone') ? 'is-invalid' : '' ?>"
-                                       value="<?= old('userPhone') ?>" placeholder="+231 XXX XXX XXX">
+                                       value="<?= old('userPhone', $user['userPhone']) ?>" placeholder="+231 XXX XXX XXX">
                                 <?php if (validation_show_error('userPhone')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userPhone') ?></div>
                                 <?php endif; ?>
@@ -82,7 +79,7 @@
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-briefcase me-2"></i>Position</label>
                                 <input type="text" name="userPosition" id="userPosition" class="form-control <?= validation_show_error('userPosition') ? 'is-invalid' : '' ?>"
-                                       value="<?= old('userPosition') ?>" placeholder="e.g. Senior Registrar">
+                                       value="<?= old('userPosition', $user['userPosition']) ?>" placeholder="e.g. Senior Registrar">
                                 <?php if (validation_show_error('userPosition')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userPosition') ?></div>
                                 <?php endif; ?>
@@ -93,23 +90,25 @@
                                 <label class="form-label"><i class="fas fa-building me-2"></i>Department</label>
                                 <select name="userDepartment" id="userDepartment" class="form-control <?= validation_show_error('userDepartment') ? 'is-invalid' : '' ?>" required>
                                     <option value="">Select Department</option>
-                                    <option value="Registrar" <?= old('userDepartment') == 'Registrar' ? 'selected' : '' ?>>Registrar</option>
-                                    <option value="Matrimonial" <?= old('userDepartment') == 'Matrimonial' ? 'selected' : '' ?>>Matrimonial</option>
-                                    <option value="Cultural" <?= old('userDepartment') == 'Cultural' ? 'selected' : '' ?>>Cultural</option>
-                                    <option value="System-Admin" <?= old('userDepartment') == 'System-Admin' ? 'selected' : '' ?>>System Admin</option>
+                                    <option value="Registrar" <?= old('userDepartment', $user['userDepartment']) == 'Registrar' ? 'selected' : '' ?>>Registrar</option>
+                                    <option value="Matrimonial" <?= old('userDepartment', $user['userDepartment']) == 'Matrimonial' ? 'selected' : '' ?>>Matrimonial</option>
+                                    <option value="Cultural" <?= old('userDepartment', $user['userDepartment']) == 'Cultural' ? 'selected' : '' ?>>Cultural</option>
+                                    <option value="System-Admin" <?= old('userDepartment', $user['userDepartment']) == 'System-Admin' ? 'selected' : '' ?>>System Admin</option>
                                 </select>
                                 <?php if (validation_show_error('userDepartment')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userDepartment') ?></div>
                                 <?php endif; ?>
                             </div>
 
-                            <!-- Password -->
+                            <!-- Password (Optional for Edit) -->
                             <div class="form-group">
-                                <label class="form-label"><i class="fas fa-lock me-2"></i>Password</label>
-                                <input type="password" name="userPassword" id="userPassword" class="form-control <?= validation_show_error('userPassword') ? 'is-invalid' : '' ?>" placeholder="Enter strong password" required>
+                                <label class="form-label"><i class="fas fa-lock me-2"></i>New Password</label>
+                                <input type="password" name="userPassword" id="userPassword" class="form-control <?= validation_show_error('userPassword') ? 'is-invalid' : '' ?>" 
+                                       placeholder="Leave blank to keep current password">
                                 <?php if (validation_show_error('userPassword')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userPassword') ?></div>
                                 <?php endif; ?>
+                                <small class="text-muted">Only fill if you want to change the password</small>
                             </div>
 
                             <!-- Branch -->
@@ -119,7 +118,7 @@
                                     <option value="">Select Branch</option>
                                     <?php if (isset($branches) && is_array($branches)): ?>
                                         <?php foreach ($branches as $branch): ?>
-                                            <option value="<?= esc($branch['branchId']) ?>" <?= old('userBreanch') == $branch['branchId'] ? 'selected' : '' ?>>
+                                            <option value="<?= esc($branch['branchId']) ?>" <?= old('userBreanch', $user['userBreanch']) == $branch['branchId'] ? 'selected' : '' ?>>
                                                 <?= esc($branch['branchName']) ?>
                                             </option>
                                         <?php endforeach; ?>
@@ -135,20 +134,7 @@
                                 <label class="form-label"><i class="fas fa-user-tag me-2"></i>Account Type</label>
                                 <select name="userAccountType" id="userAccountType" class="form-control <?= validation_show_error('userAccountType') ? 'is-invalid' : '' ?>" required>
                                     <option value="">Select Account Type</option>
-                                    <optgroup label="Certificate Signatory">
-                                        <option value="SIGNA" <?= old('userAccountType') == 'SIGNA' ? 'selected' : '' ?>>Signatory A</option>
-                                        <option value="SIGNB" <?= old('userAccountType') == 'SIGNB' ? 'selected' : '' ?>>Signatory B</option>
-                                        <option value="SIGNC" <?= old('userAccountType') == 'SIGNC' ? 'selected' : '' ?>>Signatory C</option>
-                                        <option value="tradCertSignatoryA" <?= old('userAccountType') == 'tradCertSignatoryA' ? 'selected' : '' ?>>Traditional Cert Signatory A</option>
-                                        <option value="tradCertSignatoryB" <?= old('userAccountType') == 'tradCertSignatoryB' ? 'selected' : '' ?>>Traditional Cert Signatory B</option>
-                                        <option value="tradCertSignatoryC" <?= old('userAccountType') == 'tradCertSignatoryC' ? 'selected' : '' ?>>Traditional Cert Signatory C</option>
-                                    </optgroup>
-                                    <optgroup label="Other Staff">
-                                        <option value="Registrar" <?= old('userAccountType') == 'Registrar' ? 'selected' : '' ?>>Registrar</option>
-                                        <option value="ENTRY" <?= old('userAccountType') == 'ENTRY' ? 'selected' : '' ?>>Data Entry Clerk</option>
-                                        <option value="tradCertEntryClerk" <?= old('userAccountType') == 'tradCertEntryClerk' ? 'selected' : '' ?>>Traditional Cert Entry Clerk</option>
-                                        <option value="ADMIN" <?= old('userAccountType') == 'ADMIN' ? 'selected' : '' ?>>SYSTEM ADMIN</option>
-                                    </optgroup>
+                                    <!-- Options will be populated by JavaScript based on department -->
                                 </select>
                                 <?php if (validation_show_error('userAccountType')): ?>
                                     <div class="invalid-feedback"><?= validation_show_error('userAccountType') ?></div>
@@ -159,15 +145,26 @@
                             <div class="form-group">
                                 <label class="form-label"><i class="fas fa-toggle-on me-2"></i>Account Status</label>
                                 <select name="userAccountActiveStatus" id="userAccountActiveStatus" class="form-control">
-                                    <option value="1" <?= old('userAccountActiveStatus', '1') == '1' ? 'selected' : '' ?>>Active</option>
-                                    <option value="0" <?= old('userAccountActiveStatus') == '0' ? 'selected' : '' ?>>Inactive</option>
+                                    <option value="1" <?= old('userAccountActiveStatus', $user['userAccountActiveStatus']) == '1' ? 'selected' : '' ?>>Active</option>
+                                    <option value="0" <?= old('userAccountActiveStatus', $user['userAccountActiveStatus']) == '0' ? 'selected' : '' ?>>Inactive</option>
                                 </select>
                             </div>
                         </div>
 
                         <!-- File Uploads Section -->
                         <div class="file-section">
-                            <h3 class="section-title"><i class="fas fa-cloud-upload-alt me-2"></i>Required Documents</h3>
+                            <h3 class="section-title"><i class="fas fa-cloud-upload-alt me-2"></i>Update Documents</h3>
+                            
+                            <!-- Current Signature Display -->
+                            <?php if (!empty($user['userSignature'])): ?>
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">Current Signature:</p>
+                                    <img src="<?= base_url('uploads/signatures/' . $user['userSignature']) ?>" 
+                                         class="img-thumbnail" 
+                                         style="max-width: 200px; background: #f8f9fa; padding: 10px;">
+                                </div>
+                            <?php endif; ?>
+                            
                             <div id="signatureField" style="display: none;">
                                 <div class="file-upload-card">
                                     <label for="userSignature" class="file-label">
@@ -175,46 +172,73 @@
                                             <i class="fas fa-pen-fancy"></i>
                                         </div>
                                         <div>
-                                            <div class="file-title" id="signatureTitle">Signature Image</div>
-                                            <div class="file-subtitle">Upload transparent PNG signature (Required for signatories)</div>
+                                            <div class="file-title" id="signatureTitle">Update Signature Image</div>
+                                            <div class="file-subtitle">Upload transparent PNG signature (Leave empty to keep current)</div>
                                         </div>
                                     </label>
                                     <input type="file" name="userSignature" id="userSignature" class="file-input" accept="image/*">
                                 </div>
                             </div>
+                            
+                            <!-- Current Profile Picture Display -->
+                            <?php if (!empty($user['userPicture'])): ?>
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">Current Profile Picture:</p>
+                                    <img src="<?= base_url('uploads/profiles/' . $user['userPicture']) ?>" 
+                                         class="img-thumbnail rounded-circle" 
+                                         style="max-width: 120px; height: 120px; object-fit: cover;">
+                                </div>
+                            <?php endif; ?>
+                            
                             <div class="file-upload-card">
                                 <label for="userPicture" class="file-label">
                                     <div class="file-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
                                         <i class="fas fa-user-circle"></i>
                                     </div>
                                     <div>
-                                        <div class="file-title">Profile Picture</div>
-                                        <div class="file-subtitle">Upload JPG/PNG image (Max 2MB)</div>
+                                        <div class="file-title">Update Profile Picture</div>
+                                        <div class="file-subtitle">Upload JPG/PNG image (Leave empty to keep current)</div>
                                     </div>
                                 </label>
-                                <input type="file" name="userPicture" id="userPicture" class="file-input" accept="image/*" required>
+                                <input type="file" name="userPicture" id="userPicture" class="file-input" accept="image/*">
                             </div>
+                            
+                            <!-- Current Application File Display -->
+                            <?php if (!empty($user['userApplicationFile'])): ?>
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">Current Application File:</p>
+                                    <a href="<?= base_url('uploads/applications/' . $user['userApplicationFile']) ?>" 
+                                       target="_blank" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-file-pdf me-1"></i> View Current PDF
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                            
                             <div class="file-upload-card">
                                 <label for="userApplicationFile" class="file-label">
                                     <div class="file-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
                                         <i class="fas fa-file-pdf"></i>
                                     </div>
                                     <div>
-                                        <div class="file-title">Application File</div>
-                                        <div class="file-subtitle">Upload PDF document (Max 7MB)</div>
+                                        <div class="file-title">Update Application File</div>
+                                        <div class="file-subtitle">Upload PDF document (Leave empty to keep current)</div>
                                     </div>
                                 </label>
-                                <input type="file" name="userApplicationFile" id="userApplicationFile" class="file-input" accept=".pdf" required>
+                                <input type="file" name="userApplicationFile" id="userApplicationFile" class="file-input" accept=".pdf">
                             </div>
                         </div>
 
                         <!-- Form Actions -->
                         <div class="form-actions">
                             <button type="submit" class="btn-patriotic" id="submitBtn">
-                                <span class="btn-text">Create Account</span>
-                                <span class="btn-icon"><i class="fas fa-user-plus"></i></span>
-                                <span class="btn-loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Processing...</span>
+                                <span class="btn-text">Update Account</span>
+                                <span class="btn-icon"><i class="fas fa-save"></i></span>
+                                <span class="btn-loading" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Updating...</span>
                             </button>
+                            <a href="/system_admin/users" class="btn btn-outline-secondary ms-2">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -231,8 +255,8 @@
                                 <i class="fas fa-shield-alt"></i>
                             </div>
                             <div class="title-text">
-                                <h1 class="page-title text-white mb-0">Account Policies</h1>
-                                <p class="page-subtitle text-white opacity-90 mb-0">Security & Compliance Guidelines</p>
+                                <h1 class="page-title text-white mb-0">Update Guidelines</h1>
+                                <p class="page-subtitle text-white opacity-90 mb-0">Security & Compliance</p>
                             </div>
                         </div>
                     </div>
@@ -243,59 +267,59 @@
                         <div class="policy-list">
                             <div class="policy-item success">
                                 <div class="policy-icon">
-                                    <i class="fas fa-users-slash"></i>
+                                    <i class="fas fa-exchange-alt"></i>
                                 </div>
                                 <div class="policy-text">
-                                    <strong>Unique Account Types</strong><br>
-                                    <span class="text-muted">Only one active user per account type per branch allowed.</span>
+                                    <strong>Department Changes</strong><br>
+                                    <span class="text-muted">Changing department updates available signatory options.</span>
                                 </div>
                             </div>
 
                             <div class="policy-item danger">
                                 <div class="policy-icon">
-                                    <i class="fas fa-pen-fancy"></i>
+                                    <i class="fas fa-user-slash"></i>
                                 </div>
                                 <div class="policy-text">
-                                    <strong>Signature Requirements</strong><br>
-                                    <span class="text-muted">Signatories must upload transparent PNG signature images.</span>
+                                    <strong>Account Type Rules</strong><br>
+                                    <span class="text-muted">Only one active user per account type per branch allowed.</span>
                                 </div>
                             </div>
 
                             <div class="policy-item warning">
                                 <div class="policy-icon">
-                                    <i class="fas fa-lock"></i>
+                                    <i class="fas fa-pen-fancy"></i>
                                 </div>
                                 <div class="policy-text">
-                                    <strong>Account Protection</strong><br>
-                                    <span class="text-muted">Accounts linked to certificates cannot be deleted.</span>
+                                    <strong>Signature Updates</strong><br>
+                                    <span class="text-muted">Signatories can update their signature image anytime.</span>
                                 </div>
                             </div>
 
                             <div class="policy-item info">
                                 <div class="policy-icon">
-                                    <i class="fas fa-image"></i>
+                                    <i class="fas fa-lock"></i>
                                 </div>
                                 <div class="policy-text">
-                                    <strong>Profile Pictures</strong><br>
-                                    <span class="text-muted">Profile picture is mandatory for all users.</span>
+                                    <strong>Linked Accounts</strong><br>
+                                    <span class="text-muted">Accounts linked to certificates cannot be deactivated.</span>
                                 </div>
                             </div>
 
                             <div class="policy-item primary">
                                 <div class="policy-icon">
-                                    <i class="fas fa-file-pdf"></i>
+                                    <i class="fas fa-file-contract"></i>
                                 </div>
                                 <div class="policy-text">
-                                    <strong>Documentation</strong><br>
-                                    <span class="text-muted">PDF application file must be uploaded for verification.</span>
+                                    <strong>File Updates</strong><br>
+                                    <span class="text-muted">Leave file fields empty to keep existing documents.</span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-4 p-4 bg-light rounded text-center border-start border-primary border-5">
-                            <i class="fas fa-shield-alt fa-2x text-primary mb-3"></i>
+                            <i class="fas fa-history fa-2x text-primary mb-3"></i>
                             <p class="mb-0 fw-bold text-primary">
-                                All user actions are logged and monitored by the National Registry Office
+                                All account modifications are logged in the audit trail system
                             </p>
                         </div>
                     </div>
@@ -306,7 +330,7 @@
 </div>
 
 <style>
-/* OFFICIAL PATRIOTIC THEME - FULL OVERRIDE */
+/* OFFICIAL PATRIOTIC THEME - FULL OVERRIDE (Same as create) */
 .modern-card {
     background: white !important;
     border-radius: 18px !important;
@@ -504,6 +528,13 @@
     box-shadow: 0 12px 35px rgba(191, 10, 48, 0.5);
 }
 
+.btn-outline-secondary {
+    border: 2px solid #e2e8f0;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
 /* Policy Box Styling */
 .policy-box {
     font-size: 1rem;
@@ -617,28 +648,116 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const accountType = document.getElementById('userAccountType');
+    const departmentSelect = document.getElementById('userDepartment');
+    const accountTypeSelect = document.getElementById('userAccountType');
     const signatureField = document.getElementById('signatureField');
     const signatureTitle = document.getElementById('signatureTitle');
     const signatureInput = document.getElementById('userSignature');
+    const currentAccountType = "<?= old('userAccountType', $user['userAccountType']) ?>";
 
-    const signatoryRoles = ['SIGNA', 'SIGNB', 'SIGNC', 'tradCertSignatoryA', 'tradCertSignatoryB', 'tradCertSignatoryC'];
+    // Account type options configuration
+    const accountTypeOptions = {
+        // For all departments
+        common: {
+            'Registrar': 'Registrar',
+            'ENTRY': 'Data Entry Clerk',
+            'tradCertEntryClerk': 'Traditional Cert Entry Clerk',
+            'ADMIN': 'SYSTEM ADMIN'
+        },
+        // Department-specific signatories
+        matrimonial: {
+            'SIGNA': 'Signatory A (Matrimonial)',
+            'SIGNB': 'Signatory B (Matrimonial)',
+            'SIGNC': 'Signatory C (Matrimonial)'
+        },
+        cultural: {
+            'tradCertSignatoryB': 'Traditional Cert Signatory B',
+            'tradCertSignatoryC': 'Traditional Cert Signatory C'
+        },
+        registrar: {
+            // No additional signatories for Registrar
+        },
+        'system-admin': {
+            // No additional signatories for System Admin
+        }
+    };
+
+    // All signatory roles for validation
+    const allSignatoryRoles = ['SIGNA', 'SIGNB', 'SIGNC', 'tradCertSignatoryB', 'tradCertSignatoryC'];
+
+    function populateAccountTypes() {
+        const department = departmentSelect.value.toLowerCase();
+        const currentValue = currentAccountType;
+        
+        // Clear existing options
+        accountTypeSelect.innerHTML = '<option value="">Select Account Type</option>';
+        
+        // Add common options for all departments
+        const commonGroup = document.createElement('optgroup');
+        commonGroup.label = "Staff Roles";
+        
+        for (const [value, label] of Object.entries(accountTypeOptions.common)) {
+            const option = document.createElement('option');
+            option.value = value;
+            option.textContent = label;
+            if (value === currentValue) option.selected = true;
+            commonGroup.appendChild(option);
+        }
+        accountTypeSelect.appendChild(commonGroup);
+        
+        // Add department-specific signatories
+        if (accountTypeOptions[department]) {
+            const deptGroup = document.createElement('optgroup');
+            
+            if (department === 'matrimonial') {
+                deptGroup.label = "Matrimonial Signatories";
+            } else if (department === 'cultural') {
+                deptGroup.label = "Cultural/Traditional Signatories";
+            }
+            
+            for (const [value, label] of Object.entries(accountTypeOptions[department])) {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                if (value === currentValue) option.selected = true;
+                deptGroup.appendChild(option);
+            }
+            
+            if (deptGroup.children.length > 0) {
+                accountTypeSelect.appendChild(deptGroup);
+            }
+        }
+        
+        // Trigger signature field update
+        toggleSignature();
+    }
 
     function toggleSignature() {
-        const isSignatory = signatoryRoles.includes(accountType.value);
+        const isSignatory = allSignatoryRoles.includes(accountTypeSelect.value);
         signatureField.style.display = isSignatory ? 'block' : 'none';
+        
+        // Update signature title based on department
         if (isSignatory) {
-            signatureInput.setAttribute('required', 'required');
-            signatureTitle.innerHTML = 'Signature Image <span class="text-danger">*</span>';
-        } else {
-            signatureInput.removeAttribute('required');
-            signatureInput.value = '';
-            signatureTitle.textContent = 'Signature Image';
+            const dept = departmentSelect.value;
+            if (dept === 'Matrimonial') {
+                signatureTitle.innerHTML = 'Matrimonial Signature Image';
+            } else if (dept === 'Cultural') {
+                signatureTitle.innerHTML = 'Traditional Cert Signature Image';
+            } else {
+                signatureTitle.innerHTML = 'Signature Image';
+            }
         }
     }
 
-    accountType.addEventListener('change', toggleSignature);
-    toggleSignature();
+    // Initialize on page load
+    populateAccountTypes();
+    
+    // Event listeners
+    departmentSelect.addEventListener('change', function() {
+        populateAccountTypes();
+    });
+
+    accountTypeSelect.addEventListener('change', toggleSignature);
 
     // File feedback
     document.querySelectorAll('.file-input').forEach(input => {
@@ -648,12 +767,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 subtitle.textContent = 'Selected: ' + this.files[0].name;
                 subtitle.style.color = '#16a34a';
                 subtitle.style.fontWeight = '600';
+            } else {
+                // Reset to default message
+                if (this.id === 'userSignature') {
+                    subtitle.textContent = 'Upload transparent PNG signature (Leave empty to keep current)';
+                } else if (this.id === 'userPicture') {
+                    subtitle.textContent = 'Upload JPG/PNG image (Leave empty to keep current)';
+                } else if (this.id === 'userApplicationFile') {
+                    subtitle.textContent = 'Upload PDF document (Leave empty to keep current)';
+                }
+                subtitle.style.color = '#6b7280';
+                subtitle.style.fontWeight = 'normal';
             }
         });
     });
 
     // Submit loading
-    document.getElementById('userCreateForm').addEventListener('submit', function() {
+    document.getElementById('userEditForm').addEventListener('submit', function() {
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.querySelector('.btn-text').style.display = 'none';
