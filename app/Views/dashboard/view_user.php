@@ -77,20 +77,31 @@ $accountTypeLabels = [
                     </div>
 
                     <!-- Quick Stats -->
-                    <div class="row text-center mb-4">
+                    <?php if($user['userDepartment'] == 'Matrimonial'): ?>
+                        <div class="row text-center mb-4">
                         <div class="col-6">
                             <div class="h5 font-weight-bold text-gray-800 mb-0">
-                                <?= $marriageCertCount ?? 0 ?>
+                                <?= count($marriage_certificates) ?? 0 ?>
                             </div>
                             <small class="text-muted">Marriage Certs</small>
                         </div>
                         <div class="col-6">
                             <div class="h5 font-weight-bold text-gray-800 mb-0">
-                                <?= $divorceCertCount ?? 0 ?>
+                                <?= count($divorce_certificates) ?? 0 ?>
                             </div>
                             <small class="text-muted">Divorce Certs</small>
                         </div>
                     </div>
+                    <?php elseif($user['userDepartment'] == 'Cultural'): ?>
+                        <div class="row text-center mb-4">
+                            <div class="col-12">
+                                <div class="h5 font-weight-bold text-gray-800 mb-0">
+                                    <?= $culturalCertCount ?? 0 ?>
+                                </div>
+                                <small class="text-muted">Cultural Certs</small>
+                            </div>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Quick Actions -->
                     <div class="d-grid gap-2">
